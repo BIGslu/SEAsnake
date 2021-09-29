@@ -1,0 +1,2 @@
+# SEAsnake
+RNA-seq pipeline
