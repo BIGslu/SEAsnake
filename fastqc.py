@@ -25,7 +25,7 @@ with TemporaryDirectory() as tempdir:
     shell(
         "fastqc {snakemake.params} --quiet -t {snakemake.threads} "
         "--outdir {tempdir:q} {snakemake.input[0]:q}"
-        " {log:q}"
+        " {log}"
     )
 
     # Move outputs into proper position.
