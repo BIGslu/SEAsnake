@@ -1,0 +1,187 @@
+AdapterRemoval ver. 2.3.0
+Trimming of paired-end reads
+
+
+[Adapter sequences]
+Adapter1[1]: AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC
+Adapter2[1]: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT
+
+
+[Adapter trimming]
+RNG seed: NA
+Alignment shift value: 2
+Global mismatch threshold: 0.333333
+Quality format (input): Phred+33
+Quality score max (input): 41
+Quality format (output): Phred+33
+Quality score max (output): 41
+Mate-number separator (input): '/'
+Trimming 5p: 10
+Trimming 3p: 0
+Trimming Ns: No
+Trimming Phred scores <= 30: Yes
+Trimming using sliding windows: No
+Minimum genomic length: 15
+Maximum genomic length: 4294967295
+Collapse overlapping reads: No
+Minimum overlap (in case of collapse): 11
+
+
+[Trimming statistics]
+Total number of read pairs: 10000
+Number of unaligned read pairs: 810
+Number of well aligned read pairs: 9190
+Number of discarded mate 1 reads: 51
+Number of singleton mate 1 reads: 0
+Number of discarded mate 2 reads: 51
+Number of singleton mate 2 reads: 0
+Number of reads with adapters[1]: 7464
+Number of retained reads: 19898
+Number of retained nucleotides: 2574435
+Average length of retained reads: 129.382
+
+
+[Length distribution]
+Length	Mate1	Mate2	Singleton	Discarded	All
+0	0	0	0	76	76
+1	0	0	0	5	5
+2	0	0	0	0	0
+3	0	0	0	2	2
+4	0	0	0	1	1
+5	0	0	0	2	2
+6	0	0	0	6	6
+7	0	0	0	0	0
+8	0	0	0	0	0
+9	0	0	0	4	4
+10	0	0	0	2	2
+11	0	0	0	0	0
+12	0	0	0	2	2
+13	0	0	0	0	0
+14	0	0	0	2	2
+15	0	0	0	0	0
+16	0	0	0	0	0
+17	0	0	0	0	0
+18	0	0	0	0	0
+19	0	0	0	0	0
+20	0	0	0	0	0
+21	0	0	0	0	0
+22	0	0	0	0	0
+23	0	0	0	0	0
+24	0	0	0	0	0
+25	1	1	0	0	2
+26	1	0	0	0	1
+27	0	0	0	0	0
+28	1	2	0	0	3
+29	0	0	0	0	0
+30	0	0	0	0	0
+31	0	1	0	0	1
+32	1	1	0	0	2
+33	1	0	0	0	1
+34	0	0	0	0	0
+35	0	0	0	0	0
+36	0	0	0	0	0
+37	0	0	0	0	0
+38	0	0	0	0	0
+39	1	1	0	0	2
+40	1	2	0	0	3
+41	1	0	0	0	1
+42	2	2	0	0	4
+43	0	0	0	0	0
+44	3	3	0	0	6
+45	2	1	0	0	3
+46	1	2	0	0	3
+47	1	1	0	0	2
+48	2	2	0	0	4
+49	1	2	0	0	3
+50	3	1	0	0	4
+51	0	2	0	0	2
+52	5	5	0	0	10
+53	2	1	0	0	3
+54	3	2	0	0	5
+55	0	1	0	0	1
+56	5	6	0	0	11
+57	5	4	0	0	9
+58	2	4	0	0	6
+59	5	3	0	0	8
+60	6	8	0	0	14
+61	3	2	0	0	5
+62	5	5	0	0	10
+63	7	4	0	0	11
+64	4	5	0	0	9
+65	7	7	0	0	14
+66	10	10	0	0	20
+67	5	5	0	0	10
+68	13	13	0	0	26
+69	12	9	0	0	21
+70	13	11	0	0	24
+71	7	11	0	0	18
+72	12	14	0	0	26
+73	21	17	0	0	38
+74	11	12	0	0	23
+75	16	13	0	0	29
+76	11	13	0	0	24
+77	19	17	0	0	36
+78	18	20	0	0	38
+79	22	22	0	0	44
+80	25	21	0	0	46
+81	24	24	0	0	48
+82	30	30	0	0	60
+83	29	29	0	0	58
+84	31	33	0	0	64
+85	27	25	0	0	52
+86	30	36	0	0	66
+87	37	35	0	0	72
+88	37	34	0	0	71
+89	43	43	0	0	86
+90	41	37	0	0	78
+91	44	45	0	0	89
+92	52	49	0	0	101
+93	57	60	0	0	117
+94	43	42	0	0	85
+95	36	37	0	0	73
+96	52	55	0	0	107
+97	42	40	0	0	82
+98	48	51	0	0	99
+99	53	46	0	0	99
+100	61	61	0	0	122
+101	45	53	0	0	98
+102	55	56	0	0	111
+103	54	51	0	0	105
+104	37	43	0	0	80
+105	68	70	0	0	138
+106	71	70	0	0	141
+107	84	74	0	0	158
+108	70	69	0	0	139
+109	49	55	0	0	104
+110	57	59	0	0	116
+111	54	56	0	0	110
+112	80	75	0	0	155
+113	71	69	0	0	140
+114	76	69	0	0	145
+115	70	72	0	0	142
+116	81	73	0	0	154
+117	62	69	0	0	131
+118	58	66	0	0	124
+119	72	68	0	0	140
+120	69	65	0	0	134
+121	67	76	0	0	143
+122	61	56	0	0	117
+123	75	74	0	0	149
+124	86	89	0	0	175
+125	67	62	0	0	129
+126	57	60	0	0	117
+127	74	73	0	0	147
+128	63	67	0	0	130
+129	62	64	0	0	126
+130	68	62	0	0	130
+131	59	62	0	0	121
+132	59	72	0	0	131
+133	75	68	0	0	143
+134	71	74	0	0	145
+135	73	76	0	0	149
+136	78	65	0	0	143
+137	103	81	0	0	184
+138	137	113	0	0	250
+139	245	225	0	0	470
+140	800	863	0	0	1663
+141	5172	5184	0	0	10356
