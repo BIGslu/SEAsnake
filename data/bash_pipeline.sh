@@ -58,13 +58,14 @@ mkdir -p ref/release$release/STARref
 #Download reference
 sudo curl -O --output-dir ref/release$release/STARref \
     ftp://ftp.ensembl.org/pub/release-$release/gtf/homo_sapiens/Homo_sapiens.GRCh38.$release.gtf.gz
-    
+
 sudo curl -O --output-dir ref/release$release/STARref \
     ftp://ftp.ensembl.org/pub/release-$release/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz
 
 gunzip ref/release$release/STARref/*
 
 #Index genome
+#CANNOT run on laptop. Download from s3://human-ref/release104/STARindex
 STAR --runMode genomeGenerate \
      --genomeDir ref/release$release/STARindex \
      --genomeFastaFiles \
@@ -79,14 +80,26 @@ mv Log.out ref/release$number/STARindex/
 ########################################
 ## Alignment
 ########################################
+#For MAC
+#Increase number of files that can be open
+ulimit -n 2560
+#Difference in the read in zip function
 STAR --genomeDir ref/release$release/STARindex \
-         --readFilesIn fastq_trim/$name.pair1.truncated.gz fastq_trim/$name.pair2.truncated.gz \
-         --readFilesCommand zcat \
-         --outFileNamePrefix results/bam/$name \
+         --readFilesIn results/fastq_trim/$name.pair1.truncated.gz results/fastq_trim/$name.pair2.truncated.gz \
+         --readFilesCommand gunzip -c \
+         --outFileNamePrefix results/bam/"$name"_ \
          --outSAMtype BAM SortedByCoordinate \
          --runThreadN $threads \
          --runRNGseed 8756
 
+#For AWS
+STAR --genomeDir ref/release$release/STARindex \
+         --readFilesIn results/fastq_trim/$name.pair1.truncated.gz results/fastq_trim/$name.pair2.truncated.gz \
+         --readFilesCommand zcat \
+         --outFileNamePrefix results/bam/"$name"_ \
+         --outSAMtype BAM SortedByCoordinate \
+         --runThreadN $threads \
+         --runRNGseed 8756
 ########################################
 ## Quality filter alignment
 ########################################
@@ -110,10 +123,21 @@ mkdir -p ref/PICARDref
 #Download reference
 sudo curl -O --output-dir ref/PICARDref \
     http://hgdownload.cse.ucsc.edu/goldenPath/hg38/database/refFlat.txt.gz
-    
+
 gunzip ref/PICARDref/refFlat.txt.gz
 
 #Run Picard
+#Update version number as necessary
+#MAC - Fails due to Java error
+java -jar /Applications/miniconda3/pkgs/picard-2.26.2-hdfd78af_0/share/picard-2.26.2-0/picard.jar \
+        CollectRnaSeqMetrics \
+        REF_FLAT=ref/PICARDref/refFlat.ensembl.txt \
+        INPUT=results/bam/"$name"_filter.bam \
+        OUTPUT=results/metrics/"$name"_picard.tsv \
+        ASSUME_SORTED=true STRAND_SPECIFICITY=NONE MINIMUM_LENGTH=500 \
+        QUIET=true VERBOSITY=ERROR
+
+#AWS
 java -jar ~/apps/anaconda/share/picard-2.26.2-0/picard.jar \
         CollectRnaSeqMetrics \
         REF_FLAT=ref/PICARDref/refFlat.ensembl.txt \
