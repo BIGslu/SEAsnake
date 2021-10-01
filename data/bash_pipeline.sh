@@ -104,14 +104,14 @@ STAR --genomeDir ref/release$release/STARindex \
 ## Quality filter alignment
 ########################################
 
-samtools view results/bam/$name.bam \
+samtools view results/bam/"$name"_Aligned.sortedByCoord.out.bam \
     -h -f 3 -F 1284 -q 30 -@ $threads > results/bam/"$name"_filter.bam
 
 ########################################
 ## flagstat
 ########################################
 
-samtools flagstat -@ $threads results/bam/$name.bam > results/metrics/"$name"_flagstat.tsv
+samtools flagstat -@ $threads results/bam/"$name"_Aligned.sortedByCoord.out.bam > results/metrics/"$name"_flagstat.tsv
 samtools flagstat -@ $threads results/bam/"$name"_filter.bam > results/metrics/"$name"_filter_flagstat.tsv
 
 ########################################
