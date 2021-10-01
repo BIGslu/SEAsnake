@@ -38,6 +38,12 @@ vignettes/*.pdf
 # R Environment Variables
 .Renviron
 
+# MAC
 *.DS_Store
+
+# snakmake 
 .snakemake/log/*
 .snakemake/metadata/*
+
+# reference files, too large
+ref/*
