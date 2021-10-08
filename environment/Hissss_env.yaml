@@ -1,0 +1,19 @@
+channels:
+  - bioconda
+  - conda-forge
+dependencies:
+  - snakemake-minimal >=5.24.1
+  - jinja2 >=2.11
+  - networkx >=2.5
+  - matplotlib >=3.3
+  - graphviz >=2.42
+  - bcftools >=1.9
+  - samtools >=1.11
+  - bwa >=0.7
+  - pysam >=0.15
+  - fastqc >=0.11.9
+  - adapterremoval >=2.3.2
+  - bedtools >=2.30.0
+  - picard
+  - star
+  - subread
