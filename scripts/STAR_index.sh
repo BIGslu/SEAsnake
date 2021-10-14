@@ -13,14 +13,20 @@ threads="$3"
 mkdir -p ref/release${release}/STARref
 mkdir -p ref/release${release}/STARindex
 
-# Make ftp path names
-gtf=ftp://ftp.ensembl.org/pub/release-${release}/gtf/homo_sapiens/Homo_sapiens.GRCh38.${release}.gtf.gz
-fasta=ftp://ftp.ensembl.org/pub/release-${release}/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz
+# Download reference if empty
+if [ -z "$(ls -A ref/release${release}/STARref)" ]; then
+    sudo curl -O --output-dir ref/release${release}/STARref ftp://ftp.ensembl.org/pub/release-${release}/gtf/homo_sapiens/Homo_sapiens.GRCh38.${release}.gtf.gz
+    sudo curl -O --output-dir ref/release${release}/STARref ftp://ftp.ensembl.org/pub/release-${release}/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz
+    # Unzip
+    yes y | gunzip ref/release${release}/STARref/*
+else
+   echo "Files exist in ref/release###/STARref. No new files downloaded."
+fi
 
-# Download reference
-sudo curl -O --output-dir ref/release${release}/STARref ${gtf}
-sudo curl -O --output-dir ref/release${release}/STARref ${fasta}
-yes y | gunzip ref/release${release}/STARref/*
+# Make index if empty
+if [ -z "$(ls -A ref/release${release}/STARindex)" ]; then
+    STAR --runMode genomeGenerate --genomeDir ${outDir} --genomeFastaFiles ref/release${release}/STARref/Homo_sapiens.GRCh38.dna.primary_assembly.fa --sjdbGTFfile ref/release${release}/STARref/Homo_sapiens.GRCh38.${release}.gtf --sjdbOverhang 99 --runThreadN ${threads}
+else
+   echo "Files exist in ref/release###/STARindex. No new index created."
+fi
 
-# Index genome
-STAR --runMode genomeGenerate --genomeDir ${outDir} --genomeFastaFiles ref/release${release}/STARref/Homo_sapiens.GRCh38.dna.primary_assembly.fa --sjdbGTFfile ref/release${release}/STARref/Homo_sapiens.GRCh38.${release}.gtf --sjdbOverhang 99 --runThreadN ${threads}
