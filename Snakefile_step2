@@ -34,7 +34,7 @@ rule adapterremoval:
         "Adapter removal & quality filtering"
 
     run: 
-        if params.trimAdapt == "True"
+        if params.trimAdapt == "True":
             shell("AdapterRemoval --file1 {input.R1} --file2 {input.R2} \
                                   --output1 {output.R1} --output2 {output.R2} \
                                   --threads {threads} --gzip \
@@ -42,7 +42,7 @@ rule adapterremoval:
                                   --trim5p {params.trim5p} \
                                   --adapter1 {params.adapter1} --adapter2 {params.adapter2}
                   ")
-        if params.trimAdapt == "False"
+        if params.trimAdapt == "False":
             shell("AdapterRemoval --file1 {input.R1} --file2 {input.R2} \
                                   --output1 {output.R1} --output2 {output.R2} \
                                   --threads {threads} --gzip \
@@ -181,7 +181,7 @@ rule picard:
     log:
         'log/picard.log'
     shell:
-        if params.picard == "True"
+        if params.picard == "True":
             shell("
                   #Download reference 
                   mkdir -p ref/PICARDref
