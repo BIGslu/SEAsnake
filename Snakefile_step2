@@ -1,7 +1,7 @@
 configfile: 'config/test_config.yaml'
 
 ## INPUTS
-TRIM = 'result/1_trim'
+TRIM = expand('result/1_trim')
 #BAM = expand('result/2_bam/{samples}.bam', samples=config["SampleList"])
 
 rule all:
