@@ -49,7 +49,7 @@ rule fastqc_trim:
     output: 'result/qc/2_fastqc_trim'
     threads: config["threads"]
     message: "Quality assessment, FastQC"
-    log: 'log/fastqc_trim.log'
+    log: 'log/fastqc_trim/{samples}_fastqc_trim.log'
     shell:
         """
         fastqc -t {threads} --outdir {output} {input}
