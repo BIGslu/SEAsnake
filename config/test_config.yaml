@@ -1,25 +1,17 @@
-sample_list:
-   test2_S1: 
-    sample:  test2_S1
-    R1:  test2_S1_L005_R1_001
-    R2:  test2_S1_L005_R2_001
-   test2_S2: 
-    sample:  test2_S2
-    R1:  test2_S2_L005_R1_001
-    R2:  test2_S2_L005_R2_001
+SampleList:
+   test_S1: 
+    sample: 'test_S1'
+    R1: 'data/test_S1_L005_R1_001'
+    R2: 'data/test_S1_L005_R2_001'
+   test_S2: 
+    sample: 'test_S2'
+    R1: 'data/test_S2_L005_R1_001'
+    R2: 'data/test_S2_L005_R2_001'
 
-extension:
-    .html: .html
-    _fastqc.zip: _fastqc.zip
-	
-trim5p:
-    10
-trimadapt:
-    True
-adapter1:
-    AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC
-adapter2:
-    AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT
-release:
-    104
+trim5p: 10
+trimAdapt: True
+adapter1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC
+adapter2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT
+release: 104
+threads: 6
 
