@@ -202,19 +202,4 @@ rule picard:
 ## 7. FEATURE COUNTS                      ##
 ##----------------------------------------##
 
-rule STAR_index:
-    input:
-        bam = '3_bam_filter/{samples}_Aligned.sortedByCoord.filter.bam',
-        gtf =  'ftp://ftp.ensembl.org/pub/release-' + config["release"] + '/gtf/homo_sapiens/Homo_sapiens.GRCh38.' + config["release"] + '.gtf'
-    output:
-        'result/4_count/feature_counts.tsv'
-    threads: config["threads"]
-    message: 
-        "Counting features"
-    log:
-        'log/feature_count.log'
-    shell:
-        """
-        featureCounts -T {threads} -g gene_id -t exon -p \
-          -a {input.gtf} -o {output} {input.bam}
-        """
+
