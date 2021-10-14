@@ -37,3 +37,20 @@ rule adapterremoval:
         else:
             print("Config parameter trimAdapt must be set to True or False.")
 
+##----------------------------------------##
+## 2. Quality Control - trimmed           ##
+##----------------------------------------##
+
+TRIM = ["R1_trim", "R2_trim"]
+
+rule fastqc_trim:
+    input: expand('/{samples}_{trim}.fastq.gz', samples=config["SampleList"], trim=TRIM)
+    output: 'result/qc/2_fastqc_trim'
+    threads: config["threads"]
+    message: "Quality assessment, FastQC"
+    log: 'log/fastqc_trim.log'
+    shell:
+        """
+        fastqc -t {threads} --outdir {output} {input}
+        """
+
