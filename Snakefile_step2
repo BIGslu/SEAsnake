@@ -3,11 +3,12 @@ configfile: 'config/test_config.yaml'
 ## INPUTS
 TRIM1 = expand('result/1_trim/{samples}_R1_trim.fastq.gz', samples=config["SampleList"])
 TRIM2 = expand('result/1_trim/{samples}_R2_trim.fastq.gz', samples=config["SampleList"])
+QC_trim = 'result/qc/2_fastqc_trim'
 #BAM = expand('result/2_bam/{samples}.bam', samples=config["SampleList"])
 
 rule all:
     input:
-        TRIM1 + TRIM2
+        TRIM1 + TRIM2, QC_trim
         
 ##----------------------------------------##
 ## 1. Adapter removal & quality filtering ##
@@ -41,10 +42,10 @@ rule adapterremoval:
 ## 2. Quality Control - trimmed           ##
 ##----------------------------------------##
 
-TRIM = ["R1_trim", "R2_trim"]
+SUFFIX = ["R1_trim", "R2_trim"]
 
 rule fastqc_trim:
-    input: expand('/{samples}_{trim}.fastq.gz', samples=config["SampleList"], trim=TRIM)
+    input: expand('/{samples}_{trim}.fastq.gz', samples=config["SampleList"], trim=SUFFIX)
     output: 'result/qc/2_fastqc_trim'
     threads: config["threads"]
     message: "Quality assessment, FastQC"
