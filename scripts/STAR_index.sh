@@ -32,12 +32,13 @@ else
     echo "Genome fasta already exists. No new file downloaded."
 fi
 
-# Make index if empty
-if [ -z "$(ls -A ref/release${release}/STARindex)" ]; then
-outDir=ref/release${release}/STARindex
-echo $outDir
-    #STAR --runMode genomeGenerate --genomeDir  --genomeFastaFiles ref/release${release}/STARref/Homo_sapiens.GRCh38.dna.primary_assembly.fa --sjdbGTFfile ref/release${release}/STARref/Homo_sapiens.GRCh38.${release}.gtf --sjdbOverhang 99 --runThreadN ${threads}
-else
-   echo "Files exist in ref/release#/STARindex. No new index created."
-fi
+# Make index if not present
+SA=ref/release${release}/STARindex/SA
 
+if [ ! -e "$SA" ]; then
+    outDir=ref/release${release}/STARindex
+    
+    STAR --runMode genomeGenerate --genomeDir ${outDir} --genomeFastaFiles ref/release${release}/STARref/Homo_sapiens.GRCh38.dna.primary_assembly.fa --sjdbGTFfile ref/release${release}/STARref/Homo_sapiens.GRCh38.${release}.gtf --sjdbOverhang 99 --runThreadN ${threads}
+else
+    echo "Genome index already exists. No new index created."
+fi
