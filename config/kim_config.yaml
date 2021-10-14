@@ -9,7 +9,7 @@ SampleList:
     R2: 'data/test_S2_L005_R2_001'
 
 trim5p: 10
-trimadapt: True
+trimAdapt: True
 adapter1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC
 adapter2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT
 release: 104
