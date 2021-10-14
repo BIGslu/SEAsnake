@@ -181,7 +181,6 @@ rule picard:
     log:
         'log/picard.log'
     shell:
-        """
         if params.picard == "True"
             shell("
                   #Download reference 
@@ -198,8 +197,6 @@ rule picard:
                           ASSUME_SORTED=true STRAND_SPECIFICITY=NONE MINIMUM_LENGTH=500 \
                           QUIET=true VERBOSITY=ERROR
                   ")
-        """
-
 
 ##----------------------------------------##
 ## 7. FEATURE COUNTS                      ##
