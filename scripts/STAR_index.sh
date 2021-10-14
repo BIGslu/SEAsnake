@@ -19,13 +19,15 @@ if [ -z "$(ls -A ref/release${release}/STARref)" ]; then
     # Unzip
     yes y | gunzip ref/release${release}/STARref/*
 else
-   echo "Files exist in ref/release###/STARref. No new files downloaded."
+   echo "Files exist in ref/release#/STARref. No new files downloaded."
 fi
 
 # Make index if empty
 if [ -z "$(ls -A ref/release${release}/STARindex)" ]; then
-    STAR --runMode genomeGenerate --genomeDir ref/release${release}/STARindex --genomeFastaFiles ref/release${release}/STARref/Homo_sapiens.GRCh38.dna.primary_assembly.fa --sjdbGTFfile ref/release${release}/STARref/Homo_sapiens.GRCh38.${release}.gtf --sjdbOverhang 99 --runThreadN ${threads}
+outDir=ref/release${release}/STARindex
+echo $outDir
+    #STAR --runMode genomeGenerate --genomeDir  --genomeFastaFiles ref/release${release}/STARref/Homo_sapiens.GRCh38.dna.primary_assembly.fa --sjdbGTFfile ref/release${release}/STARref/Homo_sapiens.GRCh38.${release}.gtf --sjdbOverhang 99 --runThreadN ${threads}
 else
-   echo "Files exist in ref/release###/STARindex. No new index created."
+   echo "Files exist in ref/release#/STARindex. No new index created."
 fi
 
