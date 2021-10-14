@@ -216,5 +216,5 @@ rule STAR_index:
     shell:
         """
         featureCounts -T {threads} -g gene_id -t exon -p \
-          -a {input.gtf} -o {output} {input}
+          -a {input.gtf} -o {output} {input.bam}
         """
