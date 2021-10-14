@@ -6,10 +6,11 @@ TRIM2 = expand('result/1_trim/{samples}_R2_trim.fastq.gz', samples=config["Sampl
 SUFFIX = ["R1_trim", "R2_trim"]
 QC_trim_html = expand("result/qc/2_fastqc_trim/{samples}_{suf}_fastqc.html", samples=config["SampleList"], suf=SUFFIX)
 QC_trim_zip = expand("result/qc/2_fastqc_trim/{samples}_{suf}_fastqc.zip", samples=config["SampleList"], suf=SUFFIX)
+STAR_index = 'ref/release' + config["release"] + '/STARindex'
 
 rule all:
     input:
-        TRIM1 + TRIM2 + QC_trim_html + QC_trim_zip
+        TRIM1 + TRIM2 + QC_trim_html + QC_trim_zip, STAR_index
         
 ##----------------------------------------##
 ## 1. Adapter removal & quality filtering ##
@@ -55,4 +56,21 @@ rule fastqc_trim:
         """
         fastqc -t {threads} --outdir 'result/qc/2_fastqc_trim' {input} --quiet
         """
+
+##----------------------------------------##
+## 3. STAR ALIGNMENT                      ##
+##----------------------------------------##
+
+rule STAR_index:
+    input:
+        release = config["release"]
+    output: 'ref/release' + config["release"] + '/STARindex'
+    threads: config["threads"]
+    message: "Generating genome index"
+    log: 'log/STAR/STAR_index.log'
+    shell:
+        if params.indexPath == False:
+            shell("scripts/STAR_index.sh {input.release} {threads}")
+        else:
+            print("Genome index provided in config.")
 
