@@ -171,21 +171,7 @@ rule picard:
         'log/picard.log'
     shell:
         if params.picard == "yes":
-            shell("""
-                  #Download reference 
-                  mkdir -p ref/PICARDref
-                  sudo curl -O --output-dir ref/PICARDref \
-                      http://hgdownload.cse.ucsc.edu/goldenPath/hg38/database/refFlat.txt.gz
-                  gunzip ref/PICARDref/refFlat.txt.gz
-
-                  #Run Picard
-                  java -jar ~/apps/anaconda/share/picard-2.26.2-0/picard.jar \
-                          CollectRnaSeqMetrics \
-                          REF_FLAT=ref/PICARDref/refFlat.ensembl.txt \
-                          INPUT={input} OUTPUT={output} \
-                          ASSUME_SORTED=true STRAND_SPECIFICITY=NONE MINIMUM_LENGTH=500 \
-                          QUIET=true VERBOSITY=ERROR
-                  """)
+            shell("picard.sh {input} {output}")
 
 ##----------------------------------------##
 ## 7. FEATURE COUNTS                      ##
