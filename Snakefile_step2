@@ -28,10 +28,8 @@ rule adapterremoval:
         adapter1 = config["adapter1"],
         adapter2 = config["adapter2"]
     threads: config["threads"]
-    log:
-        'log/adapterremoval.log'
-    message:
-        "Adapter removal & quality filtering"
+    log: 'log/adapterremoval.log'
+    message: "Adapter removal & quality filtering"
 
     run: 
         if params.trimAdapt == "yes":
@@ -48,15 +46,11 @@ rule adapterremoval:
 TRIM = ["R1_trim", "R2_trim"]
 
 rule fastqc_trim:
-    input:
-        expand('/{samples}_{trim}.fastq.gz', samples=config["SampleList"], trim=TRIM)
-    output:
-        'result/qc/2_fastqc_trim'
+    input: expand('/{samples}_{trim}.fastq.gz', samples=config["SampleList"], trim=TRIM)
+    output: 'result/qc/2_fastqc_trim'
     threads: config["threads"]
-    message:
-        "Quality assessment, FastQC"
-    log:
-        'log/fastqc_trim.log'
+    message: "Quality assessment, FastQC"
+    log: 'log/fastqc_trim.log'
     shell:
         """
         fastqc -t {threads} --outdir {output} {input}
@@ -68,18 +62,16 @@ rule fastqc_trim:
 
 rule STAR_index:
     input:
-        gtf = 'ftp://ftp.ensembl.org/pub/release-' + config["release"] + '/gtf/homo_sapiens/Homo_sapiens.GRCh38.' + config["release"] + '.gtf.gz'
+        gtf = 'ftp://ftp.ensembl.org/pub/release-' + config["release"] + '/gtf/homo_sapiens/Homo_sapiens.GRCh38.' + config["release"] + '.gtf.gz',
         fasta = 'ftp://ftp.ensembl.org/pub/release-' + config["release"] + '/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz'
     output:
-        ref = 'ref/release' + config["release"] + '/STARref'
-        index = 'ref/release' + config["release"] + '/STARindex'
-        gtf = 'ftp://ftp.ensembl.org/pub/release-' + config["release"] + '/gtf/homo_sapiens/Homo_sapiens.GRCh38.' + config["release"] + '.gtf'
+        ref = 'ref/release' + config["release"] + '/STARref',
+        index = 'ref/release' + config["release"] + '/STARindex',
+        gtf = 'ftp://ftp.ensembl.org/pub/release-' + config["release"] + '/gtf/homo_sapiens/Homo_sapiens.GRCh38.' + config["release"] + '.gtf',
         fasta = 'ftp://ftp.ensembl.org/pub/release-' + config["release"] + '/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.primary_assembly.fa'
     threads: config["threads"]
-    message: 
-        "Generating genome index"
-    log:
-        'log/STAR_index.log'
+    message: "Generating genome index"
+    log: 'log/STAR_index.log'
     shell:
         """
         mkdir -p {output.ref}
@@ -103,13 +95,10 @@ rule STAR_align:
         R1 = "trim/{samples}_R1_trim.fastq.gz",
         R2 = "trim/{samples}_R2_trim.fastq.gz",
         IDX = rules.STAR_index.output.index
-    output:
-        '2_bam/{samples}_Aligned.sortedByCoord.out.bam'
-    params:
-        OUT = '2_bam/{samples}_'
+    output: '2_bam/{samples}_Aligned.sortedByCoord.out.bam'
+    params: OUT = '2_bam/{samples}_'
     threads: config["threads"]
-    message: 
-    	'Aligning reads'
+    message: 'Aligning reads'
     shell:
         """
         STAR --genomeDir {input.IDX} \
@@ -126,15 +115,11 @@ rule STAR_align:
 ##----------------------------------------##
 
 rule STAR_index:
-    input:
-        '2_bam/{samples}_Aligned.sortedByCoord.out.bam'
-    output:
-        '3_bam_filter/{samples}_Aligned.sortedByCoord.filter.bam'
+    input: '2_bam/{samples}_Aligned.sortedByCoord.out.bam'
+    output: '3_bam_filter/{samples}_Aligned.sortedByCoord.filter.bam'
     threads: config["threads"]
-    message: 
-        "Filtering alignments"
-    log:
-        'log/samtools_view.log'
+    message: "Filtering alignments"
+    log: 'log/samtools_view.log'
     shell:
         """
         samtools view {input} -h -f 3 -F 1284 -q 30 -@ {threads} > {output}
@@ -145,30 +130,22 @@ rule STAR_index:
 ##----------------------------------------##
 
 rule flagstat:
-    input:
-        '3_bam_filter/{samples}_Aligned.sortedByCoord.filter.bam'
-    output:
-        'result/qc/3_flagstat/{samples}_flagstat.tsv'
+    input: '3_bam_filter/{samples}_Aligned.sortedByCoord.filter.bam'
+    output: 'result/qc/3_flagstat/{samples}_flagstat.tsv'
     threads: config["threads"]
-    message: 
-        "Quality control, flagstat"
-    log:
-        'log/flagstat.log'
+    message: "Quality control, flagstat"
+    log: 'log/flagstat.log'
     shell:
         """
         samtools flagstat -@ {threads} {input} > {output}
         """
 
 rule picard:
-    input:
-        '3_bam_filter/{samples}_Aligned.sortedByCoord.filter.bam'
-    output:
-        'result/qc/4_picard/{samples}_picard.tsv'
+    input: '3_bam_filter/{samples}_Aligned.sortedByCoord.filter.bam'
+    output: 'result/qc/4_picard/{samples}_picard.tsv'
     threads: config["threads"]
-    message: 
-        "Quality control, Picard"
-    log:
-        'log/picard.log'
+    message: "Quality control, Picard"
+    log: 'log/picard.log'
     shell:
         if params.picard == "yes":
             shell("picard.sh {input} {output}")
@@ -177,4 +154,16 @@ rule picard:
 ## 7. FEATURE COUNTS                      ##
 ##----------------------------------------##
 
-
+rule STAR_index:
+    input:
+        bam = '3_bam_filter/{samples}_Aligned.sortedByCoord.filter.bam',
+        gtf =  'ftp://ftp.ensembl.org/pub/release-' + config["release"] + '/gtf/homo_sapiens/Homo_sapiens.GRCh38.' + config["release"] + '.gtf'
+    output: 'result/4_count/feature_counts.tsv'
+    threads: config["threads"]
+    message: "Counting features"
+    log: 'log/feature_count.log'
+    shell:
+        """
+        featureCounts -T {threads} -g gene_id -t exon -p \
+          -a {input.gtf} -o {output} {input.bam}
+        """
