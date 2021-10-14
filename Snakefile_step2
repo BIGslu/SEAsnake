@@ -1,12 +1,12 @@
 configfile: 'config/test_config.yaml'
 
 ## INPUTS
-TRIM = expand('result/1_trim')
+TRIM1 = expand('result/1_trim/{samples}_R1_trim.fastq.gz', samples=config["SampleList"])
 #BAM = expand('result/2_bam/{samples}.bam', samples=config["SampleList"])
 
 rule all:
     input:
-        TRIM
+        TRIM1
         
 ##----------------------------------------##
 ## 1. Adapter removal & quality filtering ##
