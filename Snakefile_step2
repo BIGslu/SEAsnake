@@ -75,5 +75,5 @@ rule STAR_index:
         if params.indexPath == False:
             shell("scripts/STAR_index.sh {input.release} {threads}")
         else:
-            shell("echo {params.indexPath} >> log/STAR/STAR_index.log")
+            shell("echo {params.indexPath} > log/STAR/indexPath.txt")
 
