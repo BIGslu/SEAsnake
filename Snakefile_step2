@@ -65,14 +65,13 @@ rule STAR_index:
     output: directory('ref/release{params.release}/STARindex')
     params:
         indexPath = config["indexPath"],
-        release = config["release"],
-        outDir = 'ref/release{params.release}/STARindex'
+        release = config["release"]
     threads: config["threads"]
     message: "Generating genome index"
     log: 'log/STAR/STAR_index.log'
     run:
         if params.indexPath == False:
-            shell("scripts/STAR_index.sh {params.release} {params.outDir} {threads}")
+            shell("scripts/STAR_index.sh {params.release} {threads}")
   
 rule STAR_align:
     input:

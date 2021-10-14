@@ -6,8 +6,7 @@
 
 # Set vars
 release="$1"
-outDir="$2"
-threads="$3"
+threads="$2"
 
 # Setup directories
 mkdir -p ref/release${release}/STARref
@@ -25,7 +24,7 @@ fi
 
 # Make index if empty
 if [ -z "$(ls -A ref/release${release}/STARindex)" ]; then
-    STAR --runMode genomeGenerate --genomeDir ${outDir} --genomeFastaFiles ref/release${release}/STARref/Homo_sapiens.GRCh38.dna.primary_assembly.fa --sjdbGTFfile ref/release${release}/STARref/Homo_sapiens.GRCh38.${release}.gtf --sjdbOverhang 99 --runThreadN ${threads}
+    STAR --runMode genomeGenerate --genomeDir ref/release${release}/STARindex --genomeFastaFiles ref/release${release}/STARref/Homo_sapiens.GRCh38.dna.primary_assembly.fa --sjdbGTFfile ref/release${release}/STARref/Homo_sapiens.GRCh38.${release}.gtf --sjdbOverhang 99 --runThreadN ${threads}
 else
    echo "Files exist in ref/release###/STARindex. No new index created."
 fi
