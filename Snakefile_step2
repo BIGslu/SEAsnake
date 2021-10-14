@@ -1,0 +1,242 @@
+configfile: 'config/test_config.yaml'
+
+## INPUTS
+
+TRIM = expand('result/2_bam/{samples}.bam', samples=config["SampleList"])
+BAM = expand('result/2_bam/{samples}.bam', samples=config["SampleList"])
+FLAG = expand('result/2_bam/{samples}.bam', samples=config["SampleList"])
+KAL = expand('result/2_bam/{samples}.bam', samples=config["SampleList"])
+
+
+rule all:
+    input:
+        
+##----------------------------------------##
+## 0. Directory setup                     ##
+##----------------------------------------##
+
+#rule setup:
+#    shell:
+#        """
+#        mkdir -p 'result/qc/1_fastqc_raw'
+#        mkdir -p 'result/1_trim'
+#        mkdir -p 'result/qc/2_fastqc_trim'
+#        mkdir -p 'result/2_bam'
+#        mkdir -p 'result/3_bam_filter'
+#        mkdir -p 'result/qc/3_flagstat'
+#        mkdir -p 'result/qc/4_picard'
+#        mkdir -p 'result/4_count'
+#        mkdir -p  'ref' 
+#        mkdir -p  'log' 
+#        """
+ 
+##----------------------------------------##
+## 1. Adapter removal & quality filtering ##
+##----------------------------------------##
+
+rule adapterremoval:
+    input:
+        R1 = lambda wildcards: config["SampleList"][wildcards.samples]["R1"],
+        R2 = lambda wildcards: config["SampleList"][wildcards.samples]["R2"]
+    output:
+        R1 = "result/1_trim/{samples}_R1_trim.fastq.gz",
+        R2 = "result/1_trim/{samples}_R2_trim.fastq.gz"
+    params:
+        trim5p = config["trim5p"],
+        trimAdapt = config["trimAdapt"],
+        adapter1 = config["adapter1"],
+        adapter2 = config["adapter2"]
+    threads: config["threads"]
+    log:
+        'log/adapterremoval.log'
+    message:
+        "Adapter removal & quality filtering"
+
+    run: 
+        if params.trimAdapt == "True"
+            shell("AdapterRemoval --file1 {input.R1} --file2 {input.R2} \
+                                  --output1 {output.R1} --output2 {output.R2} \
+                                  --threads {threads} --gzip \
+                                  --maxns 1 --minlength 15 --trimqualities --minquality 30 \
+                                  --trim5p {params.trim5p} \
+                                  --adapter1 {params.adapter1} --adapter2 {params.adapter2} 2> {log}
+                  ")
+        if params.trimAdapt == "False"
+            shell("AdapterRemoval --file1 {input.R1} --file2 {input.R2} \
+                                  --output1 {output.R1} --output2 {output.R2} \
+                                  --threads {threads} --gzip \
+                                  --maxns 1 --minlength 15 --trimqualities --minquality 30 \
+                                  --trim5p {params.trim5p} 2> {log}
+                  ")
+        else:
+            print("Config parameter trimAdapt must be set to True or False.")
+
+##----------------------------------------##
+## 2. Quality Control - trimmed           ##
+##----------------------------------------##
+
+TRIM = ["R1_trim", "R2_trim"]
+
+rule fastqc_trim:
+    input:
+        expand('/{samples}_{trim}.fastq.gz', samples=config["SampleList"], trim=TRIM)
+    output:
+        'result/qc/2_fastqc_trim'
+    threads: config["threads"]
+    message:
+        "Quality assessment, FastQC"
+    log:
+        'log/fastqc_trim.log'
+    shell:
+        """
+        fastqc -t {threads} --outdir {output} {input} 2> {log}
+        """
+
+##----------------------------------------##
+## 4. STAR ALIGNMENT                      ##
+##----------------------------------------##
+
+rule STAR_index:
+    input:
+        gtf = 'ftp://ftp.ensembl.org/pub/release-' + config["release"] + '/gtf/homo_sapiens/Homo_sapiens.GRCh38.' + config["release"] + '.gtf.gz'
+        fasta = 'ftp://ftp.ensembl.org/pub/release-' + config["release"] + '/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz'
+    output:
+        ref = 'ref/release' + config["release"] + '/STARref'
+        index = 'ref/release' + config["release"] + '/STARindex'
+        gtf = 'ftp://ftp.ensembl.org/pub/release-' + config["release"] + '/gtf/homo_sapiens/Homo_sapiens.GRCh38.' + config["release"] + '.gtf'
+        fasta = 'ftp://ftp.ensembl.org/pub/release-' + config["release"] + '/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.primary_assembly.fa'
+    threads: config["threads"]
+    message: 
+        "Generating genome index"
+    log:
+        'log/STAR_index.log'
+    shell:
+        """
+        mkdir -p {output.ref}
+        mkdir -p {output.index}
+
+        #Download reference
+        sudo curl -O --output-dir {output.ref} {input.gtf}
+        sudo curl -O --output-dir {output.ref} {input.fasta}
+        gunzip {output.ref} + '/' + {input.gtf}
+        gunzip {output.ref} + '/' + {input.fasta}
+
+        #Index genome
+        STAR --runMode genomeGenerate --genomeDir {output.index} \
+             --genomeFastaFiles {output.fasta} --sjdbGTFfile {output.gtf} \
+             --sjdbOverhang 99 --runThreadN {threads} 2> {log}
+        """
+
+
+rule STAR_align:
+    input:
+        R1 = "trim/{samples}_R1_trim.fastq.gz",
+        R2 = "trim/{samples}_R2_trim.fastq.gz",
+        IDX = rules.STAR_index.output.index
+    output:
+        '2_bam/{samples}_Aligned.sortedByCoord.out.bam'
+    params:
+        OUT = '2_bam/{samples}_'
+    threads: config["threads"]
+    message: 
+    	'Aligning reads'
+    shell:
+        """
+        STAR --genomeDir {input.IDX} \
+             --readFilesIn {input.R1} {input.R2} \
+             --readFilesCommand zcat \
+             --outFileNamePrefix {params.OUT} \
+             --outSAMtype BAM SortedByCoordinate \
+             --runThreadN {threads} \
+             --runRNGseed 8756
+        """
+
+##----------------------------------------##
+## 5. ALIGNMENT FILTERING                 ##
+##----------------------------------------##
+
+rule STAR_index:
+    input:
+        '2_bam/{samples}_Aligned.sortedByCoord.out.bam'
+    output:
+        '3_bam_filter/{samples}_Aligned.sortedByCoord.filter.bam'
+    threads: config["threads"]
+    message: 
+        "Filtering alignments"
+    log:
+        'log/samtools_view.log'
+    shell:
+        """
+        samtools view {input} -h -f 3 -F 1284 -q 30 -@ {threads} > {output}
+        """
+
+##----------------------------------------##
+## 6. ALIGNMENT QC                        ##
+##----------------------------------------##
+
+rule flagstat:
+    input:
+        '3_bam_filter/{samples}_Aligned.sortedByCoord.filter.bam'
+    output:
+        'result/qc/3_flagstat/{samples}_flagstat.tsv'
+    threads: config["threads"]
+    message: 
+        "Quality control, flagstat"
+    log:
+        'log/flagstat.log'
+    shell:
+        """
+        samtools flagstat -@ {threads} {input} > {output}
+        """
+
+rule picard:
+    input:
+        '3_bam_filter/{samples}_Aligned.sortedByCoord.filter.bam'
+    output:
+        'result/qc/4_picard/{samples}_picard.tsv'
+    threads: config["threads"]
+    message: 
+        "Quality control, Picard"
+    log:
+        'log/flagstat.log'
+    shell:
+        """
+        if params.picard == "True"
+            shell("
+                  #Download reference 
+                  mkdir -p ref/PICARDref
+                  sudo curl -O --output-dir ref/PICARDref \
+                      http://hgdownload.cse.ucsc.edu/goldenPath/hg38/database/refFlat.txt.gz
+                  gunzip ref/PICARDref/refFlat.txt.gz
+
+                  #Run Picard
+                  java -jar ~/apps/anaconda/share/picard-2.26.2-0/picard.jar \
+                          CollectRnaSeqMetrics \
+                          REF_FLAT=ref/PICARDref/refFlat.ensembl.txt \
+                          INPUT={input} OUTPUT={output} \
+                          ASSUME_SORTED=true STRAND_SPECIFICITY=NONE MINIMUM_LENGTH=500 \
+                          QUIET=true VERBOSITY=ERROR
+                  ")
+        """
+
+
+##----------------------------------------##
+## 7. FEATURE COUNTS                      ##
+##----------------------------------------##
+
+rule STAR_index:
+    input:
+        bam = '3_bam_filter/{samples}_Aligned.sortedByCoord.filter.bam',
+        gtf =  'ftp://ftp.ensembl.org/pub/release-' + config["release"] + '/gtf/homo_sapiens/Homo_sapiens.GRCh38.' + config["release"] + '.gtf'
+    output:
+        'result/4_count/feature_counts.tsv'
+    threads: config["threads"]
+    message: 
+        "Counting features"
+    log:
+        'log/STAR_index.log'
+    shell:
+        """
+        featureCounts -T {threads} -g gene_id -t exon -p \
+          -a {input.gtf} -o {output} {input}
+        """
