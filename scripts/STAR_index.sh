@@ -6,7 +6,8 @@
 
 # Set vars
 release="$1"
-threads="$2"
+output="$2"
+threads="$3"
 
 # Setup directories
 mkdir -p ref/release${release}/STARref
@@ -22,4 +23,4 @@ sudo curl -O --output-dir ref/release${release}/STARref ${fasta}
 gunzip ref/release${release}/STARref/*
 
 # Index genome
-STAR --runMode genomeGenerate --genomeDir ref/release${release}/STARindex --genomeFastaFiles ref/release${release}/STARref/Homo_sapiens.GRCh38.dna.primary_assembly.fa --sjdbGTFfile ref/release${release}/STARref/Homo_sapiens.GRCh38.${release}.gtf --sjdbOverhang 99 --runThreadN ${threads}
+STAR --runMode genomeGenerate --genomeDir ${output} --genomeFastaFiles ref/release${release}/STARref/Homo_sapiens.GRCh38.dna.primary_assembly.fa --sjdbGTFfile ref/release${release}/STARref/Homo_sapiens.GRCh38.${release}.gtf --sjdbOverhang 99 --runThreadN ${threads}
