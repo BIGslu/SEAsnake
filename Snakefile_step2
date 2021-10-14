@@ -64,7 +64,10 @@ rule fastqc_trim:
 rule STAR_index:
     input:
         release = config["release"]
-    output: 'ref/release' + config["release"] + '/STARindex'
+    output: 'log/STAR/STAR_index.log'
+    params:
+        OUT = 'ref/release{input.release}/STARindex',
+        indexPath = config["indexPath"]
     threads: config["threads"]
     message: "Generating genome index"
     log: 'log/STAR/STAR_index.log'
@@ -72,5 +75,5 @@ rule STAR_index:
         if params.indexPath == False:
             shell("scripts/STAR_index.sh {input.release} {threads}")
         else:
-            print("Genome index provided in config.")
+            shell(echo {params.indexPath} >> 'log/STAR/STAR_index.log')
 
