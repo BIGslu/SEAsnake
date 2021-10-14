@@ -64,14 +64,15 @@ rule fastqc_trim:
 rule STAR_index:
     output: directory('ref/release{params.release}/STARindex')
     params:
+        indexPath = config["indexPath"],
         release = config["release"],
-        indexPath = config["indexPath"]
+        outDir = 'ref/release{params.release}/STARindex'
     threads: config["threads"]
     message: "Generating genome index"
     log: 'log/STAR/STAR_index.log'
     run:
         if params.indexPath == False:
-            shell("scripts/STAR_index.sh {params.release} {output} {threads}")
+            shell("scripts/STAR_index.sh {params.release} {params.outDir} {threads}")
   
 rule STAR_align:
     input:
