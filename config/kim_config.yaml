@@ -11,7 +11,7 @@ sample_list:
 trim5p:
     10
 trimAdapt:
-    True
+    yes
 adapter1:
     AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC
 adapter2:
