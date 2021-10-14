@@ -71,7 +71,7 @@ rule STAR_index:
     threads: config["threads"]
     message: "Generating genome index"
     log: 'log/STAR/STAR_index.log'
-    shell:
+    run:
         if params.indexPath == False:
             shell("scripts/STAR_index.sh {input.release} {threads}")
         else:
