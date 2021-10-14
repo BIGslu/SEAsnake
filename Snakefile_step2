@@ -1,15 +1,10 @@
 configfile: 'config/test_config.yaml'
 
 ## INPUTS
+#BAM = expand('result/2_bam/{samples}.bam', samples=config["SampleList"])
 
-TRIM = expand('result/2_bam/{samples}.bam', samples=config["SampleList"])
-BAM = expand('result/2_bam/{samples}.bam', samples=config["SampleList"])
-FLAG = expand('result/2_bam/{samples}.bam', samples=config["SampleList"])
-KAL = expand('result/2_bam/{samples}.bam', samples=config["SampleList"])
-
-
-rule all:
-    input:
+#rule all:
+#    input:
         
 ##----------------------------------------##
 ## 1. Adapter removal & quality filtering ##
@@ -28,7 +23,7 @@ rule adapterremoval:
         adapter1 = config["adapter1"],
         adapter2 = config["adapter2"]
     threads: config["threads"]
-    log: 'log/adapterremoval.log'
+    log: 'log/adapterremoval/{samples}_adapterremoval.log'
     message: "Adapter removal & quality filtering"
 
     run: 
