@@ -64,7 +64,7 @@ rule fastqc_trim:
 rule STAR_index:
     input:
         release = config["release"]
-    output: 'ref/release' + config["release"] + '/STARindex'
+    output: directory('ref/release{input.release}/STARindex')
     threads: config["threads"]
     message: "Generating genome index"
     log: 'log/STAR/STAR_index.log'
