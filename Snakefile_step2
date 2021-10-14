@@ -78,7 +78,9 @@ rule STAR_align:
         R2 = "result/1_trim/{samples}_R2_trim.fastq.gz",
         IDX = rules.STAR_index.output
     output: 'result/2_bam/{samples}_Aligned.sortedByCoord.out.bam'
-    params: OUT = 'result/2_bam/{samples}_'
+    params:
+        OUT = 'result/2_bam/{samples}_',
+        indexPath = config["indexPath"]
     threads: config["threads"]
     message: 'Aligning reads'
     log: 'log/STAR/{samples}_STAR_align.log'
