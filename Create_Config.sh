@@ -11,25 +11,21 @@ SampleList="data/*R1*"
 echo "SampleList:" > config/test_config.yaml
 
 spacer1=": "
-spacer2=""
-indent="  "
 
 # List samples & paired reads
 for sample in $SampleList;
-do 
-sample_name1_simple="$(basename $sample)"
-sample_name=`echo "$sample_name1_simple" | grep -o '^.*_L' | sed 's/_L$//'`
+do
+# Create R2 name
+sample2=`echo "${sample/R1/R2}"`
+# Create sample name
+sample_name=`echo "$(basename $sample)" | grep -o '^.*_L' | sed 's/_L$//'`
 
-sample_name1_simple2=`echo "$sample_name1_simple" | cut -d'.' -f1`
-
-sample_name2_simple2=`echo "${sample_name1_simple2/R1/R2}"`
-
-# sample_name_spaced="$indent$sample_name$spacer1$sample_name1_simple2$spacer2$sample_name2_simple2"
+# Add sample name to config
 echo "  " "$sample_name$spacer1" >> config/test_config.yaml
 echo "    sample: '"$sample_name"'" >> config/test_config.yaml
-# echo $sample_name_spaced >> config/test_config.yaml
-echo "    R1: 'data/"$sample_name1_simple2"'" >> config/test_config.yaml
-echo "    R2: 'data/"$sample_name2_simple2"'" >> config/test_config.yaml
+# Add fastq files to config
+echo "    R1: '"$sample"'" >> config/test_config.yaml
+echo "    R2: '"$sample2"'" >> config/test_config.yaml
 done
 
 # Build the rest of the config file
