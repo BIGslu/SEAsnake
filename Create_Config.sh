@@ -32,13 +32,23 @@ done
 echo "
 trim5p: 10
 trimAdapt: True
-adapter1: "AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC"
-adapter2: "AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT"
+adapter1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC
+adapter2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT
 release: 104
 picard: True
 threads: 6
 " >> config/test_config.yaml
 
+# Setup directory structure
+mkdir -p 'result/qc/1_fastqc_raw'
+mkdir -p 'result/qc/2_fastqc_trim'
+mkdir -p 'result/qc/3_flagstat'
+mkdir -p 'result/qc/4_picard'
 
+mkdir -p 'result/1_trim'
+mkdir -p 'result/2_bam'
+mkdir -p 'result/3_bam_filter'
+mkdir -p 'result/4_count'
 
-
+mkdir -p 'ref'
+mkdir -p 'log'
