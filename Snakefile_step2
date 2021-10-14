@@ -12,25 +12,6 @@ rule all:
     input:
         
 ##----------------------------------------##
-## 0. Directory setup                     ##
-##----------------------------------------##
-
-#rule setup:
-#    shell:
-#        """
-#        mkdir -p 'result/qc/1_fastqc_raw'
-#        mkdir -p 'result/1_trim'
-#        mkdir -p 'result/qc/2_fastqc_trim'
-#        mkdir -p 'result/2_bam'
-#        mkdir -p 'result/3_bam_filter'
-#        mkdir -p 'result/qc/3_flagstat'
-#        mkdir -p 'result/qc/4_picard'
-#        mkdir -p 'result/4_count'
-#        mkdir -p  'ref' 
-#        mkdir -p  'log' 
-#        """
- 
-##----------------------------------------##
 ## 1. Adapter removal & quality filtering ##
 ##----------------------------------------##
 
@@ -198,7 +179,7 @@ rule picard:
     message: 
         "Quality control, Picard"
     log:
-        'log/flagstat.log'
+        'log/picard.log'
     shell:
         """
         if params.picard == "True"
@@ -234,7 +215,7 @@ rule STAR_index:
     message: 
         "Counting features"
     log:
-        'log/STAR_index.log'
+        'log/feature_count.log'
     shell:
         """
         featureCounts -T {threads} -g gene_id -t exon -p \
