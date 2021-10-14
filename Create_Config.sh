@@ -28,13 +28,14 @@ echo "    R1: '"$sample"'" >> config/test_config.yaml
 echo "    R2: '"$sample2"'" >> config/test_config.yaml
 done
 
-# Build the rest of the config file
+# Add default param to config
 echo "
 trim5p: 10
 trimAdapt: True
 adapter1: "AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC"
 adapter2: "AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT"
 release: 104
+picard: True
 threads: 6
 " >> config/test_config.yaml
 
