@@ -75,5 +75,5 @@ rule STAR_index:
         if params.indexPath == False:
             shell("scripts/STAR_index.sh {input.release} {threads}")
         else:
-            shell("echo "Index path provided. No new index created." > log/STAR/indexPath.txt")
+            shell("echo 'Index path provided. No new index created.' > log/STAR/indexPath.txt")
 
