@@ -18,4 +18,5 @@ adapter2:
     AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT
 release:
     104
-
+threads:
+    6
