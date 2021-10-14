@@ -50,7 +50,7 @@ rule fastqc_trim:
         ZIP = expand('result/qc/2_fastqc_trim/{samples}_{suf}_fastq.zip', samples=config["SampleList"], suf=SUFFIX)
     threads: config["threads"]
     message: "Quality assessment, FastQC"
-    log: 'log/fastqc_trim/{samples}_fastqc_trim.log'
+    log: expand('log/fastqc_trim/{samples}_{suf}_fastqc_trim.log', samples=config["SampleList"], suf=SUFFIX)
     shell:
         """
         fastqc -t {threads} --outdir 'result/qc/2_fastqc_trim' {input} --quiet
