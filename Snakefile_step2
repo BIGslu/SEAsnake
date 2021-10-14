@@ -1,4 +1,4 @@
-configfile: 'config/kim_config.yaml'
+configfile: 'config/test_config.yaml'
 
 ## INPUTS
 
