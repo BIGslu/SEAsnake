@@ -171,7 +171,7 @@ rule picard:
         'log/picard.log'
     shell:
         if params.picard == "yes":
-            shell("
+            shell("""
                   #Download reference 
                   mkdir -p ref/PICARDref
                   sudo curl -O --output-dir ref/PICARDref \
@@ -185,7 +185,7 @@ rule picard:
                           INPUT={input} OUTPUT={output} \
                           ASSUME_SORTED=true STRAND_SPECIFICITY=NONE MINIMUM_LENGTH=500 \
                           QUIET=true VERBOSITY=ERROR
-                  ")
+                  """)
 
 ##----------------------------------------##
 ## 7. FEATURE COUNTS                      ##
