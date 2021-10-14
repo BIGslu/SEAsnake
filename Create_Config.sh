@@ -30,12 +30,23 @@ done
 
 # Add default param to config
 echo "
+# Adapter removal
+## Base pairs to trim from 5' end
 trim5p: 10
+## Removal of 3' adapter sequences? Default are Illumina Universal adapters
 trimAdapt: True
 adapter1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC
 adapter2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT
+
+# Genome alignment
+## Human genome release number
 release: 104
+
+# Alignment metrics
+## Run Picard?
 picard: True
+
+# Other
 threads: 6
 " >> config/test_config.yaml
 
