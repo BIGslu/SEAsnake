@@ -10,7 +10,7 @@ sample_list:
 	
 trim5p:
     10
-trimadapt:
+trimAdapt:
     True
 adapter1:
     AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC
