@@ -4,9 +4,9 @@ configfile: 'config/test_config.yaml'
 TRIM1 = expand('result/1_trim/{samples}_R1_trim.fastq.gz', samples=config["SampleList"])
 TRIM2 = expand('result/1_trim/{samples}_R2_trim.fastq.gz', samples=config["SampleList"])
 SUFFIX = ["R1_trim", "R2_trim"]
-QC_trim_html = expand("result/qc/2_fastqc_trim/{samples}_{suf}_fastq.html", samples=config["SampleList"], suf=SUFFIX)
-QC_trim_zip = expand("result/qc/2_fastqc_trim/{samples}_{suf}_fastq.zip", samples=config["SampleList"], suf=SUFFIX)
-        
+QC_trim_html = expand("result/qc/2_fastqc_trim/{samples}_{suf}_fastqc.html", samples=config["SampleList"], suf=SUFFIX)
+QC_trim_zip = expand("result/qc/2_fastqc_trim/{samples}_{suf}_fastqc.zip", samples=config["SampleList"], suf=SUFFIX)
+
 rule all:
     input:
         TRIM1 + TRIM2 + QC_trim_html + QC_trim_zip
@@ -46,8 +46,8 @@ rule adapterremoval:
 rule fastqc_trim:
     input: expand('result/1_trim/{samples}_{suf}.fastq.gz', samples=config["SampleList"], suf=SUFFIX)
     output:
-        HTML = expand('result/qc/2_fastqc_trim/{samples}_{suf}_fastq.html', samples=config["SampleList"], suf=SUFFIX),
-        ZIP = expand('result/qc/2_fastqc_trim/{samples}_{suf}_fastq.zip', samples=config["SampleList"], suf=SUFFIX)
+        HTML = expand('result/qc/2_fastqc_trim/{samples}_{suf}_fastqc.html', samples=config["SampleList"], suf=SUFFIX),
+        ZIP = expand('result/qc/2_fastqc_trim/{samples}_{suf}_fastqc.zip', samples=config["SampleList"], suf=SUFFIX)
     threads: config["threads"]
     message: "Quality assessment, FastQC"
     log: expand('log/fastqc_trim/{samples}_{suf}_fastqc_trim.log', samples=config["SampleList"], suf=SUFFIX)
