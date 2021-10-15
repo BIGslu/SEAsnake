@@ -27,5 +27,5 @@ release: '104'
 picard: True
 
 # Other
-threads: 6
+threads: 8
 
