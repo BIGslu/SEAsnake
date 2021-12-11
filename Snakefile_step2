@@ -62,7 +62,7 @@ rule fastqc_trim:
 ##----------------------------------------##
 
 rule STAR_index:
-    output: directory('ref/release{params.release}/STARindex')
+    output: directory(expand('ref/release{release}/STARindex', release=config["release"]))
     params:
         indexPath = config["indexPath"],
         release = config["release"]
