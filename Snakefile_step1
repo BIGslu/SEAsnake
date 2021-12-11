@@ -13,10 +13,10 @@ rule all:
         expand("result/qc/1_fastqc_raw/{sample}_fastqc.zip",sample= SAMPLES)
 
 rule configscript:
-    input: "config/Create_Config.sh"
+    input: "scripts/Create_Config.sh"
     output: "config/config.yaml"
     shell:'''
-    bash config/Create_Config.sh
+    bash scripts/Create_Config.sh
     '''
 
 rule fastqc_raw:
