@@ -1,6 +1,0 @@
-samples:
-    test_S1_L005_R1_001: test_S1_L005_R1_001
-    test_S1_L005_R2_001: test_S1_L005_R2_001
-extension:
-    .html: .html
-    _fastqc.zip: _fastqc.zip
