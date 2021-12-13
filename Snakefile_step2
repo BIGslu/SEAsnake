@@ -1,6 +1,6 @@
 configfile: 'config/config.yaml'
 
-## INPUTS
+## INPUTS / OUTPUTS
 TRIM1 = expand('result/1_trim/{samples}_R1_trim.fastq.gz', samples=config["SampleList"])
 TRIM2 = expand('result/1_trim/{samples}_R2_trim.fastq.gz', samples=config["SampleList"])
 SUFFIX = ["R1_trim", "R2_trim"]
@@ -90,7 +90,7 @@ rule STAR_align:
         if params.indexPath == False:
             shell("STAR --genomeDir {input.IDX} --readFilesIn {input.R1} {input.R2} --readFilesCommand zcat --outFileNamePrefix {params.OUT} --outSAMtype BAM SortedByCoordinate --runThreadN {threads} --runRNGseed 8756")
         else:
-            print("STAR --genomeDir {config.indexPath} --readFilesIn {input.R1} {input.R2} --readFilesCommand zcat --outFileNamePrefix {params.OUT} --outSAMtype BAM SortedByCoordinate --runThreadN {threads} --runRNGseed 8756")
+            shell("STAR --genomeDir {config.indexPath} --readFilesIn {input.R1} {input.R2} --readFilesCommand zcat --outFileNamePrefix {params.OUT} --outSAMtype BAM SortedByCoordinate --runThreadN {threads} --runRNGseed 8756")
 
 ##----------------------------------------##
 ## 4. ALIGNMENT FILTERING                 ##
