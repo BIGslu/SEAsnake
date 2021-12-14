@@ -11,7 +11,7 @@ BAM2 = expand("result/3_bam_filter/{samples}_Aligned.sortedByCoord.filter.bam", 
 FLAGSTAT = expand("result/qc/3_flagstat/{samples}_flagstat.tsv", samples=config["SampleList"])
 PICARD = expand("result/qc/4_picard/{samples}_picard.tsv", samples=config["SampleList"])
 COUNT = expand("result/4_count/{samples}_feature_counts.tsv", samples=config["SampleList"])
-COUNT_all = result/4_count/combined_feature_counts.tsv
+COUNT_all = "result/4_count/combined_feature_counts.tsv"
 
 rule all:
     input:
