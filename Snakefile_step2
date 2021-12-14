@@ -151,6 +151,6 @@ rule combine_count:
     output: 'result/4_count/combined_feature_counts.tsv'
     threads: config["threads"]
     message: "Combining feature counts"
-    log: 'log/fcount/{samples}_combine_count.log'
+    log: 'log/fcount/combine_count.log'
     run:
         shell("python scripts/combine_counts.py")
