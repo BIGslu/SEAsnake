@@ -15,7 +15,8 @@ COUNT_all = "result/4_count/combined_feature_counts.tsv"
 
 rule all:
     input:
-        TRIM1 + TRIM2 + QC_trim_html + QC_trim_zip + BAM + BAM2 + FLAGSTAT + PICARD + COUNT + COUNT_all
+        TRIM1 + TRIM2 + QC_trim_html + QC_trim_zip + BAM + BAM2 + FLAGSTAT + PICARD + COUNT,
+        COUNT_all
         
 ##----------------------------------------##
 ## 1. Adapter removal & quality filtering ##
