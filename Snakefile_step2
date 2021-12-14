@@ -139,10 +139,14 @@ rule fcount:
         shell("featureCounts -T {threads} -g gene_id -t exon -p \
           -a {input.gtf} -o {output} {input.bam}")
 
+##----------------------------------------##
+## 7. COMBINE SAMPLES                     ##
+##----------------------------------------##
+
 rule combine_count:
     output: 'result/4_count/combined_feature_counts.tsv'
     threads: config["threads"]
     message: "Combining feature counts"
-    benchmark: 'log/combine_count.benchmark.txt'
+    benchmark: 'log/fcount/combine_count.benchmark.txt'
     run:
         shell("python scripts/combine_counts.py")
