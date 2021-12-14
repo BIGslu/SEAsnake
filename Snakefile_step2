@@ -136,7 +136,7 @@ rule fcount:
     input:
         bam = 'result/3_bam_filter/{samples}_Aligned.sortedByCoord.filter.bam',
         gtf =  'ref/release' + config["release"] + 'STARref/Homo_sapiens.GRCh38.' + config["release"] + '.gtf'
-    output: 'result/4_count/feature_counts.tsv'
+    output: 'result/4_count/{samples}_feature_counts.tsv'
     threads: config["threads"]
     message: "Counting features"
     log: 'log/fcount/{samples}_fcount.log'
