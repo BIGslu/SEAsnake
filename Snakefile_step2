@@ -11,10 +11,11 @@ BAM2 = expand("result/3_bam_filter/{samples}_Aligned.sortedByCoord.filter.bam", 
 FLAGSTAT = expand("result/qc/3_flagstat/{samples}_flagstat.tsv", samples=config["SampleList"])
 PICARD = expand("result/qc/4_picard/{samples}_picard.tsv", samples=config["SampleList"])
 COUNT = expand("result/4_count/{samples}_feature_counts.tsv", samples=config["SampleList"])
+COUNT_all = "result/4_count/combined_feature_counts.tsv"
 
 rule all:
     input:
-        TRIM1 + TRIM2 + QC_trim_html + QC_trim_zip + BAM + BAM2 + FLAGSTAT + PICARD + COUNT
+        TRIM1 + TRIM2 + QC_trim_html + QC_trim_zip + BAM + BAM2 + FLAGSTAT + PICARD + COUNT + COUNT_all
         
 ##----------------------------------------##
 ## 1. Adapter removal & quality filtering ##
@@ -144,3 +145,11 @@ rule fcount:
     run:
         shell("featureCounts -T {threads} -g gene_id -t exon -p \
           -a {input.gtf} -o {output} {input.bam}")
+
+rule combine_count:
+    output: 'result/4_count/combined_feature_counts.tsv'
+    threads: config["threads"]
+    message: "Combining feature counts"
+    log: 'log/fcount/{samples}_combine_count.log'
+    run:
+        shell("python scripts/combine_counts.py")
