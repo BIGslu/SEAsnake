@@ -8,10 +8,11 @@ QC_trim_html = expand("result/qc/2_fastqc_trim/{samples}_{suf}_fastqc.html", sam
 QC_trim_zip = expand("result/qc/2_fastqc_trim/{samples}_{suf}_fastqc.zip", samples=config["SampleList"], suf=SUFFIX)
 BAM = expand("result/2_bam/{samples}_Aligned.sortedByCoord.out.bam", samples=config["SampleList"])
 BAM2 = expand("result/3_bam_filter/{samples}_Aligned.sortedByCoord.filter.bam", samples=config["SampleList"])
+FLAGSTAT =expand("result/qc/3_flagstat/{samples}_flagstat.tsv", samples=config["SampleList"])
 
 rule all:
     input:
-        TRIM1 + TRIM2 + QC_trim_html + QC_trim_zip + BAM + BAM2
+        TRIM1 + TRIM2 + QC_trim_html + QC_trim_zip + BAM + BAM2 + FLAGSTAT
         
 ##----------------------------------------##
 ## 1. Adapter removal & quality filtering ##
