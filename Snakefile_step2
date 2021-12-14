@@ -97,6 +97,7 @@ rule align_filter:
     message: "Filtering alignments"
     log: 'log/align_filter/{samples}_align_filter.log'
     run:
+        shell("samtools view {input} -h -f 3 -F 1284 -q 30 -@ {threads} > {output}")
         """
         samtools view {input} -h -f 3 -F 1284 -q 30 -@ {threads} > {output}
         """
