@@ -118,6 +118,8 @@ rule picard:
     input: 'result/3_bam_filter/{samples}_Aligned.sortedByCoord.filter.bam'
     output: 'result/qc/4_picard/{samples}_picard.tsv'
     threads: config["threads"]
+    params:
+        picard = config["picard"]
     message: "Quality control, Picard"
     log: 'log/picard/{samples}_picard.log'
     run:
