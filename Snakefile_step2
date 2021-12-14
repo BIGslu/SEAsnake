@@ -128,7 +128,18 @@ rule picard:
         else:
             print("Picard not run. Change config picard parameter to True if you would like this output.")
 
-        """
-        samtools view {input} -h -f 3 -F 1284 -q 30 -@ {threads} > {output}
-        """
+##----------------------------------------##
+## 6. FEATURE COUNTS                      ##
+##----------------------------------------##
 
+rule fcount:
+    input:
+        bam = 'result/3_bam_filter/{samples}_Aligned.sortedByCoord.filter.bam',
+        gtf =  'ref/release' + config["release"] + 'STARref/Homo_sapiens.GRCh38.' + config["release"] + '.gtf'
+    output: 'result/4_count/feature_counts.tsv'
+    threads: config["threads"]
+    message: "Counting features"
+    log: 'log/fcount/{samples}_fcount.log'
+    run:
+        shell("featureCounts -T {threads} -g gene_id -t exon -p \
+          -a {input.gtf} -o {output} {input.bam}")
