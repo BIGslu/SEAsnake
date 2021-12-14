@@ -4,7 +4,7 @@ import glob
 import os
 
 ## Set directory with counts data
-os.chdir("result/4_count")
+os.chdir("../result/4_count")
 
 ## List all counts files
 extension = 'tsv'
