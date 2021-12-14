@@ -43,8 +43,6 @@ adapter1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC
 adapter2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT
 
 # Genome alignment
-## File path to genome index if already exists. Leave as False to download and create a new index
-indexPath: False
 ## Human genome release number
 release: '104'
 

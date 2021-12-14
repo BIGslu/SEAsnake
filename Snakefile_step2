@@ -65,14 +65,12 @@ rule fastqc_trim:
 rule STAR_index:
     output: directory(expand('ref/release{release}/STARindex', release=config["release"]))
     params:
-        indexPath = config["indexPath"],
         release = config["release"]
     threads: config["threads"]
     message: "Generating genome index"
     log: 'log/STAR/STAR_index.log'
     run:
-        if params.indexPath == False:
-            shell("scripts/STAR_index.sh {params.release} {threads}")
+        shell("scripts/STAR_index.sh {params.release} {threads}")
   
 rule STAR_align:
     input:
@@ -81,16 +79,12 @@ rule STAR_align:
         IDX = rules.STAR_index.output
     output: 'result/2_bam/{samples}_Aligned.sortedByCoord.out.bam'
     params:
-        OUT = 'result/2_bam/{samples}_',
-        indexPath = config["indexPath"]
+        OUT = 'result/2_bam/{samples}_'
     threads: config["threads"]
     message: 'Aligning reads'
     log: 'log/STAR/{samples}_STAR_align.log'
     run:
-        if params.indexPath == False:
-            shell("STAR --genomeDir {input.IDX} --readFilesIn {input.R1} {input.R2} --readFilesCommand zcat --outFileNamePrefix {params.OUT} --outSAMtype BAM SortedByCoordinate --runThreadN {threads} --runRNGseed 8756")
-        else:
-            shell("STAR --genomeDir {config.indexPath} --readFilesIn {input.R1} {input.R2} --readFilesCommand zcat --outFileNamePrefix {params.OUT} --outSAMtype BAM SortedByCoordinate --runThreadN {threads} --runRNGseed 8756")
+        shell("STAR --genomeDir {input.IDX} --readFilesIn {input.R1} {input.R2} --readFilesCommand zcat --outFileNamePrefix {params.OUT} --outSAMtype BAM SortedByCoordinate --runThreadN {threads} --runRNGseed 8756")
 
 ##----------------------------------------##
 ## 4. ALIGNMENT FILTERING                 ##
