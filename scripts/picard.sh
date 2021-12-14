@@ -22,8 +22,7 @@ else
 fi
 
 # Run Picard
- java -jar ~/apps/anaconda/share/picard-2.26.2-0/picard.jar \
-    CollectRnaSeqMetrics \
+picard CollectRnaSeqMetrics \
     REF_FLAT=ref/PICARDref/refFlat.ensembl.txt \
     INPUT=${input} OUTPUT=${output} \
     ASSUME_SORTED=true STRAND_SPECIFICITY=NONE MINIMUM_LENGTH=500 \
