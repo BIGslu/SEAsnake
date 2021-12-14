@@ -64,6 +64,7 @@ mkdir -p 'result/1_trim'
 mkdir -p 'result/2_bam'
 mkdir -p 'result/3_bam_filter'
 mkdir -p 'result/4_count'
+mkdir -p 'result/5_combined'
 
 mkdir -p 'ref'
 mkdir -p 'log'

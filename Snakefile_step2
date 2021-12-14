@@ -146,10 +146,11 @@ rule fcount:
 ## 7. COMBINE SAMPLES                     ##
 ##----------------------------------------##
 
-rule combine_count:
-    output: 'result/4_count/combined_feature_counts.tsv'
+rule combine:
+    output:
+        'result/4_count/combined_feature_counts.tsv'
     threads: config["threads"]
-    message: "Combining feature counts"
-    benchmark: 'log/fcount/combine_count.benchmark.txt'
+    message: "Combining samples"
+    benchmark: 'log/fcount/combine.benchmark.txt'
     run:
-        shell("python scripts/combine_counts.py")
+        shell("python scripts/combine_samples.py")
