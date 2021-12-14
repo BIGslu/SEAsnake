@@ -98,6 +98,20 @@ rule align_filter:
     log: 'log/align_filter/{samples}_align_filter.log'
     run:
         shell("samtools view {input} -h -f 3 -F 1284 -q 30 -@ {threads} > {output}")
+
+##----------------------------------------##
+## 5. ALIGNMENT QC                        ##
+##----------------------------------------##
+
+rule flagstat:
+    input: 'result/3_bam_filter/{samples}_Aligned.sortedByCoord.filter.bam'
+    output: 'result/qc/3_flagstat/{samples}_flagstat.tsv'
+    threads: config["threads"]
+    message: "Quality control, flagstat"
+    log: 'log/flagstat/{samples}_flagstat.log'
+    shell:
+        shell("samtools flagstat -@ {threads} {input} > {output}")
+
         """
         samtools view {input} -h -f 3 -F 1284 -q 30 -@ {threads} > {output}
         """
