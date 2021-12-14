@@ -8,11 +8,12 @@ QC_trim_html = expand("result/qc/2_fastqc_trim/{samples}_{suf}_fastqc.html", sam
 QC_trim_zip = expand("result/qc/2_fastqc_trim/{samples}_{suf}_fastqc.zip", samples=config["SampleList"], suf=SUFFIX)
 BAM = expand("result/2_bam/{samples}_Aligned.sortedByCoord.out.bam", samples=config["SampleList"])
 BAM2 = expand("result/3_bam_filter/{samples}_Aligned.sortedByCoord.filter.bam", samples=config["SampleList"])
-FLAGSTAT =expand("result/qc/3_flagstat/{samples}_flagstat.tsv", samples=config["SampleList"])
+FLAGSTAT = expand("result/qc/3_flagstat/{samples}_flagstat.tsv", samples=config["SampleList"])
+PICARD = expand("result/qc/4_picard/{samples}_picard.tsv", samples=config["SampleList"])
 
 rule all:
     input:
-        TRIM1 + TRIM2 + QC_trim_html + QC_trim_zip + BAM + BAM2 + FLAGSTAT
+        TRIM1 + TRIM2 + QC_trim_html + QC_trim_zip + BAM + BAM2 + FLAGSTAT + PICARD
         
 ##----------------------------------------##
 ## 1. Adapter removal & quality filtering ##
@@ -112,6 +113,18 @@ rule flagstat:
     log: 'log/flagstat/{samples}_flagstat.log'
     run:
         shell("samtools flagstat -@ {threads} {input} > {output}")
+
+rule picard:
+    input: 'result/3_bam_filter/{samples}_Aligned.sortedByCoord.filter.bam'
+    output: 'result/qc/4_picard/{samples}_picard.tsv'
+    threads: config["threads"]
+    message: "Quality control, Picard"
+    log: 'log/picard/{samples}_picard.log'
+    run:
+        if params.picard == True:
+            shell("scripts/picard.sh {input} {output}")
+        else:
+            print("Picard not run. Change config picard parameter to True if you would like this output.")
 
         """
         samtools view {input} -h -f 3 -F 1284 -q 30 -@ {threads} > {output}
