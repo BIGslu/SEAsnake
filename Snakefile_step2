@@ -109,7 +109,7 @@ rule flagstat:
     threads: config["threads"]
     message: "Quality control, flagstat"
     log: 'log/flagstat/{samples}_flagstat.log'
-    shell:
+    run:
         shell("samtools flagstat -@ {threads} {input} > {output}")
 
         """
