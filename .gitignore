@@ -46,4 +46,4 @@ vignettes/*.pdf
 .snakemake/metadata/*
 
 # reference files, too large
-ref/*/*
+ref/*
