@@ -1,23 +1,9 @@
 #!/bin/bash
 
-# Setup directory structure
-mkdir -p 'result/qc/1_fastqc_raw'
-mkdir -p 'result/qc/2_fastqc_trim'
-mkdir -p 'result/qc/3_flagstat'
-mkdir -p 'result/qc/4_picard'
-
-mkdir -p 'result/1_trim'
-mkdir -p 'result/2_bam'
-mkdir -p 'result/3_bam_filter'
-mkdir -p 'result/4_count'
-mkdir -p 'result/5_combined'
-
-mkdir -p 'ref'
-mkdir -p 'log'
-
 #################################
 # Capture Samples to Config File
 #################################
+
 
 SampleList="data/*R1*"
 
@@ -67,3 +53,18 @@ picard: True
 # Other
 threads: $cores2
 " >> result/config.yaml
+
+# Setup directory structure
+mkdir -p 'result/qc/1_fastqc_raw'
+mkdir -p 'result/qc/2_fastqc_trim'
+mkdir -p 'result/qc/3_flagstat'
+mkdir -p 'result/qc/4_picard'
+
+mkdir -p 'result/1_trim'
+mkdir -p 'result/2_bam'
+mkdir -p 'result/3_bam_filter'
+mkdir -p 'result/4_count'
+mkdir -p 'result/5_combined'
+
+mkdir -p 'ref'
+mkdir -p 'log'
