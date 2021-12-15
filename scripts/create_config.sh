@@ -67,4 +67,3 @@ mkdir -p 'result/4_count'
 mkdir -p 'result/5_combined'
 
 mkdir -p 'ref'
-mkdir -p 'log'
