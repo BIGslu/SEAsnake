@@ -149,7 +149,10 @@ rule fcount:
 ##----------------------------------------##
 
 rule combine:
-    input: "scripts/combine_samples.py"
+    input:
+        counts = 'result/4_count/{samples}_feature_counts.tsv',
+        flag = 'result/qc/3_flagstat/{samples}_flagstat.tsv',
+        pic = 'result/qc/4_picard/{samples}_picard.tsv'
     output:
         counts_all = 'result/5_combined/combined_feature_counts.tsv',
         flag_all = 'result/5_combined/combined_flagstat.tsv',
