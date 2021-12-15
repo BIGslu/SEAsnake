@@ -148,11 +148,13 @@ rule fcount:
 
 rule combine:
     input:
-        counts = 'result/4_count/{samples}_feature_counts.tsv',
-        flagstat = 'result/qc/3_flagstat/{samples}_flagstat.tsv',
-        picard = 'result/qc/4_picard/{samples}_picard.tsv'
+        counts = directory('result/4_count/'),
+        flag = directory('result/qc/3_flagstat/'),
+        pic = directory('result/qc/4_picard/')
     output:
-        'result/4_count/combined_feature_counts.tsv'
+        counts_all = 'result/4_count/combined_feature_counts.tsv',
+        flag_all = 'result/5_combined/combined_flagstat.tsv',
+        pic_all = 'result/5_combined/combined_picard.tsv'
     threads: config["threads"]
     message: "Combining samples"
     benchmark: 'log/fcount/combine.benchmark.txt'
