@@ -17,7 +17,6 @@ rule all:
         'result/3_bam_filter/',
         'result/4_count/',
         'result/5_combined/',
-        'ref/',
         expand("result/qc/1_fastqc_raw/{sample}_fastqc.html",sample= SAMPLES),
         expand("result/qc/1_fastqc_raw/{sample}_fastqc.zip",sample= SAMPLES)
 
@@ -32,8 +31,7 @@ rule configscript:
         directory('result/2_bam'),
         directory('result/3_bam_filter'),
         directory('result/4_count'),
-        directory('result/5_combined'),
-        directory('ref')
+        directory('result/5_combined')
     shell:'''
     bash scripts/create_config.sh
     '''
