@@ -148,9 +148,9 @@ rule fcount:
 
 rule combine:
     input:
-        counts = directory('result/4_count/'),
-        flag = directory('result/qc/3_flagstat/'),
-        pic = directory('result/qc/4_picard/')
+        counts = 'result/4_count/',
+        flag = 'result/qc/3_flagstat/',
+        pic = 'result/qc/4_picard/'
     output:
         counts_all = 'result/4_count/combined_feature_counts.tsv',
         flag_all = 'result/5_combined/combined_flagstat.tsv',
