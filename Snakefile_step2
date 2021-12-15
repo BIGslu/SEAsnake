@@ -147,6 +147,10 @@ rule fcount:
 ##----------------------------------------##
 
 rule combine:
+    input:
+        count = 'result/4_count/{samples}_feature_counts.tsv',
+        flagstat = 'result/qc/3_flagstat/{samples}_flagstat.tsv',
+        picard = 'result/qc/4_picard/{samples}_picard.tsv'
     output:
         'result/4_count/combined_feature_counts.tsv'
     threads: config["threads"]
