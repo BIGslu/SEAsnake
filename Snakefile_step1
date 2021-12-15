@@ -9,7 +9,6 @@ for filename in glob.glob("data/*.*") :
 rule all:
     input:
         "result/config.yaml",
-        'result/qc/1_fastqc_raw/',
         'result/qc/2_fastqc_trim/',
         'result/qc/3_flagstat/',
         'result/qc/4_picard/',
@@ -26,7 +25,6 @@ rule configscript:
     input: "scripts/create_config.sh"
     output:
         "result/config.yaml",
-        directory('result/qc/1_fastqc_raw'),
         directory('result/qc/2_fastqc_trim'),
         directory('result/qc/3_flagstat'),
         directory('result/qc/4_picard'),
