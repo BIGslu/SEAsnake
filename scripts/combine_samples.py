@@ -65,6 +65,10 @@ if len(all_stat_file) > 0:
     ## Save
     all_stat.to_csv("result/5_combined/combined_flagstat.tsv", index=False, encoding='utf-8-sig', sep="\t")
 
+else:
+    temp2 = pd.DataFrame(message=["samtool flagstat not completed for any samples."])
+    temp2.to_csv("result/5_combined/combined_flagstat.tsv", index=False, encoding='utf-8-sig', sep="\t")
+
 ##################################
 ## Picard
 ##################################
@@ -95,3 +99,7 @@ if len(all_picard_file) > 0:
     all_picard = all_picard[['libID']+cols]
     ## Save
     all_picard.to_csv("result/5_combined/combined_picard.tsv", index=True, encoding='utf-8-sig', sep="\t")
+
+else:
+    temp2 = pd.DataFrame(message=["picard not completed for any samples."])
+    temp2.to_csv("result/5_combined/combined_picard.tsv", index=False, encoding='utf-8-sig', sep="\t")
