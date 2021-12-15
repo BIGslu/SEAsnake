@@ -8,7 +8,7 @@
 SampleList="data/*R1*"
 
 
-echo "SampleList:" > config/config.yaml
+echo "SampleList:" > result/config.yaml
 
 spacer1=": "
 
@@ -21,11 +21,11 @@ sample2=`echo "${sample/R1/R2}"`
 sample_name=`echo "$(basename $sample)" | grep -o '^.*_L' | sed 's/_L$//'`
 
 # Add sample name to config
-echo "  " "$sample_name$spacer1" >> config/config.yaml
-echo "    sample: '"$sample_name"'" >> config/config.yaml
+echo "  " "$sample_name$spacer1" >> result/config.yaml
+echo "    sample: '"$sample_name"'" >> result/config.yaml
 # Add fastq files to config
-echo "    R1: '"$sample"'" >> config/config.yaml
-echo "    R2: '"$sample2"'" >> config/config.yaml
+echo "    R1: '"$sample"'" >> result/config.yaml
+echo "    R2: '"$sample2"'" >> result/config.yaml
 done
 
 # Auto detect cores
@@ -52,7 +52,7 @@ picard: True
 
 # Other
 threads: $cores2
-" >> config/config.yaml
+" >> result/config.yaml
 
 # Setup directory structure
 mkdir -p 'result/qc/1_fastqc_raw'

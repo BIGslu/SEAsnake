@@ -8,13 +8,13 @@ for filename in glob.glob("data/*.*") :
 
 rule all:
     input:
-        "config/config.yaml",
+        "result/config.yaml",
         expand("result/qc/1_fastqc_raw/{sample}_fastqc.html",sample= SAMPLES),
         expand("result/qc/1_fastqc_raw/{sample}_fastqc.zip",sample= SAMPLES)
 
 rule configscript:
     input: "scripts/create_config.sh"
-    output: "config/config.yaml"
+    output: "result/config.yaml"
     shell:'''
     bash scripts/create_config.sh
     '''

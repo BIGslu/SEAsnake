@@ -1,4 +1,4 @@
-configfile: 'config/config.yaml'
+configfile: 'result/config.yaml'
 
 ## INPUTS / OUTPUTS
 TRIM1 = expand('result/1_trim/{samples}_R1_trim.fastq.gz', samples=config["SampleList"])
