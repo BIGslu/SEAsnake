@@ -24,7 +24,18 @@ rule all:
 
 rule configscript:
     input: "scripts/create_config.sh"
-    output: "result/config.yaml"
+    output:
+        "result/config.yaml",
+        directory('result/qc/1_fastqc_raw'),
+        directory('result/qc/2_fastqc_trim'),
+        directory('result/qc/3_flagstat'),
+        directory('result/qc/4_picard'),
+        directory('result/1_trim'),
+        directory('result/2_bam'),
+        directory('result/3_bam_filter'),
+        directory('result/4_count'),
+        directory('result/5_combined'),
+        directory('ref')
     shell:'''
     bash scripts/create_config.sh
     '''
