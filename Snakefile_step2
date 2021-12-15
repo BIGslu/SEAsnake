@@ -133,14 +133,15 @@ rule picard:
 
 rule fcount:
     input:
-        bam = 'result/3_bam_filter/{samples}_Aligned.sortedByCoord.filter.bam',
-        gtf =  'ref/release' + config["release"] + '/STARref/Homo_sapiens.GRCh38.' + config["release"] + '.gtf'
+        bam = 'result/3_bam_filter/{samples}_Aligned.sortedByCoord.filter.bam'
     output: 'result/4_count/{samples}_feature_counts.tsv'
+    params:
+        gtf =  'ref/release' + config["release"] + '/STARref/Homo_sapiens.GRCh38.' + config["release"] + '.gtf'
     threads: config["threads"]
     message: "Counting features"
     run:
         shell("featureCounts -T {threads} -g gene_id -t exon -p \
-          -a {input.gtf} -o {output} {input.bam}")
+          -a {params.gtf} -o {output} {input.bam}")
 
 ##----------------------------------------##
 ## 7. COMBINE SAMPLES                     ##
