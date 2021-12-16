@@ -152,7 +152,7 @@ rule combine:
     input:
         counts = expand('result/4_count/{samples}_feature_counts.tsv', samples=config["SampleList"]),
         flag = expand('result/qc/3_flagstat/{samples}_flagstat.tsv', samples=config["SampleList"]),
-        pic = expand('result/qc/4_picard/{samples}_picard.tsv, samples=config["SampleList"]')
+        pic = expand('result/qc/4_picard/{samples}_picard.tsv', samples=config["SampleList"])
     output:
         counts_all = 'result/5_combined/combined_feature_counts.tsv',
         flag_all = 'result/5_combined/combined_flagstat.tsv',
