@@ -137,7 +137,7 @@ rule fcount:
         bam = 'result/3_bam_filter/{samples}_Aligned.sortedByCoord.filter.bam'
     output: 'result/4_count/{samples}_feature_counts.tsv'
     params:
-        gtf =  'ref/release' + config["release"] + '/STARref/Homo_sapiens.GRCh38.' + config["release"] + '.gtf'
+        gtf = 'ref/release' + config["release"] + '/STARref/Homo_sapiens.GRCh38.' + config["release"] + '.gtf'
     threads: config["threads"]
     message: "Counting features"
     run:
@@ -150,9 +150,9 @@ rule fcount:
 
 rule combine:
     input:
-        counts = 'result/4_count/',
-        flag = 'result/qc/3_flagstat/',
-        pic = 'result/qc/4_picard/'
+        counts = 'result/4_count/{samples}_feature_counts.tsv',
+        flag = 'result/qc/3_flagstat/{samples}_flagstat.tsv',
+        pic = 'result/qc/4_picard/{samples}_picard.tsv'
     output:
         counts_all = 'result/5_combined/combined_feature_counts.tsv',
         flag_all = 'result/5_combined/combined_flagstat.tsv',
