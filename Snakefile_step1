@@ -41,8 +41,6 @@ rule fastqc_raw:
     output:
         "result/qc/1_fastqc_raw/{sample}_fastqc.html",
         "result/qc/1_fastqc_raw/{sample}_fastqc.zip"
-    threads:
-        lambda cores: cpu_count() - 1
     shell:'''
-    fastqc -t {threads} -o result/qc/1_fastqc_raw {input}
+    fastqc -o result/qc/1_fastqc_raw {input}
     '''
