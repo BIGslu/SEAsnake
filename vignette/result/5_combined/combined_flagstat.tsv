@@ -1,0 +1,3 @@
+﻿libID	QC_pass	primary	secondary	supplementary	duplicate	primary_duplicate	mapped	primary_mapped	paired	read1	read2	paired_proper	paired_mapped	singleton	paired_diff_chr	paired_diff_chr5
+test_S1	11990	11990	0	0	0	0	11990	11990	11990	5995	5995	11990	11990	0	0	0
+test_S2	5980	5980	0	0	0	0	5980	5980	5980	2990	2990	5980	5980	0	0	0
