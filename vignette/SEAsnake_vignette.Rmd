@@ -328,6 +328,7 @@ threads: 15
   - picard: This program provides additional alignment quality metrics listed [here](http://broadinstitute.github.io/picard/picard-metric-definitions.html#RnaSeqMetrics). If you do not need these metrics, set to False.
 * threads
   - This sets the maximum number of threads to total CPU - 1 in case you forget to set it when running `snakemake`.
+  - Note that Mac and Windows may not automatically fill this correctly. Please check that you have a usable thread number.
 
 You can also find a more thorough introduction to quality assessment in our [first tutorial](https://github.com/BIGslu/tutorials/blob/main/RNAseq/1.Hawn_RNAseq_fastq.to.counts.pdf).
 
