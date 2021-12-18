@@ -44,7 +44,7 @@ adapter2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT
 
 # Genome alignment
 ## Human genome release number
-release: '104'
+release: '105'
 
 # Alignment metrics
 ## Run Picard?
