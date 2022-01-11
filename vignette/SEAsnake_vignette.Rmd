@@ -100,6 +100,8 @@ sudo mkfs -t ext4 /dev/$ebs_name
 sudo mount /dev/$ebs_name ~/SEAsnake
 ## Change permissions to read-write
 sudo chmod 777 -R ~/SEAsnake/
+## Remove default subdir
+sudo rm -R ~/SEAsnake/lost+found
 
 ## Clone SEAsnake from GitHub
 git clone https://github.com/BIGslu/SEAsnake ~/SEAsnake
