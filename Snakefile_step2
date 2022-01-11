@@ -73,7 +73,7 @@ rule STAR_index:
     output: directory(expand('ref/release{release}/STARindex', release=config["release"]))
     params:
         release = config["release"]
-    threads: config["threads"]
+    threads: config["cores"]
     message: "Generating genome index"
     run:
         shell("scripts/STAR_index.sh {params.release} {threads}")

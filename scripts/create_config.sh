@@ -4,9 +4,7 @@
 # Capture Samples to Config File
 #################################
 
-
 SampleList="data/*R1*"
-
 
 echo "SampleList:" > result/config.yaml
 
@@ -28,7 +26,13 @@ echo "    R1: '"$sample"'" >> result/config.yaml
 echo "    R2: '"$sample2"'" >> result/config.yaml
 done
 
-# Add default param to config
+#################################
+# Add default param to Config File
+#################################
+# Auto detect cores
+cores=$(eval nproc --all)
+cores2=$(($cores-1))
+
 echo "
 # Adapter removal
 ## Base pairs to trim from 5' end
@@ -48,6 +52,7 @@ picard: True
 
 # Other
 threads: 1
+cores: $cores2
 " >> result/config.yaml
 
 # Setup directory structure
