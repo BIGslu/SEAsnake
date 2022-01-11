@@ -42,18 +42,22 @@ Here, we provide an example of how to install and run SEAsnake on human bulk RNA
 # Software
 ## Resource requirements
 
-**RAM**: Indexing the human genome requires a minimum of 40 GB of RAM. If your reference genome is smaller or you already have a built index, you may be able to use less RAM. If you have many samples, you may need to use more RAM. The most common pipeline failure is running out of RAM so when in doubt, choose the larger option.
+**CPU**: Many of the steps in SEAsnake run in parallel. Thus, the time to run the pipeline on 2 CPUs is roughly half of 1 CPU (not counting non-parallel processes like genome indexing). Thus, you could run as many CPUs as you have fastq files. However, this is not recommended as there is a trade-off with RAM usage.
 
-**CPU**: We recommend at least 1 CPU per sample to a minimum of 8 CPUs for this pipeline. More CPU usage will increase RAM usage, so if you have limited RAM, scale down the number of CPUs used.
+**RAM**: Estimating RAM usage is difficult. The most impactful values to consider are number of CPUs, fastq file size, and reference genome size. Each CPU uses equivalent RAM for parallel jobs. So 2 CPUs require twice the RAM as 1 CPU. Sample and genome size also contribute as larger files use more RAM on each CPU being run. The most common pipeline failure is running out of RAM, so when in doubt, choose the larger option.
 
-**Storage**: SEAsnake itself is a small program (< 150 MB). Thus, storage needs depend almost entirely on your sample size and sequencing depth of those samples. We recommend 65 GB of storage per 10 fastq files to be run. This comes to roughly 1 TB for 150 fastq or 75 paired-end samples.
+**Storage**: SEAsnake itself is a small program (< 150 MB). Thus, storage needs depend almost entirely on your sample size and sequencing depth of those samples. Larger raw fastq result in larger result files.
+
+**Our recommendations**: We follow a general rule of CPU = fastqs / 3 and RAM = CPU * 2 + 40 where each CPU gets 2 GB of RAM and there is an additional 40 GB for the human genome. If your fastq are large (> 5 GB), you may need to increase the CPU factor to 2.5 or 3. The exact number of CPUs depends on what is available on AWS, and these parameters are commonly met by `m5` instance types. For storage, we recommend 65 GB per 10 fastq files. This comes to roughly 1 TB for 150 fastq or 75 paired-end samples.
+
+Note that indexing the human genome requires a minimum of 40 GB of RAM, so do not go below this if you need to complete that step.
 
 ## AWS installation
 
 SEAsnake can be pre-installed on any AWS EC2 instance.
 
 1. Launch a new instance from the AWS console. Search 'seasnake' and select the Community AMI SEAsnake.
-2. Choose your instance type keeping your resource requirements in mind. `c5` types are our most used class. For this tutorial's data, use `r5a.2xlarge`
+2. Choose your instance type keeping your resource requirements in mind. `m5` types are our most used class. For this tutorial's data, use `r5a.2xlarge` (sample fastq are very small)
 3. Leave configuration as defaults.
 4. Add additional EBS storage to hold your data and results. Please leave the root storage as 16 GB; this holds the underlying software. 
 5. Tag your instance if desired.
