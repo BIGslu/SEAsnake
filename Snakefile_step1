@@ -36,7 +36,7 @@ rule configscript:
     '''
 
 rule fastqc_raw:
-    input: expand("data/{sample}.fastq.gz",sample = SAMPLES)
+    input: "data/{sample}.fastq.gz"
     output:
         "result/qc/1_fastqc_raw/{sample}_fastqc.html",
         "result/qc/1_fastqc_raw/{sample}_fastqc.zip"
