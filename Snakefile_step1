@@ -40,7 +40,7 @@ rule fastqc_raw:
     output:
         "result/qc/1_fastqc_raw/{sample}_fastqc.html",
         "result/qc/1_fastqc_raw/{sample}_fastqc.zip"
-    threads: 64
+    threads: 1
     shell:'''
     fastqc -t {threads} -o result/qc/1_fastqc_raw {input}
     '''
