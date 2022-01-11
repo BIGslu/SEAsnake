@@ -88,12 +88,13 @@ chmod 600 ~/.passwd-s3fs
 #### Setup EBS volume ####
 ## Get addtl volume name
 ## If this does not give the correct volume name, find it with lsblk
-ebs_name=$(lsblk -o NAME -n -i -r | tail -n 1)
+ebs_name=$(lsblk -o NAME -n -i -r | head -n 2 | tail -n 1)
 echo $ebs_name
 ## Format volume
 sudo mkfs -t ext4 /dev/$ebs_name
 ## Attach SEAsnake directory to volume
-sudo mount --bind /dev/$ebs_name ~/SEAsnake/
+sudo mount --bind /dev/$ebs_name ~/SEAsnake
+#sudo mount /dev/$ebs_name ~/SEAsnake
 ## Change permissions to read-write
 sudo chmod 777 -R ~/SEAsnake/
 
@@ -147,8 +148,7 @@ mamba env create --name SEAsnake --file ~/SEAsnake/environment/Hissss_env.yaml
 If you previously installed SEAsnake, you can update it by pulling the latest version from GitHub.
 
 ```{bash eval=FALSE}
-cd ~/SEAsnake
-git pull
+git pull ~/SEAsnake
 ```
 
 # SEAsnake
@@ -197,11 +197,12 @@ If you do not have a pre-built index, the pipeline will make one for you!
 
 ## Run SEAsnake
 
-Set the number of threads you would like to use. This should be no more than your total CPU - 1. Then, activate the conda environment, which contains all pre-installed software.
+Set the number of cores you would like to use. This should be no more than your total CPU - 1. Then, activate the conda environment, which contains all pre-installed software, and move into the SEAsnake directory.
 
 ```{bash eval=FALSE}
-threads=15
+cores=15
 conda activate SEAsnake
+cd ~/SEAsnake
 ```
 
 ### Step 1
@@ -209,7 +210,7 @@ conda activate SEAsnake
 Next, run SEAsnake step 1. This completes initial sequence quality assessment, directory structure setup, and config file creation. *Note that `nohup` and piping into a log file means nothing will appear in your terminal window. This prevents timeout and retains all messages and errors in the log.*
 
 ```{bash eval=FALSE}
-nohup snakemake --snakefile Snakefile_step1 --cores $threads >> log/SEAsnake_step1.log 2>&1
+nohup snakemake --snakefile Snakefile_step1 --cores $cores >> log/SEAsnake_step1.log 2>&1
 ```
 
 Your directory structure will look like
@@ -307,7 +308,7 @@ release: '105'
 picard: True
 
 # Other
-threads: 15
+threads: 1
 ```
 
 #### Customizaton options
@@ -325,9 +326,9 @@ threads: 15
 * Alignment metrics
   - picard: This program provides additional alignment quality metrics listed [here](http://broadinstitute.github.io/picard/picard-metric-definitions.html#RnaSeqMetrics). If you do not need these metrics, set to False.
 * threads
-  - This sets the maximum number of threads to total CPU - 1 in case you forget to set it when running `snakemake`.
-  - Note that Mac and Windows may not automatically fill this correctly. Please check that you have a usable thread number.
-
+  - This sets the maximum number of threads **per job**. The default it 1 as we assume you have 1 core per sample, and SEAsnake runs as many samples as possible in parallel.
+  - Since SEAsnake is run on multiple threads using the `--cores` parameter, the total threads used on your machine is equal to `threads`\*`cores`. If you have more cores than samples, you can increase this parameter in the config file. For example, if you have 16 cores and 3 samples, you could use `threads=5` and `cores=15` because 5\*3 samples = 15 cores.
+  
 You can also find a more thorough introduction to quality assessment in our [first tutorial](https://github.com/BIGslu/tutorials/blob/main/RNAseq/1.Hawn_RNAseq_fastq.to.counts.pdf).
 
 ### Step 2
@@ -336,7 +337,7 @@ Run SEAsnake step 2. This completes adapter trimming, alignment, filtering, qual
 
 ```{bash eval=FALSE}
 ## Run step 2 to filter, align, assess, and count sequences
-nohup snakemake --snakefile Snakefile_step2 --cores $threads >> log/SEAsnake_step2.log 2>&1
+nohup snakemake --snakefile Snakefile_step2 --cores $cores >> log/SEAsnake_step2.log 2>&1
 ```
 
 This step will likely timeout. Because of `nohup`, you can close the terminal at any time and SEAsnake will continue to run. To check its process, simply log back in and review the log.

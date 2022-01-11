@@ -28,10 +28,6 @@ echo "    R1: '"$sample"'" >> result/config.yaml
 echo "    R2: '"$sample2"'" >> result/config.yaml
 done
 
-# Auto detect cores
-cores=$(eval nproc --all)
-cores2=$(($cores-1))
-
 # Add default param to config
 echo "
 # Adapter removal
@@ -51,7 +47,7 @@ release: '105'
 picard: True
 
 # Other
-threads: $cores2
+threads: 1
 " >> result/config.yaml
 
 # Setup directory structure
