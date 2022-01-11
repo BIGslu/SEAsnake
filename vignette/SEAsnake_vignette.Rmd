@@ -46,16 +46,16 @@ Here, we provide an example of how to install and run SEAsnake on human bulk RNA
 
 **CPU**: We recommend at least 1 CPU per sample to a minimum of 8 CPUs for this pipeline. More CPU usage will increase RAM usage, so if you have limited RAM, scale down the number of CPUs used.
 
-**Storage**: SEAsnake itself is a small program (< 100 MB) with the vignette data adding an additional 32 GB. Thus, storage needs depend almost entirely on your sample size and sequencing depth of those samples. We recommend 65 GB of storage per 10 fastq files to be run. This comes to roughly 1 TB for 150 fastq or 75 paired-end samples.
+**Storage**: SEAsnake itself is a small program (< 150 MB). Thus, storage needs depend almost entirely on your sample size and sequencing depth of those samples. We recommend 65 GB of storage per 10 fastq files to be run. This comes to roughly 1 TB for 150 fastq or 75 paired-end samples.
 
 ## AWS installation
 
 SEAsnake can be pre-installed on any AWS EC2 instance.
 
 1. Launch a new instance from the AWS console. Search 'seasnake' and select the Community AMI SEAsnake.
-2. Choose your instance type keeping your resource requirements in mind. `c5` types are our most used class. 
+2. Choose your instance type keeping your resource requirements in mind. `c5` types are our most used class. For this tutorial's data, use `r5a.2xlarge`
 3. Leave configuration as defaults.
-4. Add additional EBS storage to hold your data and results. Please leave the root storage as 16 GB; this holds the underlying SEAsnake software. 
+4. Add additional EBS storage to hold your data and results. Please leave the root storage as 16 GB; this holds the underlying software. 
 5. Tag your instance if desired.
 6. Configure security as you normally would. 
 7. Launch the instance. This will take a couple minutes to complete before you can log-in.
