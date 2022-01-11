@@ -97,8 +97,7 @@ echo $ebs_name
 ## Format volume
 sudo mkfs -t ext4 /dev/$ebs_name
 ## Attach SEAsnake directory to volume
-sudo mount --bind /dev/$ebs_name ~/SEAsnake
-#sudo mount /dev/$ebs_name ~/SEAsnake
+sudo mount /dev/$ebs_name ~/SEAsnake
 ## Change permissions to read-write
 sudo chmod 777 -R ~/SEAsnake/
 
