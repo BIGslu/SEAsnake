@@ -54,7 +54,7 @@ rule adapterremoval:
 ##----------------------------------------##
 
 rule fastqc_trim:
-    input: expand('result/1_trim/{samples}_{suf}.fastq.gz', samples=config["SampleList"], suf=SUFFIX)
+    input: 'result/1_trim/{samples}_{suf}.fastq.gz'
     output:
         HTML = expand('result/qc/2_fastqc_trim/{samples}_{suf}_fastqc.html', samples=config["SampleList"], suf=SUFFIX),
         ZIP = expand('result/qc/2_fastqc_trim/{samples}_{suf}_fastqc.zip', samples=config["SampleList"], suf=SUFFIX)
