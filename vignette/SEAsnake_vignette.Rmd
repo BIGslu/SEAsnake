@@ -142,8 +142,6 @@ git clone https://github.com/BIGslu/SEAsnake ~/SEAsnake
 mamba env create --name SEAsnake --file ~/SEAsnake/environment/Hissss_env.yaml
 ```
 
-Then move your fastq data into `SEAsnake/data`.
-
 ## Updating SEAsnake
 
 If you previously installed SEAsnake, you can update it by pulling the latest version from GitHub.
