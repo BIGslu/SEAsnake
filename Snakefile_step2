@@ -90,7 +90,7 @@ rule STAR_align:
     threads: config["threads"]
     message: 'Aligning reads'
     run:
-        shell("STAR --genomeDir {input.IDX} --readFilesIn {input.R1} {input.R2} --readFilesCommand zcat --outFileNamePrefix {params.OUT} --outSAMtype BAM SortedByCoordinate --runThreadN {threads} --runRNGseed 8756")
+        shell("STAR --genomeDir {input.IDX} --readFilesIn {input.R1} {input.R2} --readFilesCommand zcat --outFileNamePrefix {params.OUT} --outSAMtype BAM SortedByCoordinate --runThreadN {threads} --runRNGseed 8756 --genomeLoad LoadAndRemove")
 
 ##----------------------------------------##
 ## 4. ALIGNMENT FILTERING                 ##
