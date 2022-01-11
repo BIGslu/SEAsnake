@@ -314,6 +314,7 @@ picard: True
 
 # Other
 threads: 1
+cores: 15
 ```
 
 #### Customizaton options
@@ -333,6 +334,7 @@ threads: 1
 * threads
   - This sets the maximum number of threads **per job**. The default it 1 as we assume you have 1 core per sample, and SEAsnake runs as many samples as possible in parallel.
   - Since SEAsnake is run on multiple threads using the `--cores` parameter, the total threads used on your machine is equal to `threads`\*`cores`. If you have more cores than samples, you can increase this parameter in the config file. For example, if you have 16 cores and 3 samples, you could use `threads=5` and `cores=15` because 5\*3 samples = 15 cores.
+  - *MAC and WINDOWS*: Auto core detection may not work. Please verify that the config file contains a usable numeric value.
   
 You can also find a more thorough introduction to quality assessment in our [first tutorial](https://github.com/BIGslu/tutorials/blob/main/RNAseq/1.Hawn_RNAseq_fastq.to.counts.pdf).
 
