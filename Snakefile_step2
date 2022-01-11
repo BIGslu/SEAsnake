@@ -70,7 +70,7 @@ rule fastqc_trim:
 ##----------------------------------------##
 
 rule STAR_index:
-    input: 'result/qc/2_fastqc_trim/{samples}_{suf}_fastqc.html'
+    input: expand('result/qc/2_fastqc_trim/{samples}_{suf}_fastqc.html', samples=config["SampleList"], suf=SUFFIX)
     output: directory(expand('ref/release{release}/STARindex', release=config["release"]))
     params:
         release = config["release"]
