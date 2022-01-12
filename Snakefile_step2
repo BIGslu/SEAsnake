@@ -4,7 +4,7 @@ configfile: 'result/config.yaml'
 SAMPLES = config["SampleList"]
 SUFFIX = ["R1_trim", "R2_trim"]
 
-TRIM1 = 'result/1_trim/{SAMPLES}_R1_trim.fastq.gz'
+TRIM1 = expand('result/1_trim/{SAMPLES}_R1_trim.fastq.gz')
 TRIM2 = expand('result/1_trim/{SAMPLES}_R2_trim.fastq.gz')
 QC_trim_html = expand("result/qc/2_fastqc_trim/{SAMPLES}_{SUFFIX}_fastqc.html")
 QC_trim_zip = expand("result/qc/2_fastqc_trim/{SAMPLES}_{SUFFIX}_fastqc.zip")
