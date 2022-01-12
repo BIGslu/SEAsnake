@@ -3,8 +3,6 @@ configfile: 'result/config.yaml'
 ## INPUTS / OUTPUTS
 SUFFIX = ["R1_trim", "R2_trim"]
 SAMPLES = config["SampleList"]
-wildcard_constraints:
-    suf="R[1-2]_trim"
     
 TRIM1 = expand('result/1_trim/{sample}_R1_trim.fastq.gz', sample=SAMPLES)
 TRIM2 = expand('result/1_trim/{sample}_R2_trim.fastq.gz', sample=SAMPLES)
@@ -74,7 +72,7 @@ rule fastqc_trim:
 ##----------------------------------------##
 
 rule STAR_index:
-    input: expand('result/qc/2_fastqc_trim/{samples}_{suf}_fastqc.html', samples=config["SampleList"], suf=SUFFIX)
+    input: expand('result/qc/2_fastqc_trim/{samples}_{suf}_fastqc.html', samples=SAMPLES, suf=SUFFIX)
     output: directory(expand('ref/release{release}/STARindex', release=config["release"]))
     params:
         release = config["release"]
@@ -85,12 +83,12 @@ rule STAR_index:
   
 rule STAR_align:
     input:
-        R1 = "result/1_trim/{samples}_R1_trim.fastq.gz",
-        R2 = "result/1_trim/{samples}_R2_trim.fastq.gz",
+        R1 = "result/1_trim/{sample}_R1_trim.fastq.gz",
+        R2 = "result/1_trim/{sample}_R2_trim.fastq.gz",
         IDX = rules.STAR_index.output
-    output: 'result/2_bam/{samples}_Aligned.sortedByCoord.out.bam'
+    output: 'result/2_bam/{sample}_Aligned.sortedByCoord.out.bam'
     params:
-        OUT = 'result/2_bam/{samples}_'
+        OUT = 'result/2_bam/{sample}_'
     threads: config["threads"]
     message: 'Aligning reads'
     run:
@@ -101,8 +99,8 @@ rule STAR_align:
 ##----------------------------------------##
 
 rule align_filter:
-    input: 'result/2_bam/{samples}_Aligned.sortedByCoord.out.bam'
-    output: 'result/3_bam_filter/{samples}_Aligned.sortedByCoord.filter.bam'
+    input: 'result/2_bam/{sample}_Aligned.sortedByCoord.out.bam'
+    output: 'result/3_bam_filter/{sample}_Aligned.sortedByCoord.filter.bam'
     threads: config["threads"]
     message: "Filtering alignments"
     run:
@@ -113,16 +111,16 @@ rule align_filter:
 ##----------------------------------------##
 
 rule flagstat:
-    input: 'result/3_bam_filter/{samples}_Aligned.sortedByCoord.filter.bam'
-    output: 'result/qc/3_flagstat/{samples}_flagstat.tsv'
+    input: 'result/3_bam_filter/{sample}_Aligned.sortedByCoord.filter.bam'
+    output: 'result/qc/3_flagstat/{sample}_flagstat.tsv'
     threads: config["threads"]
     message: "Quality control, flagstat"
     run:
         shell("samtools flagstat -@ {threads} {input} > {output}")
 
 rule picard:
-    input: 'result/3_bam_filter/{samples}_Aligned.sortedByCoord.filter.bam'
-    output: 'result/qc/4_picard/{samples}_picard.tsv'
+    input: 'result/3_bam_filter/{sample}_Aligned.sortedByCoord.filter.bam'
+    output: 'result/qc/4_picard/{sample}_picard.tsv'
     threads: config["threads"]
     params:
         picard = config["picard"]
@@ -139,8 +137,8 @@ rule picard:
 
 rule fcount:
     input:
-        bam = 'result/3_bam_filter/{samples}_Aligned.sortedByCoord.filter.bam'
-    output: 'result/4_count/{samples}_feature_counts.tsv'
+        bam = 'result/3_bam_filter/{sample}_Aligned.sortedByCoord.filter.bam'
+    output: 'result/4_count/{sample}_feature_counts.tsv'
     params:
         gtf = 'ref/release' + config["release"] + '/STARref/Homo_sapiens.GRCh38.' + config["release"] + '.gtf'
     threads: config["threads"]
@@ -155,9 +153,9 @@ rule fcount:
 
 rule combine:
     input:
-        counts = expand('result/4_count/{samples}_feature_counts.tsv', samples=config["SampleList"]),
-        flag = expand('result/qc/3_flagstat/{samples}_flagstat.tsv', samples=config["SampleList"]),
-        pic = expand('result/qc/4_picard/{samples}_picard.tsv', samples=config["SampleList"])
+        counts = expand('result/4_count/{sample}_feature_counts.tsv', sample=SAMPLES),
+        flag = expand('result/qc/3_flagstat/{sample}_flagstat.tsv', sample=SAMPLES),
+        pic = expand('result/qc/4_picard/{sample}_picard.tsv', samples=SAMPLES)
     output:
         counts_all = 'result/5_combined/combined_feature_counts.tsv',
         flag_all = 'result/5_combined/combined_flagstat.tsv',
