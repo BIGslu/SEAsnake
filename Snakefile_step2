@@ -30,7 +30,7 @@ rule adapterremoval:
         R1 = lambda wildcards: config["SampleList"][wildcards.sample]["R1"],
         R2 = lambda wildcards: config["SampleList"][wildcards.sample]["R2"]
     output:
-        R1 = "result/1_trim/{sample}_R1_trim.fastq.gz",
+        R1 = TRIM1,
         R2 = "result/1_trim/{sample}_R2_trim.fastq.gz",
         single = "result/1_trim/{sample}_singleton.truncated.gz",
         discard = "result/1_trim/{sample}.settings",
