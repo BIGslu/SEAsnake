@@ -3,7 +3,9 @@ configfile: 'result/config.yaml'
 ## INPUTS / OUTPUTS
 SUFFIX = ["R1_trim", "R2_trim"]
 SAMPLES = config["SampleList"]
-
+wildcard_constraints:
+    SUFFIX="R[1-2]_trim"
+    
 TRIM1 = expand('result/1_trim/{sample}_R1_trim.fastq.gz', sample=SAMPLES)
 TRIM2 = expand('result/1_trim/{sample}_R2_trim.fastq.gz', sample=SAMPLES)
 QC_trim_html = expand("result/qc/2_fastqc_trim/{sample}_{suf}_fastqc.html", sample=SAMPLES, suf=SUFFIX)
