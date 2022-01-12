@@ -4,23 +4,22 @@ configfile: 'result/config.yaml'
 SUFFIX = ["R1_trim", "R2_trim"]
 SAMPLES = config["SampleList"]
 
-TRIM1 = expand('result/1_trim/{samples}_R1_trim.fastq.gz', samples=SAMPLES)
-TRIM2 = expand('result/1_trim/{samples}_R2_trim.fastq.gz', samples=SAMPLES)
-QC_trim_html = expand("result/qc/2_fastqc_trim/{samples}_{suf}_fastqc.html", samples=SAMPLES, suf=SUFFIX)
-QC_trim_zip = expand("result/qc/2_fastqc_trim/{samples}_{suf}_fastqc.zip", samples=SAMPLES, suf=SUFFIX)
-BAM = expand("result/2_bam/{samples}_Aligned.sortedByCoord.out.bam", samples=SAMPLES)
-BAM2 = expand("result/3_bam_filter/{samples}_Aligned.sortedByCoord.filter.bam", samples=SAMPLES)
-FLAGSTAT = expand("result/qc/3_flagstat/{samples}_flagstat.tsv", samples=SAMPLES)
-PICARD = expand("result/qc/4_picard/{samples}_picard.tsv", samples=SAMPLES)
-COUNT = expand("result/4_count/{samples}_feature_counts.tsv", samples=SAMPLES)
+TRIM1 = expand('result/1_trim/{sample}_R1_trim.fastq.gz', sample=SAMPLES)
+TRIM2 = expand('result/1_trim/{sample}_R2_trim.fastq.gz', sample=SAMPLES)
+QC_trim_html = expand("result/qc/2_fastqc_trim/{sample}_{suf}_fastqc.html", sample=SAMPLES, suf=SUFFIX)
+QC_trim_zip = expand("result/qc/2_fastqc_trim/{sample}_{suf}_fastqc.zip", sample=SAMPLES, suf=SUFFIX)
+BAM = expand("result/2_bam/{sample}_Aligned.sortedByCoord.out.bam", sample=SAMPLES)
+BAM2 = expand("result/3_bam_filter/{sample}_Aligned.sortedByCoord.filter.bam", sample=SAMPLES)
+FLAGSTAT = expand("result/qc/3_flagstat/{sample}_flagstat.tsv", sample=SAMPLES)
+PICARD = expand("result/qc/4_picard/{sample}_picard.tsv", sample=SAMPLES)
+COUNT = expand("result/4_count/{sample}_feature_counts.tsv", sample=SAMPLES)
 
 rule all:
     input:
         TRIM1 + TRIM2 + QC_trim_html + QC_trim_zip + BAM + BAM2 + FLAGSTAT + PICARD + COUNT,
         'result/5_combined/combined_feature_counts.tsv',
         'result/5_combined/combined_flagstat.tsv',
-        'result/5_combined/combined_picard.tsv',
-        SAMPLES, SUFFIX
+        'result/5_combined/combined_picard.tsv'
         
 ##----------------------------------------##
 ## 1. Adapter removal & quality filtering ##
@@ -28,14 +27,14 @@ rule all:
 
 rule adapterremoval:
     input:
-        R1 = lambda wildcards: config["SampleList"][wildcards.samples]["R1"],
-        R2 = lambda wildcards: config["SampleList"][wildcards.samples]["R2"]
+        R1 = lambda wildcards: config["SampleList"][wildcards.sample]["R1"],
+        R2 = lambda wildcards: config["SampleList"][wildcards.sample]["R2"]
     output:
-        R1 = "result/1_trim/{samples}_R1_trim.fastq.gz",
-        R2 = "result/1_trim/{samples}_R2_trim.fastq.gz",
-        single = "result/1_trim/{samples}_singleton.truncated.gz",
-        discard = "result/1_trim/{samples}.settings",
-        set = "result/1_trim/{samples}_discarded.gz"
+        R1 = "result/1_trim/{sample}_R1_trim.fastq.gz",
+        R2 = "result/1_trim/{sample}_R2_trim.fastq.gz",
+        single = "result/1_trim/{sample}_singleton.truncated.gz",
+        discard = "result/1_trim/{sample}.settings",
+        set = "result/1_trim/{sample}_discarded.gz"
     params:
         trim5p = config["trim5p"],
         trimAdapt = config["trimAdapt"],
