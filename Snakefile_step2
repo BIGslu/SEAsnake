@@ -1,18 +1,16 @@
 configfile: 'result/config.yaml'
 
 ## INPUTS / OUTPUTS
-SAMPLES = config["SampleList"]
+TRIM1 = expand('result/1_trim/{samples}_R1_trim.fastq.gz', samples=config["SampleList"])
+TRIM2 = expand('result/1_trim/{samples}_R2_trim.fastq.gz', samples=config["SampleList"])
 SUFFIX = ["R1_trim", "R2_trim"]
-
-TRIM1 = expand('result/1_trim/{SAMPLES}_R1_trim.fastq.gz')
-TRIM2 = expand('result/1_trim/{SAMPLES}_R2_trim.fastq.gz')
-QC_trim_html = expand("result/qc/2_fastqc_trim/{SAMPLES}_{SUFFIX}_fastqc.html")
-QC_trim_zip = expand("result/qc/2_fastqc_trim/{SAMPLES}_{SUFFIX}_fastqc.zip")
-BAM = expand("result/2_bam/{SAMPLES}_Aligned.sortedByCoord.out.bam")
-BAM2 = expand("result/3_bam_filter/{SAMPLES}_Aligned.sortedByCoord.filter.bam")
-FLAGSTAT = expand("result/qc/3_flagstat/{SAMPLES}_flagstat.tsv")
-PICARD = expand("result/qc/4_picard/{SAMPLES}_picard.tsv")
-COUNT = expand("result/4_count/{SAMPLES}_feature_counts.tsv")
+QC_trim_html = expand("result/qc/2_fastqc_trim/{samples}_{suf}_fastqc.html", samples=config["SampleList"], suf=SUFFIX)
+QC_trim_zip = expand("result/qc/2_fastqc_trim/{samples}_{suf}_fastqc.zip", samples=config["SampleList"], suf=SUFFIX)
+BAM = expand("result/2_bam/{samples}_Aligned.sortedByCoord.out.bam", samples=config["SampleList"])
+BAM2 = expand("result/3_bam_filter/{samples}_Aligned.sortedByCoord.filter.bam", samples=config["SampleList"])
+FLAGSTAT = expand("result/qc/3_flagstat/{samples}_flagstat.tsv", samples=config["SampleList"])
+PICARD = expand("result/qc/4_picard/{samples}_picard.tsv", samples=config["SampleList"])
+COUNT = expand("result/4_count/{samples}_feature_counts.tsv", samples=config["SampleList"])
 
 rule all:
     input:
@@ -64,7 +62,7 @@ rule fastqc_trim:
     message: "Quality assessment, FastQC"
     shell:
         """
-        fastqc -t {threads} --outdir 'result/qc/2_fastqc_trim' {input}
+        fastqc -t {threads} --outdir 'result/qc/2_fastqc_trim' {input} --quiet
         """
 
 ##----------------------------------------##
