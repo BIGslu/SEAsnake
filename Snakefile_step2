@@ -56,10 +56,10 @@ rule adapterremoval:
 ##----------------------------------------##
 
 rule fastqc_trim:
-    input: 'result/1_trim/{sample}_{SUFFIX}.fastq.gz'
+    input: 'result/1_trim/{sample}_{suf}.fastq.gz'
     output:
-        HTML = expand('result/qc/2_fastqc_trim/{samples}_{suf}_fastqc.html', samples=config["SampleList"], suf=SUFFIX),
-        ZIP = expand('result/qc/2_fastqc_trim/{samples}_{suf}_fastqc.zip', samples=config["SampleList"], suf=SUFFIX)
+        HTML = expand('result/qc/2_fastqc_trim/{sample}_{suf}_fastqc.html', sample=config["SampleList"], suf=SUFFIX),
+        ZIP = expand('result/qc/2_fastqc_trim/{sample}_{suf}_fastqc.zip', sample=config["SampleList"], suf=SUFFIX)
     threads: config["threads"]
     message: "Quality assessment, FastQC"
     shell:
