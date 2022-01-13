@@ -22,7 +22,7 @@ fi
 
 # Run Picard
 picard CollectRnaSeqMetrics \
-    -REF_FLAT ref/PICARDref/refFlat.ensembl.txt \
-    -INPUT ${input} -OUTPUT ${output} \
-    -ASSUME_SORTED true -STRAND_SPECIFICITY NONE -MINIMUM_LENGTH 500 \
-    -QUIET true -VERBOSITY ERROR
+    REF_FLAT=ref/PICARDref/refFlat.ensembl.txt \
+    INPUT=${input} OUTPUT=${output} \
+    ASSUME_SORTED=true STRAND_SPECIFICITY=NONE MINIMUM_LENGTH=500 \
+    QUIET=true VERBOSITY=ERROR
