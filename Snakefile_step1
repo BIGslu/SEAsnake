@@ -42,5 +42,5 @@ rule fastqc_raw:
         "result/qc/1_fastqc_raw/{sample}_fastqc.zip"
     threads: 1
     shell:'''
-    fastqc -t {threads} -o result/qc/1_fastqc_raw {input}
+    fastqc -t {threads} -o result/qc/1_fastqc_raw {input} --quiet
     '''
