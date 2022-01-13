@@ -38,7 +38,7 @@ echo "
 ## Base pairs to trim from 5' end
 trim5p: 10
 ## Removal of 3' adapter sequences? Default are Illumina Universal adapters
-trimAdapt: True
+trimAdapt: 'True'
 adapter1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC
 adapter2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT
 
