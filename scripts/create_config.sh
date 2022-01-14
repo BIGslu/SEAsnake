@@ -48,7 +48,7 @@ release: '105'
 
 # Alignment metrics
 ## Run Picard?
-picard: 'True'
+picard: True
 
 # Other
 threads: 1
