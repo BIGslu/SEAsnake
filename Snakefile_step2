@@ -49,7 +49,7 @@ rule adapterremoval:
         if params.trimAdapt == 'False':
             shell("AdapterRemoval --file1 {input.R1} --file2 {input.R2} --output1 {output.R1} --output2 {output.R2} --singleton {output.single} --discarded {output.discard} --settings {output.set} --threads {threads} --gzip --maxns 1 --minlength 15 --trimqualities --minquality 30 --trim5p {params.trim5p}")
         else:
-            print("Config parameter trimAdapt must be set to 'True' or 'False'.")
+            print("Config parameter trimAdapt must be set to True or False.")
 
 ##----------------------------------------##
 ## 2. Quality Control - trimmed           ##
