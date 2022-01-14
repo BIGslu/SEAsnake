@@ -125,7 +125,7 @@ rule flagstat:
 rule picard:
     input: 'result/3_bam_filter/{sample}_Aligned.sortedByCoord.filter.bam'
     output: 'result/qc/4_picard/{sample}_picard.tsv'
-    threads: config["threads"]
+    threads: 1
     params:
         picard = config["picard"]
     message: "Quality control, Picard"
