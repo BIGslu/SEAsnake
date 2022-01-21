@@ -92,7 +92,7 @@ chmod 600 ~/.passwd-s3fs
 #### Setup EBS volume ####
 ## Get addtl volume name
 ## If this does not give the correct volume name, find it with lsblk
-ebs_name=$(lsblk -o NAME -n -i -r | head -n 2 | tail -n 1)
+ebs_name=$(lsblk -o NAME -n -i -r | tail -n 1)
 echo $ebs_name
 ## Format volume
 sudo mkfs -t ext4 /dev/$ebs_name
@@ -153,7 +153,8 @@ mamba env create --name SEAsnake --file ~/SEAsnake/environment/Hissss_env.yaml
 If you previously installed SEAsnake, you can update it by pulling the latest version from GitHub.
 
 ```{bash eval=FALSE}
-git pull ~/SEAsnake
+cd ~/SEAsnake
+git pull
 ```
 
 # SEAsnake
@@ -275,7 +276,7 @@ grViz(diagram = "digraph flowchart {
   ")
 ```
 
-Once step 1 is complete, you will see the command prompt `$` re-appear in your console. If the terminal window times out, simply log back in and check progress in the log.
+Once step 1 is complete, you will see the command prompt `$` re-appear in your console. If you want to check progress or the terminal window times out, open a new window, log back in, and check progress in the log.
 
 ```{bash eval=FALSE}
 cat ~/SEAsnake/log/SEAsnake_step1.log
