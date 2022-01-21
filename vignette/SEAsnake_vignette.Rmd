@@ -213,7 +213,7 @@ cd ~/SEAsnake
 
 ### Step 1
 
-Next, run SEAsnake step 1. This completes initial sequence quality assessment, directory structure setup, and config file creation. *Note that `nohup` and piping into a log file means nothing will appear in your terminal window. This prevents timeout and retains all messages and errors in the log.*
+Next, run SEAsnake step 1. This completes initial sequence quality assessment, directory structure setup, and config file creation. *Note that `nohup` and piping into a log file means nothing will appear in your terminal window. This prevents timeout and retains all messages and errors in the log file.*
 
 ```{bash eval=FALSE}
 nohup snakemake --snakefile Snakefile_step1 --cores $cores >> log/SEAsnake_step1.log 2>&1
@@ -279,7 +279,27 @@ grViz(diagram = "digraph flowchart {
 Once step 1 is complete, you will see the command prompt `$` re-appear in your console. If you want to check progress or the terminal window times out, open a new window, log back in, and check progress in the log.
 
 ```{bash eval=FALSE}
-cat ~/SEAsnake/log/SEAsnake_step1.log
+tail ~/SEAsnake/log/SEAsnake_step1.log
+```
+
+Or ask SEAsnake to summarize how many tasks need to still be completed. The `-n` flag is a "dry run" where SEAsnake does not actually run anything.
+
+```{bash eval=FALSE}
+conda activate SEAsnake
+snakemake --snakefile ~/SEAsnake/Snakefile_step1 -n
+```
+
+You'll see something like this. This example shows that 2 of the fastq files still need to complete FastQC.
+
+```
+Job stats:
+job           count    min threads    max threads
+----------  -------  -------------  -------------
+all               1              1              1
+fastqc_raw        2              1              1
+total             3              1              1
+
+This was a dry-run (flag -n). The order of jobs does not reflect the order of execution.
 ```
 
 ### Customize config
@@ -333,8 +353,8 @@ cores: 15
 * Alignment metrics
   - picard: This program provides additional alignment quality metrics listed [here](http://broadinstitute.github.io/picard/picard-metric-definitions.html#RnaSeqMetrics). If you do not need these metrics, set to False.
 * threads
-  - This sets the maximum number of threads **per job**. The default it 1 as we assume you have 1 core per sample, and SEAsnake runs as many samples as possible in parallel.
-  - Since SEAsnake is run on multiple threads using the `--cores` parameter, the total threads used on your machine is equal to `threads`\*`cores`. If you have more cores than samples, you can increase this parameter in the config file. For example, if you have 16 cores and 3 samples, you could use `threads=5` and `cores=15` because 5\*3 samples = 15 cores.
+  - This sets the maximum number of threads **per job** as opposed to the SEAsnake `--cores` parameter which sets the maximum number of cores to run jobs on in parallel. The total cores being used is threads * cores.
+  - By default, threads is your total CPU minus 1 and is automatically scaled for each step in SEAsnake based on its individual requirements. You should not need to change this but can reduce it if you experience issues with running out of CPU or RAM space.
   - *MAC and WINDOWS*: Auto core detection may not work. Please verify that the config file contains a usable numeric value.
   
 You can also find a more thorough introduction to quality assessment in our [first tutorial](https://github.com/BIGslu/tutorials/blob/main/RNAseq/1.Hawn_RNAseq_fastq.to.counts.pdf).
@@ -344,14 +364,41 @@ You can also find a more thorough introduction to quality assessment in our [fir
 Run SEAsnake step 2. This completes adapter trimming, alignment, filtering, quality assesment, and exon counting.
 
 ```{bash eval=FALSE}
-## Run step 2 to filter, align, assess, and count sequences
 nohup snakemake --snakefile Snakefile_step2 --cores $cores >> log/SEAsnake_step2.log 2>&1
 ```
 
-This step will likely timeout. Because of `nohup`, you can close the terminal at any time and SEAsnake will continue to run. To check its process, simply log back in and review the log.
+This step will take quite some time to run. Because of `nohup`, you can close the terminal at any time and SEAsnake will continue to run. Check in on progress using the log or `-n` flag as you did for step 1.
+
+For example,
 
 ```{bash eval=FALSE}
-cat ~/SEAsnake/log/SEAsnake_step2.log
+tail ~/SEAsnake/log/SEAsnake_step2.log
+```
+
+```{bash eval=FALSE}
+conda activate SEAsnake
+snakemake --snakefile ~/SEAsnake/Snakefile_step2 -n
+```
+
+Which gives something like the following.
+
+```
+Job stats:
+job               count    min threads    max threads
+--------------  -------  -------------  -------------
+STAR_align            2              1              1
+STAR_index            1              1              1
+adapterremoval        2              1              1
+align_filter          2              1              1
+all                   1              1              1
+combine               1              1              1
+fastqc_trim           4              1              1
+fcount                2              1              1
+flagstat              2              1              1
+picard                2              1              1
+total                19              1              1
+
+This was a dry-run (flag -n). The order of jobs does not reflect the order of execution.
 ```
 
 ### Save results
