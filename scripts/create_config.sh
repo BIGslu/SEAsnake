@@ -51,7 +51,7 @@ release: '105'
 picard: True
 
 # Other
-cores: $cores2
+threads: $cores2
 " >> result/config.yaml
 
 # Setup directory structure

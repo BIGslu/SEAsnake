@@ -40,7 +40,7 @@ rule adapterremoval:
         trimAdapt = config["trimAdapt"],
         adapter1 = config["adapter1"],
         adapter2 = config["adapter2"]
-    threads: config["cores"] * 0.1
+    threads: config["threads"] * 0.1
     message: "Adapter removal & quality filtering"
 
     run: 
@@ -76,7 +76,7 @@ rule STAR_index:
     output: directory(expand('ref/release{release}/STARindex', release=config["release"]))
     params:
         release = config["release"]
-    threads: config["cores"]
+    threads: config["threads"]
     message: "Generating genome index"
     run:
         shell("scripts/STAR_index.sh {params.release} {threads}")
@@ -89,7 +89,7 @@ rule STAR_align:
     output: 'result/2_bam/{sample}_Aligned.sortedByCoord.out.bam'
     params:
         OUT = 'result/2_bam/{sample}_'
-    threads: config["cores"] * 0.1
+    threads: config["threads"] * 0.1
     message: 'Aligning reads'
     shell:
         """
@@ -105,7 +105,7 @@ rule STAR_align:
 rule align_filter:
     input: 'result/2_bam/{sample}_Aligned.sortedByCoord.out.bam'
     output: 'result/3_bam_filter/{sample}_Aligned.sortedByCoord.filter.bam'
-    threads: config["cores"] * 0.1
+    threads: config["threads"] * 0.1
     message: "Filtering alignments"
     run:
         shell("samtools view {input} -h -f 3 -F 1284 -q 30 -@ {threads} > {output}")
@@ -117,7 +117,7 @@ rule align_filter:
 rule flagstat:
     input: 'result/3_bam_filter/{sample}_Aligned.sortedByCoord.filter.bam'
     output: 'result/qc/3_flagstat/{sample}_flagstat.tsv'
-    threads: config["cores"] * 0.1
+    threads: config["threads"] * 0.1
     message: "Quality control, flagstat"
     run:
         shell("samtools flagstat -@ {threads} {input} > {output}")
@@ -147,7 +147,7 @@ rule fcount:
     output: 'result/4_count/{sample}_feature_counts.tsv'
     params:
         gtf = 'ref/release' + config["release"] + '/STARref/Homo_sapiens.GRCh38.' + config["release"] + '.gtf'
-    threads: config["cores"] * 0.1
+    threads: config["threads"] * 0.1
     message: "Counting features"
     run:
         shell("featureCounts -T {threads} -g gene_id -t exon -p \
