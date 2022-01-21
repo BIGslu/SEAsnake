@@ -367,7 +367,7 @@ Run SEAsnake step 2. This completes adapter trimming, alignment, filtering, qual
 nohup snakemake --snakefile Snakefile_step2 --cores $cores >> log/SEAsnake_step2.log 2>&1
 ```
 
-This step will take quite some time to run. Because of `nohup`, you can close the terminal at any time and SEAsnake will continue to run. Check in on progress using the log or `-n` flag as you did for step 1.
+This step can take quite some time to run. Because of `nohup`, you can close the terminal at any time and SEAsnake will continue to run. Check in on progress in a new terminal window using the log or `-n` flag as you did for step 1.
 
 For example,
 
