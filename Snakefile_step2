@@ -40,7 +40,7 @@ rule adapterremoval:
         trimAdapt = config["trimAdapt"],
         adapter1 = config["adapter1"],
         adapter2 = config["adapter2"]
-    threads: config["threads"]
+    threads: config["cores"] * 0.1
     message: "Adapter removal & quality filtering"
 
     run: 
@@ -60,7 +60,7 @@ rule fastqc_trim:
     output:
         HTML = 'result/qc/2_fastqc_trim/{sample}_{suf}_fastqc.html',
         ZIP = 'result/qc/2_fastqc_trim/{sample}_{suf}_fastqc.zip'
-    threads: config["threads"]
+    threads: 1
     message: "Quality assessment, FastQC"
     shell:
         """
@@ -89,7 +89,7 @@ rule STAR_align:
     output: 'result/2_bam/{sample}_Aligned.sortedByCoord.out.bam'
     params:
         OUT = 'result/2_bam/{sample}_'
-    threads: config["threads"]
+    threads: config["cores"] * 0.1
     message: 'Aligning reads'
     shell:
         """
@@ -117,7 +117,7 @@ rule align_filter:
 rule flagstat:
     input: 'result/3_bam_filter/{sample}_Aligned.sortedByCoord.filter.bam'
     output: 'result/qc/3_flagstat/{sample}_flagstat.tsv'
-    threads: config["threads"]
+    threads: config["cores"] * 0.1
     message: "Quality control, flagstat"
     run:
         shell("samtools flagstat -@ {threads} {input} > {output}")
@@ -147,7 +147,7 @@ rule fcount:
     output: 'result/4_count/{sample}_feature_counts.tsv'
     params:
         gtf = 'ref/release' + config["release"] + '/STARref/Homo_sapiens.GRCh38.' + config["release"] + '.gtf'
-    threads: config["threads"]
+    threads: config["cores"] * 0.1
     message: "Counting features"
     run:
         shell("featureCounts -T {threads} -g gene_id -t exon -p \
@@ -166,7 +166,7 @@ rule combine:
         counts_all = 'result/5_combined/combined_feature_counts.tsv',
         flag_all = 'result/5_combined/combined_flagstat.tsv',
         pic_all = 'result/5_combined/combined_picard.tsv'
-    threads: config["threads"]
+    threads: 1
     message: "Combining samples"
     benchmark: 'log/fcount/combine.benchmark.txt'
     run:

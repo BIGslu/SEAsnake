@@ -51,7 +51,6 @@ release: '105'
 picard: True
 
 # Other
-threads: 1
 cores: $cores2
 " >> result/config.yaml
 
