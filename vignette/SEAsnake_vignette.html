@@ -429,8 +429,8 @@ cd ~/SEAsnake</code></pre>
 <p>Next, run SEAsnake step 1. This completes initial sequence quality assessment, directory structure setup, and config file creation. <em>Note that <code>nohup</code> and piping into a log file means nothing will appear in your terminal window. This prevents timeout and retains all messages and errors in the log file.</em></p>
 <pre class="bash"><code>nohup snakemake --snakefile Snakefile_step1 --cores $cores &gt;&gt; log/SEAsnake_step1.log 2&gt;&amp;1</code></pre>
 <p>Your directory structure will look like</p>
-<div id="htmlwidget-46b5f5f2ed4f814b17fe" style="width:672px;height:576px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-46b5f5f2ed4f814b17fe">{"x":{"diagram":"digraph flowchart {\n  graph[rankdir = LR]\n  node [fontname = arial, shape = retangle, fontsize=10, height=0.1]\n  dir1 [label = \"SEAsnake/\"]\n  dir2 [label = \"data/\"]\n  dir3 [label = \"1_trim/\"]\n  dir4 [label = \"2_bam/\"]\n  dir5 [label = \"3_bam_filter/\"]\n  dir6 [label = \"4_count/\"]\n  dir7 [label = \"5_combined/\"]\n  dir8 [label = \"qc/\"]\n  dir9 [label = \"1_fastqc_raw/\"]\n  dir10 [label = \"2_fastqc_trim/\"]\n  dir11 [label = \"3_flagstat/\"]\n  dir12 [label = \"4_picard/\"]\n  dir13 [label = \"log/\"]\n  dir14 [label = \"ref/\"]\n  dir15 [label = \"result/\"]\n  dir16 [label = \"PICARDref/\"]\n  dir17 [label = \"release###/\"]\n  dir18 [label = \"STARindex/\"]\n  dir19 [label = \"STARref/\"]\n\n  dir1 -> dir15,dir2,dir13,dir14;\n  dir15 -> dir3,dir4,dir5,dir6,dir7,dir8;\n  dir8 -> dir9,dir10,dir11,dir12;\n  dir14 -> dir16,dir17;\n  dir17 -> dir18,dir19;\n  }","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-28b7dcaf64433daaa81f" style="width:672px;height:576px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-28b7dcaf64433daaa81f">{"x":{"diagram":"digraph flowchart {\n  graph[rankdir = LR]\n  node [fontname = arial, shape = retangle, fontsize=10, height=0.1]\n  dir1 [label = \"SEAsnake/\"]\n  dir2 [label = \"data/\"]\n  dir3 [label = \"1_trim/\"]\n  dir4 [label = \"2_bam/\"]\n  dir5 [label = \"3_bam_filter/\"]\n  dir6 [label = \"4_count/\"]\n  dir7 [label = \"5_combined/\"]\n  dir8 [label = \"qc/\"]\n  dir9 [label = \"1_fastqc_raw/\"]\n  dir10 [label = \"2_fastqc_trim/\"]\n  dir11 [label = \"3_flagstat/\"]\n  dir12 [label = \"4_picard/\"]\n  dir13 [label = \"log/\"]\n  dir14 [label = \"ref/\"]\n  dir15 [label = \"result/\"]\n  dir16 [label = \"PICARDref/\"]\n  dir17 [label = \"release###/\"]\n  dir18 [label = \"STARindex/\"]\n  dir19 [label = \"STARref/\"]\n\n  dir1 -> dir15,dir2,dir13,dir14;\n  dir15 -> dir3,dir4,dir5,dir6,dir7,dir8;\n  dir8 -> dir9,dir10,dir11,dir12;\n  dir14 -> dir16,dir17;\n  dir17 -> dir18,dir19;\n  }","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 <p>Once step 1 is complete, you will see the command prompt <code>$</code> re-appear in your console. If you want to check progress or the terminal window times out, open a new window, log back in, and check progress in the log.</p>
 <pre class="bash"><code>tail ~/SEAsnake/log/SEAsnake_step1.log</code></pre>
 <p>Or ask SEAsnake to summarize how many tasks need to still be completed. The <code>-n</code> flag is a “dry run” where SEAsnake does not actually run anything.</p>
@@ -513,14 +513,14 @@ cores: 15</code></pre>
 </div>
 <div id="step-2" class="section level3">
 <h3>Step 2</h3>
-<p>Run SEAsnake step 2. This completes adapter trimming, alignment, filtering, quality assesment, and exon counting.</p>
+<p>Run SEAsnake step 2. This completes adapter trimming, alignment, filtering, quality assessment, and exon counting.</p>
 <pre class="bash"><code>nohup snakemake --snakefile Snakefile_step2 --cores $cores &gt;&gt; log/SEAsnake_step2.log 2&gt;&amp;1</code></pre>
 <p>This step can take quite some time to run. Because of <code>nohup</code>, you can close the terminal at any time and SEAsnake will continue to run. Check in on progress in a new terminal window using the log or <code>-n</code> flag as you did for step 1.</p>
-<p>For example,</p>
+<p>For example, the log</p>
 <pre class="bash"><code>tail ~/SEAsnake/log/SEAsnake_step2.log</code></pre>
+<p>or SEAsnake dry run</p>
 <pre class="bash"><code>conda activate SEAsnake
 snakemake --snakefile ~/SEAsnake/Snakefile_step2 -n</code></pre>
-<p>Which gives something like the following.</p>
 <pre><code>Job stats:
 job               count    min threads    max threads
 --------------  -------  -------------  -------------
