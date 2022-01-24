@@ -89,7 +89,7 @@ rule STAR_align:
     output: 'result/2_bam/{sample}_Aligned.sortedByCoord.out.bam'
     params:
         OUT = 'result/2_bam/{sample}_'
-    threads: config["threads"] * 0.1
+    threads: config["threads"] * 0.5
     message: 'Aligning reads'
     shell:
         """
