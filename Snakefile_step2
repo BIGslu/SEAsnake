@@ -93,11 +93,20 @@ rule STAR_align:
     message: 'Aligning reads'
     shell:
         """
-        STAR --genomeDir {input.IDX} --runThreadN {threads} --runRNGseed 8756 --genomeLoad LoadAndExit
+        #STAR --genomeDir {input.IDX} --runThreadN {threads} --runRNGseed 8756 --genomeLoad LoadAndExit
         STAR --genomeDir {input.IDX} --readFilesIn {input.R1} {input.R2} --readFilesCommand zcat --outFileNamePrefix {params.OUT} --outSAMtype BAM SortedByCoordinate --runThreadN {threads} --runRNGseed 8756 --genomeLoad LoadAndKeep --limitBAMsortRAM 20000000000
-        STAR --genomeDir {input.IDX} --runThreadN {threads} --runRNGseed 8756 --genomeLoad Remove
         """
-
+  
+rule STAR_remove:
+    input:
+        BAM = expand("result/2_bam/{sample}_Aligned.sortedByCoord.out.bam", sample=SAMPLES),
+        IDX = rules.STAR_index.output
+    message: 'Removing genome from RAM'
+    shell:
+        """
+        STAR --genomeDir {input.IDX} --runRNGseed 8756 --genomeLoad Remove
+        """
+        
 ##----------------------------------------##
 ## 4. ALIGNMENT FILTERING                 ##
 ##----------------------------------------##
