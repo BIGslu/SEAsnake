@@ -15,11 +15,11 @@ fasta=ref/release${release}/STARref/Homo_sapiens.GRCh38.dna.primary_assembly.fa
 SA=ref/release${release}/STARindex/SA
 
 # Setup directories
-if [ ! -e "$ref" ]; then
+if [ ! -d "$ref" ]; then
     mkdir -p ref/release${release}/STARref
 fi
 
-if [ ! -e "$index" ]; then
+if [ ! -d "$index" ]; then
     mkdir -p ref/release${release}/STARindex
 fi
 
