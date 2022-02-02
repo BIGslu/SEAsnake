@@ -40,10 +40,8 @@ else
 fi
 
 # Make index if not present
-if [ ! -e "$SA" ]; then
-    outDir=ref/release${release}/STARindex
-    
-    STAR --runMode genomeGenerate --genomeDir ${outDir} --genomeFastaFiles ref/release${release}/STARref/Homo_sapiens.GRCh38.dna.primary_assembly.fa --sjdbGTFfile ref/release${release}/STARref/Homo_sapiens.GRCh38.${release}.gtf --sjdbOverhang 99 --runThreadN ${threads}
+if [ ! -e "$SA" ]; then  
+    STAR --runMode genomeGenerate --genomeDir ${index} --genomeFastaFiles ref/release${release}/STARref/Homo_sapiens.GRCh38.dna.primary_assembly.fa --sjdbGTFfile ref/release${release}/STARref/Homo_sapiens.GRCh38.${release}.gtf --sjdbOverhang 99 --runThreadN ${threads}
 else
     echo "Genome index already exists. No new index created."
 fi
