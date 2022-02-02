@@ -8,13 +8,22 @@
 release="$1"
 threads="$2"
 
+ref=ref/release${release}/STARref
+index=ref/release${release}/STARindex
+gtf=ref/release${release}/STARref/Homo_sapiens.GRCh38.${release}.gtf
+fasta=ref/release${release}/STARref/Homo_sapiens.GRCh38.dna.primary_assembly.fa
+SA=ref/release${release}/STARindex/SA
+
 # Setup directories
-mkdir -p ref/release${release}/STARref
-mkdir -p ref/release${release}/STARindex
+if [ ! -e "$ref" ]; then
+    mkdir -p ref/release${release}/STARref
+fi
+
+if [ ! -e "$index" ]; then
+    mkdir -p ref/release${release}/STARindex
+fi
 
 # Download gtf if not present
-gtf=ref/release${release}/STARref/Homo_sapiens.GRCh38.${release}.gtf
-
 if [ ! -e "$gtf" ]; then
     sudo curl -O --output-dir ref/release${release}/STARref ftp://ftp.ensembl.org/pub/release-${release}/gtf/homo_sapiens/Homo_sapiens.GRCh38.${release}.gtf.gz
     yes y | gunzip ref/release${release}/STARref/*gtf.gz
@@ -23,8 +32,6 @@ else
 fi
 
 # Download fasta if not present
-fasta=ref/release${release}/STARref/Homo_sapiens.GRCh38.dna.primary_assembly.fa
-
 if [ ! -e "$fasta" ]; then
     sudo curl -O --output-dir ref/release${release}/STARref ftp://ftp.ensembl.org/pub/release-${release}/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz
     yes y | gunzip ref/release${release}/STARref/*fa.gz
@@ -33,8 +40,6 @@ else
 fi
 
 # Make index if not present
-SA=ref/release${release}/STARindex/SA
-
 if [ ! -e "$SA" ]; then
     outDir=ref/release${release}/STARindex
     
