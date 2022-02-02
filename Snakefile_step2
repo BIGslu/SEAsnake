@@ -60,7 +60,7 @@ rule fastqc_trim:
     output:
         HTML = 'result/qc/2_fastqc_trim/{sample}_{suf}_fastqc.html',
         ZIP = 'result/qc/2_fastqc_trim/{sample}_{suf}_fastqc.zip'
-    threads: 1
+    threads: config["threads"] * 0.1
     message: "Quality assessment, FastQC"
     shell:
         """
