@@ -41,16 +41,31 @@ Here, we provide an example of how to install and run SEAsnake on human bulk RNA
 
 # Software
 ## Resource requirements
+### Compute
 
-**CPU**: Many of the steps in SEAsnake run in parallel. Thus, the time to run the pipeline on 2 CPUs is roughly half of 1 CPU (not counting non-parallel processes like genome indexing). Thus, you could run as many CPUs as you have fastq files. However, this is not recommended as there is a trade-off with RAM usage.
+**CPU (aka cores)**: Many of the steps in SEAsnake run in parallel. Thus, the time to run the pipeline on 2 CPUs is roughly half of 1 CPU (not counting non-parallel processes like genome indexing). Thus, you could run as many CPUs as you have fastq files. However, this may not always be recommended as there is a trade-off with RAM usage.
 
 **RAM**: Estimating RAM usage is difficult. The most impactful values to consider are number of CPUs, fastq file size, and reference genome size. Each CPU uses equivalent RAM for parallel jobs. So 2 CPUs require twice the RAM as 1 CPU. Sample and genome size also contribute as larger files use more RAM on each CPU being run. The most common pipeline failure is running out of RAM, so when in doubt, choose the larger option.
 
+**Our recommendation**: We follow a general rule of CPU = fastqs / 3 and RAM = CPU * 3 + 40 where each CPU gets 3 GB of RAM and there is an additional 40 GB for the genome. If your fastq are large (> 5 GB), you may need to increase the CPU factor for RAM calculation. For us, the exact number of CPUs depends on what is available on AWS, and these parameters are commonly met by `m5` instance types.
+
+*Note that indexing the human genome requires a minimum of 40 GB of RAM, so do not go below this if you need to complete that step.*
+
+### Storage
+
 **Storage**: SEAsnake itself is a small program (< 150 MB). Thus, storage needs depend almost entirely on your sample size and sequencing depth of those samples. Larger raw fastq result in larger result files.
 
-**Our recommendations**: We follow a general rule of CPU = fastqs / 3 and RAM = CPU * 2 + 40 where each CPU gets 2 GB of RAM and there is an additional 40 GB for the human genome. If your fastq are large (> 5 GB), you may need to increase the CPU factor to 2.5 or 3. The exact number of CPUs depends on what is available on AWS, and these parameters are commonly met by `m5` instance types. For storage, we recommend 65 GB per 10 fastq files. This comes to roughly 1 TB for 150 fastq or 75 paired-end samples.
+**Our recommendation**: We recommend 25 GB per 1 fastq file. This comes to roughly 1 TB for 40 fastq or 20 paired-end samples. If you are using `aws sync` to load fastq and/or reference files, these do not contribute to the storage load and can be subtracted from your estimate. Again values may need to be scaled up if your original fastq tend to be larger than 5 GB.
 
-Note that indexing the human genome requires a minimum of 40 GB of RAM, so do not go below this if you need to complete that step.
+### Time
+
+SEAsnake step 1 completes 1 fastq in 30 to 45 min. Since this step is run in parallel, your estimated completion time is equal to the number of fastq / CPU run in parallel * 0.75 hours. For example using our recommended compute size, if you have 40 fastq and run on 40 / 3 = 14 cores, this is 40 / 14 * 0.75 = 2.1 hours.
+
+SEAsnake step 2 completes 1 set of paired end fastq in roughly 10 hours. Using the same example, if you have 40 fastq from 20 paired end samples running on 14 cores, this is 20 / 14 * 10 = 14.3 hours. Non-paired end samples takes about half the time.
+
+Step 2 will take less time if you do not have adapter contamination requiring alignment in `AdapterRemoval` (- 1 hour per single fastq or paired-end sample) or if you already have an indexed reference genome for `STAR` (- 1 hour from total time).
+
+We are working on improving speed so please check for updates periodically.
 
 ## AWS installation
 
@@ -97,6 +112,7 @@ echo $ebs_name
 ## Format volume
 sudo mkfs -t ext4 /dev/$ebs_name
 ## Attach SEAsnake directory to volume
+sudo mkdir -p ~/SEAsnake
 sudo mount /dev/$ebs_name ~/SEAsnake
 ## Change permissions to read-write
 sudo chmod 777 -R ~/SEAsnake/
@@ -148,7 +164,7 @@ git clone https://github.com/BIGslu/SEAsnake ~/SEAsnake
 mamba env create --name SEAsnake --file ~/SEAsnake/environment/Hissss_env.yaml
 ```
 
-## Updating SEAsnake
+## Update SEAsnake
 
 If you previously installed SEAsnake, you can update it by pulling the latest version from GitHub.
 
@@ -276,17 +292,21 @@ grViz(diagram = "digraph flowchart {
   ")
 ```
 
-Once step 1 is complete, you will see the command prompt `$` re-appear in your console. If you want to check progress or the terminal window times out, open a new window, log back in, and check progress in the log.
+Once step 1 is complete, you will see the command prompt `$` re-appear in your console.
+
+### Checking progress
+
+If you want to check progress, open a new window, log in to the instance running SEAsnake, and check progress in the log.
 
 ```{bash eval=FALSE}
 tail ~/SEAsnake/log/SEAsnake_step1.log
 ```
 
-Or ask SEAsnake to summarize how many tasks need to still be completed. The `-n` flag is a "dry run" where SEAsnake does not actually run anything.
+Or ask SEAsnake to summarize how many tasks need to still be completed. The `-n` flag is a "dry run" where SEAsnake does not actually run anything. In addition, `--rerun-incomplete` causes SEAsnake to count processes that are not yet complete.
 
 ```{bash eval=FALSE}
 conda activate SEAsnake
-snakemake --snakefile ~/SEAsnake/Snakefile_step1 -n
+snakemake --snakefile ~/SEAsnake/Snakefile_step1 -n --rerun-incomplete
 ```
 
 You'll see something like this. This example shows that 2 of the fastq files still need to complete FastQC.
@@ -304,7 +324,7 @@ This was a dry-run (flag -n). The order of jobs does not reflect the order of ex
 
 ### Customize config
 
-Step 1 creates `result/config.yaml` which allows some customization of the workflow. You may wish to change some defaults. Below is an example from the vignette data with all defaults. 
+Step 1 creates `result/config.yaml` which allows some customization of the workflow. Below is an example from the vignette data with all defaults. 
 
 ```
 SampleList:
@@ -340,20 +360,22 @@ cores: 15
 
 #### Customizaton options
 
+You may wish to change some defaults. 
+
 * SampleList
   - SEAsnake lists all `fastq.gz` from the `data/` directory and will run the pipeline for all of these samples. To remove a sample, simply remove the 4 lines relevant to that sample. To rename result files for a sample, change the "sample" field. 
 * Adapter removal
-  - trim5p: Number of base pairs to trim from the 5' end. You determine this from FastQC "Per base sequence content". For example, this sample appears to have disproportionately high calls up to 15 bp. This supports trimming the first 15 bp of these sequences (default).
+  - `trim5p`: Number of base pairs to trim from the 5' end. You determine this from FastQC "Per base sequence content". For example, this sample appears to have disproportionately high calls up to 15 bp. This supports trimming the first 10 bp of these sequences (default).
   - ![](figs/per_base_sequence_content_raw.png){width=50%}
-  - trimAdapt: Sequencing adapters may also exist at the 3' end. These can be seen in FastQC "Adapter content". You remove these by aligning to adapter sequences provided in the config file. Default are Illumina Universal adapters but you can provide any adapter sequence.
-  - If you do not see 3' adapter contamination, **set trimAdapt to False**! You can leave the adapter sequences as is as they will not be used with the False setting. This dramatically speeds up adapter trimming.
+  - `trimAdapt`: Sequencing adapters may also exist in the data. These can be seen in FastQC "Adapter content". You remove these by aligning to adapter sequences provided in the config file. Default are Illumina Universal adapters but you can provide any adapter sequence.
+  - If you do not see adapter contamination, **set trimAdapt to False**! You can leave the adapter sequences as is as they will not be used with the False setting. This dramatically speeds up adapter trimming.
   - ![](figs/adapter_content_raw.png){width=50%}
 * Genome alignment
   - Currently SEAsnake only supports human genome alignment. Specify the ENSEMBL release to use here. 
 * Alignment metrics
-  - picard: This program provides additional alignment quality metrics listed [here](http://broadinstitute.github.io/picard/picard-metric-definitions.html#RnaSeqMetrics). If you do not need these metrics, set to False.
-* threads
-  - This sets the maximum number of threads **per job** as opposed to the SEAsnake `--cores` parameter which sets the maximum number of cores to run jobs on in parallel. The total cores being used is threads * cores.
+  - `picard`: This program provides additional alignment quality metrics listed [here](http://broadinstitute.github.io/picard/picard-metric-definitions.html#RnaSeqMetrics). If you do not need these metrics, set to False.
+* `threads`
+  - This sets the maximum number of threads **per job** as opposed to the SEAsnake `--cores` parameter which sets the maximum number of cores to run jobs in parallel. Thus, the total cores being used is threads * cores.
   - By default, threads is your total CPU minus 1 and is automatically scaled for each step in SEAsnake based on its individual requirements. You should not need to change this but can reduce it if you experience issues with running out of CPU or RAM space.
   - *MAC and WINDOWS*: Auto core detection may not work. Please verify that the config file contains a usable numeric value.
   
@@ -367,9 +389,9 @@ Run SEAsnake step 2. This completes adapter trimming, alignment, filtering, qual
 nohup snakemake --snakefile Snakefile_step2 --cores $cores >> log/SEAsnake_step2.log 2>&1
 ```
 
-This step can take quite some time to run. Because of `nohup`, you can close the terminal at any time and SEAsnake will continue to run. Check in on progress in a new terminal window using the log or `-n` flag as you did for step 1.
+This step can take quite some time to run. Because of `nohup`, you can close the terminal at any time and SEAsnake will continue to run. Check in on progress in a new terminal window using the log or `-n --rerun-incomplete` flags as you did for step 1.
 
-For example, the log
+For example, a log
 
 ```{bash eval=FALSE}
 tail ~/SEAsnake/log/SEAsnake_step2.log
@@ -379,7 +401,7 @@ or SEAsnake dry run
 
 ```{bash eval=FALSE}
 conda activate SEAsnake
-snakemake --snakefile ~/SEAsnake/Snakefile_step2 -n
+snakemake --snakefile ~/SEAsnake/Snakefile_step2 -n --rerun-incomplete
 ```
 
 ```
@@ -406,6 +428,7 @@ This was a dry-run (flag -n). The order of jobs does not reflect the order of ex
 Once complete, save your `result/` and `log/` directories because these will be lost once your stop your EC2 instance. We recommend using `aws s3 sync` to save to an S3 bucket like so.
 
 ```{bash eval=FALSE}
+RESULT_BUCKET="MY_RESULT_BUCKET"
 aws s3 sync ~/SEAsnake/result/* s3://RESULT_BUCKET
 aws s3 sync ~/SEAsnake/log/* s3://RESULT_BUCKET
 ```
@@ -451,6 +474,16 @@ Picard alignment metrics.
 ```{r message=FALSE, echo=FALSE, warning=FALSE}
 read_tsv("result/5_combined/combined_picard.tsv") %>% head()
 ```
+
+# Troubleshooting
+
+#### Running out of RAM
+
+This is the most common error and results in error messages in the log like `Out of memory` or `std::bad_alloc`. You can use less RAM by reducing the number of `--cores` in the snakemake call and re-running the step that failed with the addition of `--rerun-incomplete` to fix any files that were currently running when RAM crashed.
+
+#### Running out of storage
+
+You can see how much space is available on your instance with `df -h`. When there is no more writable space in the SEAsnake directory, you'll see errors in the log such as `No space left on device`. Since snakemake workflows decide on what to run based on the outputs already present, you need to add/create a larger volume, copy your ENTIRE SEAsnake directory to it, and re-run the failed call with the addition of `--rerun-incomplete`.
 
 # Contribute to SEAsnake
 
