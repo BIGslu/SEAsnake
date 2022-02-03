@@ -491,6 +491,6 @@ SEAsnake is an open source workflow. We would love your feedback including error
 
 # Cite SEAsnake
 
-Coming soon!
+Dill-McFarland KA, Benson B, Segnitz RM. 2022. SEAsnake: a pipeline for RNA-seq from fastq to counts. DOI: [10.5281/zenodo.5790287](https://github.com/BIGslu/SEAsnake)
 
 ***
