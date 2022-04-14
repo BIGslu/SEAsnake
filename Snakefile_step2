@@ -71,11 +71,12 @@ rule fastqc_trim:
 rule STAR_index:
     output: directory(expand('ref/release{release}/STARindex', release=config["release"]))
     params:
-        release = config["release"]
+        release = config["release"],
+        species = config["species"]
     threads: config["threads"]
     message: "Generating genome index"
     run:
-        shell("scripts/STAR_index.sh {params.release} {threads}")
+        shell("scripts/STAR_index.sh {params.release} {params.species} {threads}")
   
 rule STAR_align:
     input:
@@ -134,7 +135,7 @@ rule picard:
 rule fcount:
     input:
         bam = 'result/3_bam_filter/{samples}_Aligned.sortedByCoord.filter.bam',
-        gtf =  'ref/release' + config["release"] + '/STARref/Homo_sapiens.GRCh38.' + config["release"] + '.gtf'
+        gtf =  'ref/release' + config["release"] + '/STARref/' + config["genome"] + config["release"] + '.gtf'
     output: 'result/4_count/{samples}_feature_counts.tsv'
     threads: config["threads"]
     message: "Counting features"

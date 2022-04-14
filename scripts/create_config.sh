@@ -43,7 +43,9 @@ adapter1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC
 adapter2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT
 
 # Genome alignment
-## Human genome release number
+## Species. 'human' or 'mouse' allowed
+species: 'human'
+## Genome release number
 release: '104'
 
 # Alignment metrics
