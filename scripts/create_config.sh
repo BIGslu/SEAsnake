@@ -43,10 +43,8 @@ adapter1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC
 adapter2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT
 
 # Genome alignment
-## Species. 'human' or 'mouse' allowed
-species: 'human'
-## Genome release number
-release: '104'
+## Species the format 'Homo_sapiens.GRCh38' or 'Mus_musculus.GRCm39'
+genome: 'Homo_sapiens.GRCh38'
 
 # Alignment metrics
 ## Run Picard?

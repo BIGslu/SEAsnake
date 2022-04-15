@@ -69,20 +69,22 @@ rule fastqc_trim:
 ##----------------------------------------##
 
 rule STAR_index:
-    output: directory(expand('ref/release{release}/STARindex', release=config["release"]))
+    output: 
+        STARindex = directory(expand('ref/release{release}/STARindex', release=config["release"])),
+        gtf = 'ref/release' + config["release"] + '/STARref/' + config["genome"] + '.' + config["release"] + '.gtf'
     params:
         release = config["release"],
-        species = config["species"]
+        genome = config["genome"]
     threads: config["threads"]
     message: "Generating genome index"
     run:
-        shell("scripts/STAR_index.sh {params.release} {params.species} {threads}")
+        shell("scripts/STAR_index.sh {params.release} {params.genome} {threads}")
   
 rule STAR_align:
     input:
         R1 = "result/1_trim/{samples}_R1_trim.fastq.gz",
         R2 = "result/1_trim/{samples}_R2_trim.fastq.gz",
-        IDX = rules.STAR_index.output
+        IDX = rules.STAR_index.output.STARindex
     output: 'result/2_bam/{samples}_Aligned.sortedByCoord.out.bam'
     params:
         OUT = 'result/2_bam/{samples}_'
