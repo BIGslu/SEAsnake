@@ -11,13 +11,21 @@ threads="$3"
 species=(${genome//./ })
 species=`echo "$species" | awk '{print tolower($0)}'`
 
+ref=ref/release${release}/STARref
+index=ref/release${release}/STARindex
+gtf=ref/release${release}/STARref/Homo_sapiens.GRCh38.${release}.gtf
+fasta=ref/release${release}/STARref/Homo_sapiens.GRCh38.dna.primary_assembly.fa
+SA=ref/release${release}/STARindex/SA
+
 # Setup directories
-mkdir -p ref/release${release}/STARref
-mkdir -p ref/release${release}/STARindex
+if [ ! -d "$ref" ]; then
+    mkdir -p ref/release${release}/STARref
+fi
 
 # Download gtf if not present
 gtf=ref/release${release}/STARref/${genome}.${release}.gtf
 
+# Download gtf if not present
 if [ ! -e "$gtf" ]; then
     sudo curl -s -O --output-dir ref/release${release}/STARref ftp://ftp.ensembl.org/pub/release-${release}/gtf/${species}/${genome}.${release}.gtf.gz
     yes y | gunzip ref/release${release}/STARref/*gtf.gz

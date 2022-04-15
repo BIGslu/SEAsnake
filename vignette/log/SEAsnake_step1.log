@@ -1,0 +1,251 @@
+nohup: ignoring input
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 15
+Rules claiming more threads will be scaled down.
+Job stats:
+job             count    min threads    max threads
+------------  -------  -------------  -------------
+all                 1              1              1
+configscript        1              1              1
+fastqc_raw          4             15             15
+total               6              1             15
+
+Select jobs to execute...
+
+[Thu Dec 16 19:12:43 2021]
+rule fastqc_raw:
+    input: data/test_S2_L005_R2_001.fastq.gz, data/test_S1_L005_R2_001.fastq.gz, data/test_S2_L005_R1_001.fastq.gz, data/test_S1_L005_R1_001.fastq.gz
+    output: result/qc/1_fastqc_raw/test_S1_L005_R2_001_fastqc.html, result/qc/1_fastqc_raw/test_S1_L005_R2_001_fastqc.zip
+    jobid: 3
+    wildcards: sample=test_S1_L005_R2_001
+    threads: 15
+    resources: tmpdir=/tmp
+
+Started analysis of test_S2_L005_R2_001.fastq.gz
+Approx 20% complete for test_S2_L005_R2_001.fastq.gz
+Approx 40% complete for test_S2_L005_R2_001.fastq.gz
+Approx 60% complete for test_S2_L005_R2_001.fastq.gz
+Approx 80% complete for test_S2_L005_R2_001.fastq.gz
+Approx 100% complete for test_S2_L005_R2_001.fastq.gz
+Analysis complete for test_S2_L005_R2_001.fastq.gz
+Started analysis of test_S1_L005_R2_001.fastq.gz
+Approx 10% complete for test_S1_L005_R2_001.fastq.gz
+Approx 20% complete for test_S1_L005_R2_001.fastq.gz
+Approx 30% complete for test_S1_L005_R2_001.fastq.gz
+Approx 40% complete for test_S1_L005_R2_001.fastq.gz
+Started analysis of test_S2_L005_R1_001.fastq.gz
+Approx 50% complete for test_S1_L005_R2_001.fastq.gz
+Approx 20% complete for test_S2_L005_R1_001.fastq.gz
+Approx 60% complete for test_S1_L005_R2_001.fastq.gz
+Approx 40% complete for test_S2_L005_R1_001.fastq.gz
+Approx 70% complete for test_S1_L005_R2_001.fastq.gz
+Approx 60% complete for test_S2_L005_R1_001.fastq.gz
+Approx 80% complete for test_S1_L005_R2_001.fastq.gz
+Approx 80% complete for test_S2_L005_R1_001.fastq.gz
+Approx 90% complete for test_S1_L005_R2_001.fastq.gz
+Approx 100% complete for test_S2_L005_R1_001.fastq.gz
+Analysis complete for test_S2_L005_R1_001.fastq.gz
+Approx 100% complete for test_S1_L005_R2_001.fastq.gz
+Analysis complete for test_S1_L005_R2_001.fastq.gz
+Started analysis of test_S1_L005_R1_001.fastq.gz
+Approx 10% complete for test_S1_L005_R1_001.fastq.gz
+Approx 20% complete for test_S1_L005_R1_001.fastq.gz
+Approx 30% complete for test_S1_L005_R1_001.fastq.gz
+Approx 40% complete for test_S1_L005_R1_001.fastq.gz
+Approx 50% complete for test_S1_L005_R1_001.fastq.gz
+Approx 60% complete for test_S1_L005_R1_001.fastq.gz
+Approx 70% complete for test_S1_L005_R1_001.fastq.gz
+Approx 80% complete for test_S1_L005_R1_001.fastq.gz
+Approx 90% complete for test_S1_L005_R1_001.fastq.gz
+Approx 100% complete for test_S1_L005_R1_001.fastq.gz
+Analysis complete for test_S1_L005_R1_001.fastq.gz
+[Thu Dec 16 19:13:01 2021]
+Finished job 3.
+1 of 6 steps (17%) done
+Select jobs to execute...
+
+[Thu Dec 16 19:13:01 2021]
+rule fastqc_raw:
+    input: data/test_S2_L005_R2_001.fastq.gz, data/test_S1_L005_R2_001.fastq.gz, data/test_S2_L005_R1_001.fastq.gz, data/test_S1_L005_R1_001.fastq.gz
+    output: result/qc/1_fastqc_raw/test_S2_L005_R2_001_fastqc.html, result/qc/1_fastqc_raw/test_S2_L005_R2_001_fastqc.zip
+    jobid: 2
+    wildcards: sample=test_S2_L005_R2_001
+    threads: 15
+    resources: tmpdir=/tmp
+
+Warning: the following output files of rule fastqc_raw were not present when the DAG was created:
+{'result/qc/1_fastqc_raw/test_S2_L005_R2_001_fastqc.zip', 'result/qc/1_fastqc_raw/test_S2_L005_R2_001_fastqc.html'}
+Started analysis of test_S2_L005_R2_001.fastq.gz
+Approx 20% complete for test_S2_L005_R2_001.fastq.gz
+Approx 40% complete for test_S2_L005_R2_001.fastq.gz
+Approx 60% complete for test_S2_L005_R2_001.fastq.gz
+Approx 80% complete for test_S2_L005_R2_001.fastq.gz
+Approx 100% complete for test_S2_L005_R2_001.fastq.gz
+Analysis complete for test_S2_L005_R2_001.fastq.gz
+Started analysis of test_S1_L005_R2_001.fastq.gz
+Approx 10% complete for test_S1_L005_R2_001.fastq.gz
+Approx 20% complete for test_S1_L005_R2_001.fastq.gz
+Approx 30% complete for test_S1_L005_R2_001.fastq.gz
+Approx 40% complete for test_S1_L005_R2_001.fastq.gz
+Approx 50% complete for test_S1_L005_R2_001.fastq.gz
+Approx 60% complete for test_S1_L005_R2_001.fastq.gz
+Approx 70% complete for test_S1_L005_R2_001.fastq.gz
+Approx 80% complete for test_S1_L005_R2_001.fastq.gz
+Approx 90% complete for test_S1_L005_R2_001.fastq.gz
+Approx 100% complete for test_S1_L005_R2_001.fastq.gz
+Analysis complete for test_S1_L005_R2_001.fastq.gz
+Started analysis of test_S2_L005_R1_001.fastq.gz
+Approx 20% complete for test_S2_L005_R1_001.fastq.gz
+Approx 40% complete for test_S2_L005_R1_001.fastq.gz
+Approx 60% complete for test_S2_L005_R1_001.fastq.gz
+Approx 80% complete for test_S2_L005_R1_001.fastq.gz
+Approx 100% complete for test_S2_L005_R1_001.fastq.gz
+Analysis complete for test_S2_L005_R1_001.fastq.gz
+Started analysis of test_S1_L005_R1_001.fastq.gz
+Approx 10% complete for test_S1_L005_R1_001.fastq.gz
+Approx 20% complete for test_S1_L005_R1_001.fastq.gz
+Approx 30% complete for test_S1_L005_R1_001.fastq.gz
+Approx 40% complete for test_S1_L005_R1_001.fastq.gz
+Approx 50% complete for test_S1_L005_R1_001.fastq.gz
+Approx 60% complete for test_S1_L005_R1_001.fastq.gz
+Approx 70% complete for test_S1_L005_R1_001.fastq.gz
+Approx 80% complete for test_S1_L005_R1_001.fastq.gz
+Approx 90% complete for test_S1_L005_R1_001.fastq.gz
+Approx 100% complete for test_S1_L005_R1_001.fastq.gz
+Analysis complete for test_S1_L005_R1_001.fastq.gz
+[Thu Dec 16 19:13:05 2021]
+Finished job 2.
+2 of 6 steps (33%) done
+Select jobs to execute...
+
+[Thu Dec 16 19:13:05 2021]
+rule fastqc_raw:
+    input: data/test_S2_L005_R2_001.fastq.gz, data/test_S1_L005_R2_001.fastq.gz, data/test_S2_L005_R1_001.fastq.gz, data/test_S1_L005_R1_001.fastq.gz
+    output: result/qc/1_fastqc_raw/test_S2_L005_R1_001_fastqc.html, result/qc/1_fastqc_raw/test_S2_L005_R1_001_fastqc.zip
+    jobid: 4
+    wildcards: sample=test_S2_L005_R1_001
+    threads: 15
+    resources: tmpdir=/tmp
+
+Warning: the following output files of rule fastqc_raw were not present when the DAG was created:
+{'result/qc/1_fastqc_raw/test_S2_L005_R1_001_fastqc.html', 'result/qc/1_fastqc_raw/test_S2_L005_R1_001_fastqc.zip'}
+Started analysis of test_S2_L005_R2_001.fastq.gz
+Approx 20% complete for test_S2_L005_R2_001.fastq.gz
+Approx 40% complete for test_S2_L005_R2_001.fastq.gz
+Approx 60% complete for test_S2_L005_R2_001.fastq.gz
+Approx 80% complete for test_S2_L005_R2_001.fastq.gz
+Approx 100% complete for test_S2_L005_R2_001.fastq.gz
+Analysis complete for test_S2_L005_R2_001.fastq.gz
+Started analysis of test_S1_L005_R2_001.fastq.gz
+Approx 10% complete for test_S1_L005_R2_001.fastq.gz
+Approx 20% complete for test_S1_L005_R2_001.fastq.gz
+Approx 30% complete for test_S1_L005_R2_001.fastq.gz
+Approx 40% complete for test_S1_L005_R2_001.fastq.gz
+Approx 50% complete for test_S1_L005_R2_001.fastq.gz
+Approx 60% complete for test_S1_L005_R2_001.fastq.gz
+Approx 70% complete for test_S1_L005_R2_001.fastq.gz
+Approx 80% complete for test_S1_L005_R2_001.fastq.gz
+Approx 90% complete for test_S1_L005_R2_001.fastq.gz
+Approx 100% complete for test_S1_L005_R2_001.fastq.gz
+Analysis complete for test_S1_L005_R2_001.fastq.gz
+Started analysis of test_S2_L005_R1_001.fastq.gz
+Approx 20% complete for test_S2_L005_R1_001.fastq.gz
+Approx 40% complete for test_S2_L005_R1_001.fastq.gz
+Approx 60% complete for test_S2_L005_R1_001.fastq.gz
+Approx 80% complete for test_S2_L005_R1_001.fastq.gz
+Approx 100% complete for test_S2_L005_R1_001.fastq.gz
+Analysis complete for test_S2_L005_R1_001.fastq.gz
+Started analysis of test_S1_L005_R1_001.fastq.gz
+Approx 10% complete for test_S1_L005_R1_001.fastq.gz
+Approx 20% complete for test_S1_L005_R1_001.fastq.gz
+Approx 30% complete for test_S1_L005_R1_001.fastq.gz
+Approx 40% complete for test_S1_L005_R1_001.fastq.gz
+Approx 50% complete for test_S1_L005_R1_001.fastq.gz
+Approx 60% complete for test_S1_L005_R1_001.fastq.gz
+Approx 70% complete for test_S1_L005_R1_001.fastq.gz
+Approx 80% complete for test_S1_L005_R1_001.fastq.gz
+Approx 90% complete for test_S1_L005_R1_001.fastq.gz
+Approx 100% complete for test_S1_L005_R1_001.fastq.gz
+Analysis complete for test_S1_L005_R1_001.fastq.gz
+[Thu Dec 16 19:13:08 2021]
+Finished job 4.
+3 of 6 steps (50%) done
+Select jobs to execute...
+
+[Thu Dec 16 19:13:08 2021]
+rule fastqc_raw:
+    input: data/test_S2_L005_R2_001.fastq.gz, data/test_S1_L005_R2_001.fastq.gz, data/test_S2_L005_R1_001.fastq.gz, data/test_S1_L005_R1_001.fastq.gz
+    output: result/qc/1_fastqc_raw/test_S1_L005_R1_001_fastqc.html, result/qc/1_fastqc_raw/test_S1_L005_R1_001_fastqc.zip
+    jobid: 5
+    wildcards: sample=test_S1_L005_R1_001
+    threads: 15
+    resources: tmpdir=/tmp
+
+Warning: the following output files of rule fastqc_raw were not present when the DAG was created:
+{'result/qc/1_fastqc_raw/test_S1_L005_R1_001_fastqc.html', 'result/qc/1_fastqc_raw/test_S1_L005_R1_001_fastqc.zip'}
+Started analysis of test_S2_L005_R2_001.fastq.gz
+Approx 20% complete for test_S2_L005_R2_001.fastq.gz
+Approx 40% complete for test_S2_L005_R2_001.fastq.gz
+Approx 60% complete for test_S2_L005_R2_001.fastq.gz
+Approx 80% complete for test_S2_L005_R2_001.fastq.gz
+Approx 100% complete for test_S2_L005_R2_001.fastq.gz
+Analysis complete for test_S2_L005_R2_001.fastq.gz
+Started analysis of test_S1_L005_R2_001.fastq.gz
+Approx 10% complete for test_S1_L005_R2_001.fastq.gz
+Approx 20% complete for test_S1_L005_R2_001.fastq.gz
+Approx 30% complete for test_S1_L005_R2_001.fastq.gz
+Approx 40% complete for test_S1_L005_R2_001.fastq.gz
+Approx 50% complete for test_S1_L005_R2_001.fastq.gz
+Approx 60% complete for test_S1_L005_R2_001.fastq.gz
+Approx 70% complete for test_S1_L005_R2_001.fastq.gz
+Approx 80% complete for test_S1_L005_R2_001.fastq.gz
+Approx 90% complete for test_S1_L005_R2_001.fastq.gz
+Approx 100% complete for test_S1_L005_R2_001.fastq.gz
+Analysis complete for test_S1_L005_R2_001.fastq.gz
+Started analysis of test_S2_L005_R1_001.fastq.gz
+Approx 20% complete for test_S2_L005_R1_001.fastq.gz
+Approx 40% complete for test_S2_L005_R1_001.fastq.gz
+Approx 60% complete for test_S2_L005_R1_001.fastq.gz
+Approx 80% complete for test_S2_L005_R1_001.fastq.gz
+Approx 100% complete for test_S2_L005_R1_001.fastq.gz
+Analysis complete for test_S2_L005_R1_001.fastq.gz
+Started analysis of test_S1_L005_R1_001.fastq.gz
+Approx 10% complete for test_S1_L005_R1_001.fastq.gz
+Approx 20% complete for test_S1_L005_R1_001.fastq.gz
+Approx 30% complete for test_S1_L005_R1_001.fastq.gz
+Approx 40% complete for test_S1_L005_R1_001.fastq.gz
+Approx 50% complete for test_S1_L005_R1_001.fastq.gz
+Approx 60% complete for test_S1_L005_R1_001.fastq.gz
+Approx 70% complete for test_S1_L005_R1_001.fastq.gz
+Approx 80% complete for test_S1_L005_R1_001.fastq.gz
+Approx 90% complete for test_S1_L005_R1_001.fastq.gz
+Approx 100% complete for test_S1_L005_R1_001.fastq.gz
+Analysis complete for test_S1_L005_R1_001.fastq.gz
+[Thu Dec 16 19:13:12 2021]
+Finished job 5.
+4 of 6 steps (67%) done
+Select jobs to execute...
+
+[Thu Dec 16 19:13:12 2021]
+rule configscript:
+    input: scripts/create_config.sh
+    output: result/config.yaml, result/qc/2_fastqc_trim, result/qc/3_flagstat, result/qc/4_picard, result/1_trim, result/2_bam, result/3_bam_filter, result/4_count, result/5_combined
+    jobid: 1
+    resources: tmpdir=/tmp
+
+[Thu Dec 16 19:13:12 2021]
+Finished job 1.
+5 of 6 steps (83%) done
+Select jobs to execute...
+
+[Thu Dec 16 19:13:12 2021]
+localrule all:
+    input: result/config.yaml, result/qc/2_fastqc_trim, result/qc/3_flagstat, result/qc/4_picard, result/1_trim, result/2_bam, result/3_bam_filter, result/4_count, result/5_combined, result/qc/1_fastqc_raw/test_S2_L005_R2_001_fastqc.html, result/qc/1_fastqc_raw/test_S1_L005_R2_001_fastqc.html, result/qc/1_fastqc_raw/test_S2_L005_R1_001_fastqc.html, result/qc/1_fastqc_raw/test_S1_L005_R1_001_fastqc.html, result/qc/1_fastqc_raw/test_S2_L005_R2_001_fastqc.zip, result/qc/1_fastqc_raw/test_S1_L005_R2_001_fastqc.zip, result/qc/1_fastqc_raw/test_S2_L005_R1_001_fastqc.zip, result/qc/1_fastqc_raw/test_S1_L005_R1_001_fastqc.zip
+    jobid: 0
+    resources: tmpdir=/tmp
+
+[Thu Dec 16 19:13:12 2021]
+Finished job 0.
+6 of 6 steps (100%) done
+Complete log: /home/ec2-user/project/SEAsnake/.snakemake/log/2021-12-16T191235.609904.snakemake.log

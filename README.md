@@ -1,4 +1,7 @@
 # SEAsnake
+
+[![DOI](https://zenodo.org/badge/411778345.svg)](https://zenodo.org/badge/latestdoi/411778345)
+
 RNA-seq pipeline
 
 This pipeline includes quality assessment and filtering, alignment, and count table generation. Specifically,

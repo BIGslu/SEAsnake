@@ -4,9 +4,7 @@
 # Capture Samples to Config File
 #################################
 
-
 SampleList="data/*R1*"
-
 
 sudo echo "SampleList:" > result/config.yaml
 
@@ -28,12 +26,16 @@ sudo echo "    R1: '"$sample"'" >> result/config.yaml
 sudo echo "    R2: '"$sample2"'" >> result/config.yaml
 done
 
+#################################
+# Add default param to Config File
+#################################
 # Auto detect cores
 cores=$(eval nproc --all)
 cores2=$(($cores-1))
 
 # Add default param to config
 sudo echo "
+
 # Adapter removal
 ## Base pairs to trim from 5' end
 trim5p: 10
@@ -43,10 +45,12 @@ adapter1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC
 adapter2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT
 
 # Genome alignment
+
 ## Species the format 'Homo_sapiens.GRCh38' or 'Mus_musculus.GRCm39'
 genome: 'Homo_sapiens.GRCh38'
 ## Genome release number. Current as of 2022.04.14
 release: '106'
+
 
 # Alignment metrics
 ## Run Picard?
@@ -57,6 +61,7 @@ threads: $cores2
 " >> result/config.yaml
 
 # Setup directory structure
+
 sudo mkdir -p -m 777 'result/qc/1_fastqc_raw'
 sudo mkdir -p -m 777 'result/qc/2_fastqc_trim'
 sudo mkdir -p -m 777 'result/qc/3_flagstat'

@@ -64,6 +64,9 @@ if len(all_stat_file) > 0:
     all_stat = all_stat[['libID']+cols]
     ## Save
     all_stat.to_csv("result/5_combined/combined_flagstat.tsv", index=False, encoding='utf-8-sig', sep="\t")
+else:
+    no_dat = pd.DataFrame(message=["samtools flagstat not completed."])
+    no_dat.to_csv("result/5_combined/combined_flagstat.tsv", index=False, encoding='utf-8-sig', sep="\t")
 
 ##################################
 ## Picard
@@ -73,8 +76,7 @@ all_picard_file = [i for i in glob.glob('result/qc/4_picard/*.{}'.format(extensi
 
 ## Combine all files
 ### Blank df to hold results
-all_picard = pd.DataFrame(index=[])
-
+all_picard = pd.DataFrame()
 
 if len(all_picard_file) > 0:
     for f in all_picard_file:
@@ -94,4 +96,7 @@ if len(all_picard_file) > 0:
     cols.pop(cols.index('libID')) #Remove libID from list
     all_picard = all_picard[['libID']+cols]
     ## Save
-    all_picard.to_csv("result/5_combined/combined_picard.tsv", index=True, encoding='utf-8-sig', sep="\t")
+    all_picard.to_csv("result/5_combined/combined_picard.tsv", index=False, encoding='utf-8-sig', sep="\t")
+else:
+    no_dat = pd.DataFrame(message=["picard not completed."])
+    no_dat.to_csv("result/5_combined/combined_picard.tsv", index=False, encoding='utf-8-sig', sep="\t")

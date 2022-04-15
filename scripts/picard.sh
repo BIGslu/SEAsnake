@@ -8,7 +8,7 @@ input="$1"
 output="$2"
 
 # Download reference
-if [ ref/PICARDref/refFlat.ensembl.txt ]; then
+if [ -f ref/PICARDref/refFlat.ensembl.txt ]; then
   echo "Picard reference already present in ref/PICARDref."
 else
   mkdir -p ref/PICARDref
@@ -18,7 +18,6 @@ else
 
   # Remove "chr" in chromosome name to match ensembl alignment using in STAR
   sed 's/chr//' ref/PICARDref/refFlat.txt > ref/PICARDref/refFlat.ensembl.txt
-
 fi
 
 # Run Picard
