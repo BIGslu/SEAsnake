@@ -149,9 +149,13 @@ rule fcount:
 ## 7. COMBINE SAMPLES                     ##
 ##----------------------------------------##
 
+def combine_inputs(wildcards):
+    files = expand("result/4_count/{samples}_feature_counts.tsv", samples=config["SampleList"])
+    return files
+    
 rule combine:
-    output:
-        'result/4_count/combined_feature_counts.tsv'
+    input: combine_inputs
+    output: 'result/4_count/combined_feature_counts.tsv'
     threads: config["threads"]
     message: "Combining samples"
     benchmark: 'log/fcount/combine.benchmark.txt'
