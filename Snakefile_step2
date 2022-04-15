@@ -164,10 +164,10 @@ rule fcount:
         shell("featureCounts -T {threads} -g gene_id -t exon -p -a {input.gtf} -o {output} {input.bam}")
 
 ##----------------------------------------##
-## 7. COMBINE 
-##
+## 7. COMBINE SAMPLES
 ##----------------------------------------##
 
+rule combine:
     input:
         counts = expand('result/4_count/{sample}_feature_counts.tsv', sample=SAMPLES),
         flag = expand('result/qc/3_flagstat/{sample}_flagstat.tsv', sample=SAMPLES),
