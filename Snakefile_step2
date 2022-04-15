@@ -2,24 +2,23 @@ configfile: 'result/config.yaml'
 
 ## INPUTS / OUTPUTS
 SUFFIX = ["R1_trim", "R2_trim"]
-SAMPLES = config["SampleList"]
-    
-TRIM1 = expand('result/1_trim/{sample}_R1_trim.fastq.gz', sample=SAMPLES)
-TRIM2 = expand('result/1_trim/{sample}_R2_trim.fastq.gz', sample=SAMPLES)
-QC_trim_html = expand("result/qc/2_fastqc_trim/{sample}_{suf}_fastqc.html", sample=SAMPLES, suf=SUFFIX)
-QC_trim_zip = expand("result/qc/2_fastqc_trim/{sample}_{suf}_fastqc.zip", sample=SAMPLES, suf=SUFFIX)
-BAM = expand("result/2_bam/{sample}_Aligned.sortedByCoord.out.bam", sample=SAMPLES)
-BAM2 = expand("result/3_bam_filter/{sample}_Aligned.sortedByCoord.filter.bam", sample=SAMPLES)
-FLAGSTAT = expand("result/qc/3_flagstat/{sample}_flagstat.tsv", sample=SAMPLES)
-PICARD = expand("result/qc/4_picard/{sample}_picard.tsv", sample=SAMPLES)
-COUNT = expand("result/4_count/{sample}_feature_counts.tsv", sample=SAMPLES)
+QC_trim_html = expand("result/qc/2_fastqc_trim/{sample}_{suf}_fastqc.html", sample=config["SampleList"], suf=SUFFIX)
+QC_trim_zip = expand("result/qc/2_fastqc_trim/{sample}_{suf}_fastqc.zip", sample=config["SampleList"], suf=SUFFIX)
+GTF = 'ref/release' + config["release"] + '/STARref/' + config["genome"] + '.' + config["release"] + '.gtf'
+BAM = expand("result/2_bam/{sample}_Aligned.sortedByCoord.out.bam", sample=config["SampleList"])
+BAM2 = expand("result/3_bam_filter/{sample}_Aligned.sortedByCoord.filter.bam", sample=config["SampleList"])
+FLAGSTAT = expand("result/qc/3_flagstat/{sample}_flagstat.tsv", sample=config["SampleList"])
+PICARD = expand("result/qc/4_picard/{sample}_picard.tsv", sample=config["SampleList"])
+COUNT = expand("result/4_count/{sample}_feature_counts.tsv", sample=config["SampleList"])
+COUNT_all = "result/4_count/combined_feature_counts.tsv"
 
 rule all:
     input:
         TRIM1 + TRIM2 + QC_trim_html + QC_trim_zip + BAM + BAM2 + FLAGSTAT + PICARD + COUNT,
         'result/5_combined/combined_feature_counts.tsv',
         'result/5_combined/combined_flagstat.tsv',
-        'result/5_combined/combined_picard.tsv'
+        'result/5_combined/combined_picard.tsv',
+        GTF
         
 ##----------------------------------------##
 ## 1. Adapter removal & quality filtering ##
@@ -73,13 +72,16 @@ rule fastqc_trim:
 
 rule STAR_index:
     input: expand('result/qc/2_fastqc_trim/{sample}_{suf}_fastqc.html', sample=SAMPLES, suf=SUFFIX)
-    output: directory(expand('ref/release{release}/STARindex', release=config["release"]))
+    output: 
+        directory(expand('ref/release{release}/STARindex', release=config["release"])),
+        gtf = 'ref/release' + config["release"] + '/STARref/' + config["genome"] + '.' + config["release"] + '.gtf'
     params:
-        release = config["release"]
+        release = config["release"],
+        genome = config["genome"]
     threads: config["threads"]
     message: "Generating genome index"
     run:
-        shell("scripts/STAR_index.sh {params.release} {threads}")
+        shell("scripts/STAR_index.sh {params.release} {params.genome} {threads}")
   
 rule STAR_align:
     input:
@@ -152,21 +154,19 @@ rule picard:
 
 rule fcount:
     input:
-        bam = 'result/3_bam_filter/{sample}_Aligned.sortedByCoord.filter.bam'
+        bam = 'result/3_bam_filter/{sample}_Aligned.sortedByCoord.filter.bam',
+        gtf = rules.STAR_index.output.gtf
     output: 'result/4_count/{sample}_feature_counts.tsv'
-    params:
-        gtf = 'ref/release' + config["release"] + '/STARref/Homo_sapiens.GRCh38.' + config["release"] + '.gtf'
     threads: config["threads"] * 0.1
     message: "Counting features"
     run:
-        shell("featureCounts -T {threads} -g gene_id -t exon -p \
-          -a {params.gtf} -o {output} {input.bam}")
+        shell("featureCounts -T {threads} -g gene_id -t exon -p -a {input.gtf} -o {output} {input.bam}")
 
 ##----------------------------------------##
-## 7. COMBINE SAMPLES                     ##
+## 7. COMBINE 
+##
 ##----------------------------------------##
 
-rule combine:
     input:
         counts = expand('result/4_count/{sample}_feature_counts.tsv', sample=SAMPLES),
         flag = expand('result/qc/3_flagstat/{sample}_flagstat.tsv', sample=SAMPLES),
