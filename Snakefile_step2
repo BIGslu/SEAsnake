@@ -6,6 +6,7 @@ TRIM2 = expand('result/1_trim/{samples}_R2_trim.fastq.gz', samples=config["Sampl
 SUFFIX = ["R1_trim", "R2_trim"]
 QC_trim_html = expand("result/qc/2_fastqc_trim/{samples}_{suf}_fastqc.html", samples=config["SampleList"], suf=SUFFIX)
 QC_trim_zip = expand("result/qc/2_fastqc_trim/{samples}_{suf}_fastqc.zip", samples=config["SampleList"], suf=SUFFIX)
+GTF = 'ref/release' + config["release"] + '/STARref/' + config["genome"] + '.' + config["release"] + '.gtf'
 BAM = expand("result/2_bam/{samples}_Aligned.sortedByCoord.out.bam", samples=config["SampleList"])
 BAM2 = expand("result/3_bam_filter/{samples}_Aligned.sortedByCoord.filter.bam", samples=config["SampleList"])
 FLAGSTAT = expand("result/qc/3_flagstat/{samples}_flagstat.tsv", samples=config["SampleList"])
@@ -16,7 +17,7 @@ COUNT_all = "result/4_count/combined_feature_counts.tsv"
 rule all:
     input:
         TRIM1 + TRIM2 + QC_trim_html + QC_trim_zip + BAM + BAM2 + FLAGSTAT + PICARD + COUNT,
-        COUNT_all
+        COUNT_all, GTF
         
 ##----------------------------------------##
 ## 1. Adapter removal & quality filtering ##
@@ -137,13 +138,12 @@ rule picard:
 rule fcount:
     input:
         bam = 'result/3_bam_filter/{samples}_Aligned.sortedByCoord.filter.bam',
-        gtf =  'ref/release' + config["release"] + '/STARref/' + config["genome"] + config["release"] + '.gtf'
+        gtf = rules.STAR_index.output.gtf
     output: 'result/4_count/{samples}_feature_counts.tsv'
     threads: config["threads"]
     message: "Counting features"
     run:
-        shell("featureCounts -T {threads} -g gene_id -t exon -p \
-          -a {input.gtf} -o {output} {input.bam}")
+        shell("featureCounts -T {threads} -g gene_id -t exon -p -a {input.gtf} -o {output} {input.bam}")
 
 ##----------------------------------------##
 ## 7. COMBINE SAMPLES                     ##
