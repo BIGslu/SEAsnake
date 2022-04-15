@@ -8,7 +8,7 @@
 SampleList="data/*R1*"
 
 
-echo "SampleList:" > result/config.yaml
+sudo echo "SampleList:" > result/config.yaml
 
 spacer1=": "
 
@@ -21,11 +21,11 @@ sample2=`echo "${sample/R1/R2}"`
 sample_name=`echo "$(basename $sample)" | grep -o '^.*_L' | sed 's/_L$//'`
 
 # Add sample name to config
-echo "  " "$sample_name$spacer1" >> result/config.yaml
-echo "    sample: '"$sample_name"'" >> result/config.yaml
+sudo echo "  " "$sample_name$spacer1" >> result/config.yaml
+sudo echo "    sample: '"$sample_name"'" >> result/config.yaml
 # Add fastq files to config
-echo "    R1: '"$sample"'" >> result/config.yaml
-echo "    R2: '"$sample2"'" >> result/config.yaml
+sudo echo "    R1: '"$sample"'" >> result/config.yaml
+sudo echo "    R2: '"$sample2"'" >> result/config.yaml
 done
 
 # Auto detect cores
@@ -33,7 +33,7 @@ cores=$(eval nproc --all)
 cores2=$(($cores-1))
 
 # Add default param to config
-echo "
+sudo echo "
 # Adapter removal
 ## Base pairs to trim from 5' end
 trim5p: 10
@@ -45,6 +45,8 @@ adapter2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT
 # Genome alignment
 ## Species the format 'Homo_sapiens.GRCh38' or 'Mus_musculus.GRCm39'
 genome: 'Homo_sapiens.GRCh38'
+## Genome release number. Current as of 2022.04.14
+release: '106'
 
 # Alignment metrics
 ## Run Picard?
@@ -55,16 +57,17 @@ threads: $cores2
 " >> result/config.yaml
 
 # Setup directory structure
-mkdir -p 'result/qc/1_fastqc_raw'
-mkdir -p 'result/qc/2_fastqc_trim'
-mkdir -p 'result/qc/3_flagstat'
-mkdir -p 'result/qc/4_picard'
+sudo mkdir -p -m 777 'result/qc/1_fastqc_raw'
+sudo mkdir -p -m 777 'result/qc/2_fastqc_trim'
+sudo mkdir -p -m 777 'result/qc/3_flagstat'
+sudo mkdir -p -m 777 'result/qc/4_picard'
 
-mkdir -p 'result/1_trim'
-mkdir -p 'result/2_bam'
-mkdir -p 'result/3_bam_filter'
-mkdir -p 'result/4_count'
-mkdir -p 'result/5_combined'
+sudo mkdir -p -m 777 'result/1_trim'
+sudo mkdir -p -m 777 'result/2_bam'
+sudo mkdir -p -m 777 'result/3_bam_filter'
+sudo mkdir -p -m 777 'result/4_count'
+sudo mkdir -p -m 777 'result/5_combined'
 
-mkdir -p 'ref'
-mkdir -p 'log'
+sudo mkdir -p -m 777 'ref'
+sudo mkdir -p -m 777 'log'
+
