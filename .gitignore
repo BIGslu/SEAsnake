@@ -47,3 +47,6 @@ vignettes/*.pdf
 
 # reference files, too large
 ref/*
+
+# snakemake logs
+.snakemake/*
