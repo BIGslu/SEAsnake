@@ -140,11 +140,11 @@ rule picard:
     threads: 1
     params:
         picard = config["picard"],
-	genome = config["genome"]
+        genome = config["genome"]
     message: "Quality control, Picard"
     run:
         if params.picard == True:
-            shell("scripts/picard.sh {input} {output} {genome}")
+            shell("scripts/picard.sh {input} {output} {params.genome}")
         if params.picard == False:
             print("Message: Picard not run. Change config picard parameter to True if you would like this output.")
         if params.picard != True and params.picard != False:
