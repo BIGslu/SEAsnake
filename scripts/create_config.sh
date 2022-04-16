@@ -51,7 +51,6 @@ genome: 'Homo_sapiens.GRCh38'
 ## Genome release number. Current as of 2022.04.14
 release: '106'
 
-
 # Alignment metrics
 ## Run Picard?
 picard: True
