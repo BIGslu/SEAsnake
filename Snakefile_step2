@@ -70,7 +70,7 @@ rule fastqc_trim:
 ##----------------------------------------##
 ## 3. STAR ALIGNMENT                      ##
 ##----------------------------------------##
-STAR_index_SA = expand('ref/release{release}/STARindex/SA', release=config["release"])
+STAR_index_SA = 'ref/release' + config["release"] + '/STARindex/SA'
 
 if (not os.path.exists(STAR_index_SA)):
     rule STAR_index:
