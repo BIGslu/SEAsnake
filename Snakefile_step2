@@ -111,7 +111,7 @@ rule STAR_align:
         LOAD_done = 'log/benchmark/STAR_index.benchmark.txt'
     output: 
         BAM = 'result/2_bam/{sample}_Aligned.sortedByCoord.out.bam',
-        ALIGN_done = touch('log/benchmark/STAR_align.benchmark.txt')
+        ALIGN_done = touch('log/benchmark/STAR_align.{sample}.benchmark.txt')
     params:
         OUT = 'result/2_bam/{sample}_',
         release = config["release"]
