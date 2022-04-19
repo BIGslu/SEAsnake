@@ -105,7 +105,7 @@ if (not os.path.exists(STAR_index_SA)):
             BAM = rules.STAR_align.output,
             IDX = 'ref/release' + config["release"] + '/STARindex/'
         message: 'Removing genome from RAM'
-        log: expand("log/STAR_remove/{sample}.log")
+        log: expand("log/STAR_remove/{sample}.log", sample=SAMPLES)
         shell:
             """
             STAR --genomeDir {input.IDX} --runRNGseed 8756 --genomeLoad Remove
@@ -131,7 +131,7 @@ else:
             BAM = rules.STAR_align2.output,
             IDX = expand('ref/release{release}/STARindex', release=config["release"])
         message: 'Removing genome from RAM'
-        log: expand("log/STAR_remove/{sample}.log")
+        log: expand("log/STAR_remove/{sample}.log", sample=SAMPLES)
         shell:
             """
             STAR --genomeDir {input.IDX} --runRNGseed 8756 --genomeLoad Remove
