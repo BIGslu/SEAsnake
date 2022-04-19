@@ -102,13 +102,14 @@ if (not os.path.exists(STAR_index_SA)):
   
     rule STAR_remove:
         input:
-            BAM = expand("result/2_bam/{sample}_Aligned.sortedByCoord.out.bam", sample=SAMPLES),
+            BAM = rules.STAR_align.output,
             IDX = 'ref/release' + config["release"] + '/STARindex/'
         message: 'Removing genome from RAM'
         shell:
             """
             STAR --genomeDir {input.IDX} --runRNGseed 8756 --genomeLoad Remove
             """
+            
 else:
     rule STAR_align2:
         input:
@@ -126,7 +127,7 @@ else:
   
     rule STAR_remove2:
         input:
-            BAM = expand("result/2_bam/{sample}_Aligned.sortedByCoord.out.bam", sample=SAMPLES),
+            BAM = rules.STAR_align2.output,
             IDX = expand('ref/release{release}/STARindex', release=config["release"])
         message: 'Removing genome from RAM'
         shell:
