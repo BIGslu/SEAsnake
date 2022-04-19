@@ -113,8 +113,7 @@ rule STAR_align:
         R2 = "result/1_trim/{sample}_R2_trim.fastq.gz",
         LOAD_done = 'log/benchmark/STAR_load.benchmark.txt'
     output: 
-        BAM = 'result/2_bam/{sample}_Aligned.sortedByCoord.out.bam',
-        ALIGN_done = touch('log/benchmark/STAR_align.benchmark.txt')
+        BAM = 'result/2_bam/{sample}_Aligned.sortedByCoord.out.bam'
     params:
         OUT = 'result/2_bam/{sample}_',
         release = config["release"]
@@ -126,7 +125,7 @@ rule STAR_align:
 rule STAR_remove:
     input:
         LOAD_done = 'log/benchmark/STAR_load.benchmark.txt',
-        ALIGN_done = 'log/benchmark/STAR_align.benchmark.txt'
+        BAM = output.STAR_align.BAM
     output: 
         REMOVE_done = touch('log/benchmark/STAR_remove.benchmark.txt')
     params:
