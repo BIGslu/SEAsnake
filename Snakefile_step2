@@ -79,7 +79,7 @@ if (not os.path.exists(STAR_index_SA)):
         output: 
             STAR_index = directory(expand('ref/release{release}/STARindex', release=config["release"])),
             gtf = 'ref/release' + config["release"] + '/STARref/' + config["genome"] + '.' + config["release"] + '.gtf',
-            IDX.done = touch('log/benchmark/STAR_index.benchmark.txt')
+            IDX_done = touch('log/benchmark/STAR_index.benchmark.txt')
         params:
             release = config["release"],
             genome = config["genome"]
@@ -91,9 +91,9 @@ if (not os.path.exists(STAR_index_SA)):
 rule STAR_load:
     input:
         IDX = rules.STAR_index.output,
-        IDX.done = 'log/benchmark/STAR_index.benchmark.txt'
+        IDX_done = 'log/benchmark/STAR_index.benchmark.txt'
     output: 
-        LOAD.done = touch('log/benchmark/STAR_load.benchmark.txt')
+        LOAD_done = touch('log/benchmark/STAR_load.benchmark.txt')
     threads: config["threads"]
     message: 'Aligning reads'
     run:
@@ -104,10 +104,10 @@ rule STAR_align:
         R1 = "result/1_trim/{sample}_R1_trim.fastq.gz",
         R2 = "result/1_trim/{sample}_R2_trim.fastq.gz",
         IDX = rules.STAR_index.output,
-        LOAD.done = 'log/benchmark/STAR_index.benchmark.txt'
+        LOAD_done = 'log/benchmark/STAR_index.benchmark.txt'
     output: 
         BAM = 'result/2_bam/{sample}_Aligned.sortedByCoord.out.bam',
-        ALIGN.done = touch('log/benchmark/STAR_align.benchmark.txt')
+        ALIGN_done = touch('log/benchmark/STAR_align.benchmark.txt')
     params:
         OUT = 'result/2_bam/{sample}_'
     threads: config["threads"] * 0.25
@@ -117,10 +117,10 @@ rule STAR_align:
   
 rule STAR_remove:
     input:
-        LOAD.done = 'log/benchmark/STAR_align.benchmark.txt',
+        LOAD_done = 'log/benchmark/STAR_align.benchmark.txt',
         IDX = 'ref/release' + config["release"] + '/STARindex/'
     output: 
-        REMOVE.done = touch('log/benchmark/STAR_remove.benchmark.txt')
+        REMOVE_done = touch('log/benchmark/STAR_remove.benchmark.txt')
     message: 'Removing genome from RAM'
     shell:
         """
@@ -134,7 +134,7 @@ rule STAR_remove:
 rule align_filter:
     input: 
         BAM = 'result/2_bam/{sample}_Aligned.sortedByCoord.out.bam',
-        REMOVE.done = 'log/benchmark/STAR_remove.benchmark.txt'
+        REMOVE_done = 'log/benchmark/STAR_remove.benchmark.txt'
     output: 'result/3_bam_filter/{sample}_Aligned.sortedByCoord.filter.bam'
     threads: config["threads"] * 0.1
     message: "Filtering alignments"
