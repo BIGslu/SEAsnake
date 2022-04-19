@@ -83,7 +83,7 @@ rule STAR_index:
     message: "Generating genome index"
     run:
         shell("scripts/STAR_index.sh {params.release} {params.genome} {threads}")
-  
+
 rule STAR_align:
     input:
         R1 = "result/1_trim/{sample}_R1_trim.fastq.gz",
@@ -94,11 +94,9 @@ rule STAR_align:
         OUT = 'result/2_bam/{sample}_'
     threads: config["threads"] * 0.25
     message: 'Aligning reads'
-    shell:
-        """
-        #STAR --genomeDir {input.IDX} --runThreadN {threads} --runRNGseed 8756 --genomeLoad LoadAndExit
-        STAR --genomeDir {input.IDX} --readFilesIn {input.R1} {input.R2} --readFilesCommand zcat --outFileNamePrefix {params.OUT} --outSAMtype BAM SortedByCoordinate --runThreadN {threads} --runRNGseed 8756 --genomeLoad LoadAndKeep --limitBAMsortRAM 20000000000
-        """
+    run:
+        shell("STAR --genomeDir {input.IDX} --runThreadN {threads} --runRNGseed 8756 --genomeLoad LoadAndExit")
+        shell("STAR --genomeDir {input.IDX} --readFilesIn {input.R1} {input.R2} --readFilesCommand zcat --outFileNamePrefix {params.OUT} --outSAMtype BAM SortedByCoordinate --runThreadN {threads} --runRNGseed 8756 --genomeLoad LoadAndKeep --limitBAMsortRAM 20000000000")
   
 rule STAR_remove:
     input:
