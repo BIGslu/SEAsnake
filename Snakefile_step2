@@ -114,7 +114,7 @@ else:
         input:
             R1 = "result/1_trim/{sample}_R1_trim.fastq.gz",
             R2 = "result/1_trim/{sample}_R2_trim.fastq.gz",
-            IDX = directory(expand('ref/release{release}/STARindex', release=config["release"]))
+            IDX = expand('ref/release{release}/STARindex', release=config["release"])
         output: 'result/2_bam/{sample}_Aligned.sortedByCoord.out.bam'
         params:
             OUT = 'result/2_bam/{sample}_'
@@ -127,7 +127,7 @@ else:
     rule STAR_remove2:
         input:
             BAM = expand("result/2_bam/{sample}_Aligned.sortedByCoord.out.bam", sample=SAMPLES),
-            IDX = directory(expand('ref/release{release}/STARindex', release=config["release"]))
+            IDX = expand('ref/release{release}/STARindex', release=config["release"])
         message: 'Removing genome from RAM'
         shell:
             """
