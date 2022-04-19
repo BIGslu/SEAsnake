@@ -78,77 +78,68 @@ if (not os.path.exists(STAR_index_SA)):
         input: expand('result/qc/2_fastqc_trim/{sample}_{suf}_fastqc.html', sample=SAMPLES, suf=SUFFIX)
         output: 
             STAR_index = directory(expand('ref/release{release}/STARindex', release=config["release"])),
-            gtf = 'ref/release' + config["release"] + '/STARref/' + config["genome"] + '.' + config["release"] + '.gtf'
+            gtf = 'ref/release' + config["release"] + '/STARref/' + config["genome"] + '.' + config["release"] + '.gtf',
+            IDX.done = 'log/benchmark/STAR_index.benchmark.txt'
         params:
             release = config["release"],
             genome = config["genome"]
-        threads: config["threads"]
+        threads: config["threads"] * 0.25
         message: "Generating genome index"
         run:
             shell("scripts/STAR_index.sh {params.release} {params.genome} {threads}")
-   
-    rule STAR_align:
-        input:
-            R1 = "result/1_trim/{sample}_R1_trim.fastq.gz",
-            R2 = "result/1_trim/{sample}_R2_trim.fastq.gz",
-            IDX = rules.STAR_index.output
-        output: 'result/2_bam/{sample}_Aligned.sortedByCoord.out.bam'
-        params:
-            OUT = 'result/2_bam/{sample}_'
-        threads: config["threads"] * 0.25
-        message: 'Aligning reads'
-        run:
-            shell("STAR --genomeDir {input.IDX} --runThreadN {threads} --runRNGseed 8756 --genomeLoad LoadAndExit")
-            shell("STAR --genomeDir {input.IDX} --readFilesIn {input.R1} {input.R2} --readFilesCommand zcat --outFileNamePrefix {params.OUT} --outSAMtype BAM SortedByCoordinate --runThreadN {threads} --runRNGseed 8756 --genomeLoad LoadAndKeep --limitBAMsortRAM 20000000000")
+
+rule STAR_load:
+    input:
+        IDX = rules.STAR_index.output,
+        IDX.done = 'log/benchmark/STAR_index.benchmark.txt'
+    output: 
+        LOAD.done = touch('log/benchmark/STAR_load.benchmark.txt')
+    threads: config["threads"]
+    message: 'Aligning reads'
+    run:
+        shell("STAR --genomeDir {input.IDX} --runThreadN {threads} --runRNGseed 8756 --genomeLoad LoadAndExit")
+        
+rule STAR_align:
+    input:
+        R1 = "result/1_trim/{sample}_R1_trim.fastq.gz",
+        R2 = "result/1_trim/{sample}_R2_trim.fastq.gz",
+        IDX = rules.STAR_index.output,
+        LOAD.done = 'log/benchmark/STAR_index.benchmark.txt'
+    output: 
+        BAM = 'result/2_bam/{sample}_Aligned.sortedByCoord.out.bam',
+        ALIGN.done = touch('log/benchmark/STAR_align.benchmark.txt')
+    params:
+        OUT = 'result/2_bam/{sample}_'
+    threads: config["threads"] * 0.25
+    message: 'Aligning reads'
+    run:
+        shell("STAR --genomeDir {input.IDX} --readFilesIn {input.R1} {input.R2} --readFilesCommand zcat --outFileNamePrefix {params.OUT} --outSAMtype BAM SortedByCoordinate --runThreadN {threads} --runRNGseed 8756 --genomeLoad LoadAndKeep --limitBAMsortRAM 20000000000")
   
-    rule STAR_remove:
-        input:
-            BAM = rules.STAR_align.output,
-            IDX = 'ref/release' + config["release"] + '/STARindex/'
-        message: 'Removing genome from RAM'
-        log: expand("log/STAR_remove/{sample}.log", sample=SAMPLES)
-        shell:
-            """
-            STAR --genomeDir {input.IDX} --runRNGseed 8756 --genomeLoad Remove
-            """
-            
-else:
-    rule STAR_align2:
-        input:
-            R1 = "result/1_trim/{sample}_R1_trim.fastq.gz",
-            R2 = "result/1_trim/{sample}_R2_trim.fastq.gz",
-            IDX = expand('ref/release{release}/STARindex', release=config["release"])
-        output: 'result/2_bam/{sample}_Aligned.sortedByCoord.out.bam'
-        params:
-            OUT = 'result/2_bam/{sample}_'
-        threads: config["threads"] * 0.25
-        message: 'Aligning reads'
-        run:
-            shell("STAR --genomeDir {input.IDX} --runThreadN {threads} --runRNGseed 8756 --genomeLoad LoadAndExit")
-            shell("STAR --genomeDir {input.IDX} --readFilesIn {input.R1} {input.R2} --readFilesCommand zcat --outFileNamePrefix {params.OUT} --outSAMtype BAM SortedByCoordinate --runThreadN {threads} --runRNGseed 8756 --genomeLoad LoadAndKeep --limitBAMsortRAM 20000000000")
-  
-    rule STAR_remove2:
-        input:
-            BAM = rules.STAR_align2.output,
-            IDX = expand('ref/release{release}/STARindex', release=config["release"])
-        message: 'Removing genome from RAM'
-        log: expand("log/STAR_remove/{sample}.log", sample=SAMPLES)
-        shell:
-            """
-            STAR --genomeDir {input.IDX} --runRNGseed 8756 --genomeLoad Remove
-            """
+rule STAR_remove:
+    input:
+        LOAD.done = 'log/benchmark/STAR_align.benchmark.txt',
+        IDX = 'ref/release' + config["release"] + '/STARindex/'
+    output: 
+        REMOVE.done = touch('log/benchmark/STAR_remove.benchmark.txt')
+    message: 'Removing genome from RAM'
+    shell:
+        """
+        STAR --genomeDir {input.IDX} --runRNGseed 8756 --genomeLoad Remove
+        """
 
 ##----------------------------------------##
 ## 4. ALIGNMENT FILTERING                 ##
 ##----------------------------------------##
 
 rule align_filter:
-    input: 'result/2_bam/{sample}_Aligned.sortedByCoord.out.bam'
+    input: 
+        BAM = 'result/2_bam/{sample}_Aligned.sortedByCoord.out.bam',
+        REMOVE.done = 'log/benchmark/STAR_remove.benchmark.txt'
     output: 'result/3_bam_filter/{sample}_Aligned.sortedByCoord.filter.bam'
     threads: config["threads"] * 0.1
     message: "Filtering alignments"
     run:
-        shell("samtools view {input} -h -f 3 -F 1284 -q 30 -@ {threads} > {output}")
+        shell("samtools view {input.BAM} -h -f 3 -F 1284 -q 30 -@ {threads} > {output}")
 
 ##----------------------------------------##
 ## 5. ALIGNMENT QC                        ##
@@ -207,6 +198,6 @@ rule combine:
         pic_all = 'result/5_combined/combined_picard.tsv'
     threads: 1
     message: "Combining samples"
-    benchmark: 'log/fcount/combine.benchmark.txt'
+    benchmark: 'log/benchmark/combine.benchmark.txt'
     run:
         shell("python scripts/combine_samples.py")
