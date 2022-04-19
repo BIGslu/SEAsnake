@@ -75,7 +75,7 @@ STAR_index_SA = 'ref/release' + config["release"] + '/STARindex/SA'
 rule STAR_index:
     input: expand('result/qc/2_fastqc_trim/{sample}_{suf}_fastqc.html', sample=SAMPLES, suf=SUFFIX)
     output: 
-        STAR_index = directory(expand('ref/release{release}/STARindex', release=config["release"])),
+        STAR_index = ancient(directory(expand('ref/release{release}/STARindex', release=config["release"]))),
         gtf = 'ref/release' + config["release"] + '/STARref/' + config["genome"] + '.' + config["release"] + '.gtf'
     params:
         release = config["release"],
