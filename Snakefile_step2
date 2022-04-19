@@ -19,8 +19,7 @@ rule all:
         TRIM1 + TRIM2 + QC_trim_html + QC_trim_zip + BAM + BAM2 + FLAGSTAT + PICARD + COUNT,
         'result/5_combined/combined_feature_counts.tsv',
         'result/5_combined/combined_flagstat.tsv',
-        'result/5_combined/combined_picard.tsv',
-        'log/STAR_remove.benchmark.txt'
+        'result/5_combined/combined_picard.tsv'
         
 ##----------------------------------------##
 ## 1. Adapter removal & quality filtering ##
