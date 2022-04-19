@@ -72,24 +72,13 @@ rule fastqc_trim:
 ##----------------------------------------##
 STAR_index_SA = 'ref/release' + config["release"] + '/STARindex/SA'
 
-if (os.path.exists(STAR_index_SA)):
-    rule STAR_align:
-        input:
-            R1 = "result/1_trim/{sample}_R1_trim.fastq.gz",
-            R2 = "result/1_trim/{sample}_R2_trim.fastq.gz",
-            IDX = STAR_index_SA
-        output: 'result/2_bam/{sample}_Aligned.sortedByCoord.out.bam'
-        params:
-            OUT = 'result/2_bam/{sample}_'
-        threads: config["threads"] * 0.25
-        message: 'Aligning reads'
-        run:
-            shell("STAR --genomeDir {input.IDX} --runThreadN {threads} --runRNGseed 8756 --genomeLoad LoadAndExit")
-            shell("STAR --genomeDir {input.IDX} --readFilesIn {input.R1} {input.R2} --readFilesCommand zcat --outFileNamePrefix {params.OUT} --outSAMtype BAM SortedByCoordinate --runThreadN {threads} --runRNGseed 8756 --genomeLoad LoadAndKeep --limitBAMsortRAM 20000000000")
-else:
-    rule STAR_index2:
+if (not os.path.exists(STAR_index_SA)):
+    STAR_index = 'ref/release' + config["release"] + '/STARindex/'
+    
+    rule STAR_index:
         input: expand('result/qc/2_fastqc_trim/{sample}_{suf}_fastqc.html', sample=SAMPLES, suf=SUFFIX)
         output: 
+            STAR_index = ancient(directory(expand('ref/release{release}/STARindex', release=config["release"]))),
             STAR_index = directory(expand('ref/release{release}/STARindex', release=config["release"])),
             gtf = 'ref/release' + config["release"] + '/STARref/' + config["genome"] + '.' + config["release"] + '.gtf'
         params:
@@ -99,25 +88,27 @@ else:
         message: "Generating genome index"
         run:
             shell("scripts/STAR_index.sh {params.release} {params.genome} {threads}")
+else:
+    STAR_index = rules.STAR_index.output
 
-    rule STAR_align:
-        input:
-            R1 = "result/1_trim/{sample}_R1_trim.fastq.gz",
-            R2 = "result/1_trim/{sample}_R2_trim.fastq.gz",
-            IDX = rules.STAR_index.output
-        output: 'result/2_bam/{sample}_Aligned.sortedByCoord.out.bam'
-        params:
-            OUT = 'result/2_bam/{sample}_'
-        threads: config["threads"] * 0.25
-        message: 'Aligning reads'
-        run:
-            shell("STAR --genomeDir {input.IDX} --runThreadN {threads} --runRNGseed 8756 --genomeLoad LoadAndExit")
-            shell("STAR --genomeDir {input.IDX} --readFilesIn {input.R1} {input.R2} --readFilesCommand zcat --outFileNamePrefix {params.OUT} --outSAMtype BAM SortedByCoordinate --runThreadN {threads} --runRNGseed 8756 --genomeLoad LoadAndKeep --limitBAMsortRAM 20000000000")
+rule STAR_align:
+    input:
+        R1 = "result/1_trim/{sample}_R1_trim.fastq.gz",
+        R2 = "result/1_trim/{sample}_R2_trim.fastq.gz",
+        IDX = STAR_index
+    output: 'result/2_bam/{sample}_Aligned.sortedByCoord.out.bam'
+    params:
+        OUT = 'result/2_bam/{sample}_'
+    threads: config["threads"] * 0.25
+    message: 'Aligning reads'
+    run:
+        shell("STAR --genomeDir {input.IDX} --runThreadN {threads} --runRNGseed 8756 --genomeLoad LoadAndExit")
+        shell("STAR --genomeDir {input.IDX} --readFilesIn {input.R1} {input.R2} --readFilesCommand zcat --outFileNamePrefix {params.OUT} --outSAMtype BAM SortedByCoordinate --runThreadN {threads} --runRNGseed 8756 --genomeLoad LoadAndKeep --limitBAMsortRAM 20000000000")
   
 rule STAR_remove:
     input:
         BAM = expand("result/2_bam/{sample}_Aligned.sortedByCoord.out.bam", sample=SAMPLES),
-        IDX = rules.STAR_index.output
+        IDX = STAR_index
     message: 'Removing genome from RAM'
     shell:
         """
