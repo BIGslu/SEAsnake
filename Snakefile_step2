@@ -182,7 +182,7 @@ rule picard:
 rule fcount:
     input:
         bam = 'result/3_bam_filter/{sample}_Aligned.sortedByCoord.filter.bam',
-        gtf = rules.STAR_index.output.gtf
+        gtf = 'ref/release' + config["release"] + '/STARref/' + config["genome"] + '.' + config["release"] + '.gtf'
     output: 'result/4_count/{sample}_feature_counts.tsv'
     threads: config["threads"] * 0.1
     message: "Counting features"
