@@ -19,7 +19,8 @@ rule all:
         TRIM1 + TRIM2 + QC_trim_html + QC_trim_zip + BAM + BAM2 + FLAGSTAT + PICARD + COUNT,
         'result/5_combined/combined_feature_counts.tsv',
         'result/5_combined/combined_flagstat.tsv',
-        'result/5_combined/combined_picard.tsv'
+        'result/5_combined/combined_picard.tsv',
+        'log/STAR_remove.log'
         
 ##----------------------------------------##
 ## 1. Adapter removal & quality filtering ##
@@ -105,7 +106,7 @@ if (not os.path.exists(STAR_index_SA)):
             BAM = rules.STAR_align.output,
             IDX = 'ref/release' + config["release"] + '/STARindex/'
         message: 'Removing genome from RAM'
-        log: "log/STAR_remove.benchmark.txt"
+        log: "log/STAR_remove.log"
         shell:
             """
             STAR --genomeDir {input.IDX} --runRNGseed 8756 --genomeLoad Remove
@@ -131,7 +132,7 @@ else:
             BAM = rules.STAR_align2.output,
             IDX = expand('ref/release{release}/STARindex', release=config["release"])
         message: 'Removing genome from RAM'
-        benchmark: "log/STAR_remove.benchmark.txt"
+        log: "log/STAR_remove.log"
         shell:
             """
             STAR --genomeDir {input.IDX} --runRNGseed 8756 --genomeLoad Remove
@@ -206,6 +207,6 @@ rule combine:
         pic_all = 'result/5_combined/combined_picard.tsv'
     threads: 1
     message: "Combining samples"
-    benchmark: 'log/combine.benchmark.txt'
+    benchmark: 'log/fcount/combine.benchmark.txt'
     run:
         shell("python scripts/combine_samples.py")
