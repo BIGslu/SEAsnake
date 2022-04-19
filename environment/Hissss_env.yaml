@@ -14,6 +14,6 @@ dependencies:
   - fastqc >=0.11.9
   - adapterremoval >=2.3.2
   - bedtools >=2.30.0
-  - picard
-  - star
-  - subread
+  - picard >=2.27.1
+  - star >=2.7.9a
+  - subread >=2.0.1

@@ -13,17 +13,18 @@ species=`echo "$species" | awk '{print tolower($0)}'`
 
 ref=ref/release${release}/STARref
 index=ref/release${release}/STARindex
-gtf=ref/release${release}/STARref/Homo_sapiens.GRCh38.${release}.gtf
-fasta=ref/release${release}/STARref/Homo_sapiens.GRCh38.dna.primary_assembly.fa
+gtf=ref/release${release}/STARref/${genome}.${release}.gtf
+fasta=ref/release${release}/STARref/${genome}.dna.primary_assembly.fa
 SA=ref/release${release}/STARindex/SA
-
+    
 # Setup directories
 if [ ! -d "$ref" ]; then
-    mkdir -p ref/release${release}/STARref
+    mkdir -p ${ref}
 fi
 
-# Download gtf if not present
-gtf=ref/release${release}/STARref/${genome}.${release}.gtf
+if [ ! -d "$index" ]; then
+    mkdir -p ${index}
+fi
 
 # Download gtf if not present
 if [ ! -e "$gtf" ]; then
@@ -34,8 +35,6 @@ else
 fi
 
 # Download fasta if not present
-fasta=ref/release${release}/STARref/${genome}.dna.primary_assembly.fa
-
 if [ ! -e "$fasta" ]; then
     sudo curl -s -O --output-dir ref/release${release}/STARref ftp://ftp.ensembl.org/pub/release-${release}/fasta/${species}/dna/${genome}.dna.primary_assembly.fa.gz
     yes y | gunzip ref/release${release}/STARref/*fa.gz
@@ -44,12 +43,8 @@ else
 fi
 
 # Make index if not present
-SA=ref/release${release}/STARindex/SA
-
 if [ ! -e "$SA" ]; then
-    outDir=ref/release${release}/STARindex
-    
-    STAR --runMode genomeGenerate --genomeDir ${outDir} --genomeFastaFiles ref/release${release}/STARref/${genome}.dna.primary_assembly.fa --sjdbGTFfile ref/release${release}/STARref/${genome}.${release}.gtf --sjdbOverhang 99 --runThreadN ${threads}
+    STAR --runMode genomeGenerate --genomeDir ${index} --genomeFastaFiles ref/release${release}/STARref/${genome}.dna.primary_assembly.fa --sjdbGTFfile ref/release${release}/STARref/${genome}.${release}.gtf --sjdbOverhang 99 --runThreadN ${threads}
 else
     echo "Genome index already exists. No new index created."
 fi
