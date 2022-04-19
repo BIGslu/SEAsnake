@@ -77,8 +77,6 @@ if (not os.path.exists(STAR_index_SA)):
     rule STAR_index:
         input: expand('result/qc/2_fastqc_trim/{sample}_{suf}_fastqc.html', sample=SAMPLES, suf=SUFFIX)
         output: 
-            STAR_index = directory(expand('ref/release{release}/STARindex', release=config["release"])),
-            gtf = 'ref/release' + config["release"] + '/STARref/' + config["genome"] + '.' + config["release"] + '.gtf',
             IDX_done = touch('log/benchmark/STAR_index.benchmark.txt')
         params:
             release = config["release"],
@@ -87,44 +85,51 @@ if (not os.path.exists(STAR_index_SA)):
         message: "Generating genome index"
         run:
             shell("scripts/STAR_index.sh {params.release} {params.genome} {threads}")
+else:
+    rule skip_index:
+        input: expand('result/qc/2_fastqc_trim/{sample}_{suf}_fastqc.html', sample=SAMPLES, suf=SUFFIX)
+        output: 
+            IDX_done = touch('log/benchmark/STAR_index.benchmark.txt')
+        message: "Genome index already present. Skipping indexing rule."
 
 rule STAR_load:
     input:
-        IDX = rules.STAR_index.output,
         IDX_done = 'log/benchmark/STAR_index.benchmark.txt'
     output: 
         LOAD_done = touch('log/benchmark/STAR_load.benchmark.txt')
+    params:
+        release = config["release"]
     threads: config["threads"]
-    message: 'Aligning reads'
+    message: 'Loading genome index'
     run:
-        shell("STAR --genomeDir {input.IDX} --runThreadN {threads} --runRNGseed 8756 --genomeLoad LoadAndExit")
+        shell("STAR --genomeDir 'ref/release{params.release}/STARindex' --runThreadN {threads} --runRNGseed 8756 --genomeLoad LoadAndExit")
         
 rule STAR_align:
     input:
         R1 = "result/1_trim/{sample}_R1_trim.fastq.gz",
         R2 = "result/1_trim/{sample}_R2_trim.fastq.gz",
-        IDX = rules.STAR_index.output,
         LOAD_done = 'log/benchmark/STAR_index.benchmark.txt'
     output: 
         BAM = 'result/2_bam/{sample}_Aligned.sortedByCoord.out.bam',
         ALIGN_done = touch('log/benchmark/STAR_align.benchmark.txt')
     params:
-        OUT = 'result/2_bam/{sample}_'
+        OUT = 'result/2_bam/{sample}_',
+        release = config["release"]
     threads: config["threads"] * 0.25
     message: 'Aligning reads'
     run:
-        shell("STAR --genomeDir {input.IDX} --readFilesIn {input.R1} {input.R2} --readFilesCommand zcat --outFileNamePrefix {params.OUT} --outSAMtype BAM SortedByCoordinate --runThreadN {threads} --runRNGseed 8756 --genomeLoad LoadAndKeep --limitBAMsortRAM 20000000000")
+        shell("STAR --genomeDir 'ref/release{params.release}/STARindex' --readFilesIn {input.R1} {input.R2} --readFilesCommand zcat --outFileNamePrefix {params.OUT} --outSAMtype BAM SortedByCoordinate --runThreadN {threads} --runRNGseed 8756 --genomeLoad LoadAndKeep --limitBAMsortRAM 20000000000")
   
 rule STAR_remove:
     input:
-        LOAD_done = 'log/benchmark/STAR_align.benchmark.txt',
-        IDX = 'ref/release' + config["release"] + '/STARindex/'
+        LOAD_done = 'log/benchmark/STAR_align.benchmark.txt'
     output: 
         REMOVE_done = touch('log/benchmark/STAR_remove.benchmark.txt')
     message: 'Removing genome from RAM'
     shell:
         """
         STAR --genomeDir {input.IDX} --runRNGseed 8756 --genomeLoad Remove
+        rm {input.LOAD_done}
         """
 
 ##----------------------------------------##
