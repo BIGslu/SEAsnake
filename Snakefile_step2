@@ -79,7 +79,7 @@ if (not os.path.exists(STAR_index_SA)):
         output: 
             STAR_index = directory(expand('ref/release{release}/STARindex', release=config["release"])),
             gtf = 'ref/release' + config["release"] + '/STARref/' + config["genome"] + '.' + config["release"] + '.gtf',
-            IDX.done = 'log/benchmark/STAR_index.benchmark.txt'
+            IDX.done = touch('log/benchmark/STAR_index.benchmark.txt')
         params:
             release = config["release"],
             genome = config["genome"]
