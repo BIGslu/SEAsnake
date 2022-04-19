@@ -130,10 +130,12 @@ rule STAR_remove:
         LOAD_done = 'log/benchmark/STAR_align.{sample}.benchmark.txt'
     output: 
         REMOVE_done = touch('log/benchmark/STAR_remove.{sample}.benchmark.txt')
+    params:
+        release = config["release"]
     message: 'Removing genome from RAM'
     shell:
         """
-        STAR --genomeDir {input.IDX} --runRNGseed 8756 --genomeLoad Remove
+        STAR --genomeDir 'ref/release{params.release}/STARindex' --runRNGseed 8756 --genomeLoad Remove
         rm {input.LOAD_done}
         """
 
