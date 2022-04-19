@@ -14,10 +14,6 @@ FLAGSTAT = expand("result/qc/3_flagstat/{sample}_flagstat.tsv", sample=SAMPLES)
 PICARD = expand("result/qc/4_picard/{sample}_picard.tsv", sample=SAMPLES)
 COUNT = expand("result/4_count/{sample}_feature_counts.tsv", sample=SAMPLES)
 
-## LOGS / BENCHMARKS
-ALIGN_done = expand("log/benchmark/STAR_align.{sample}.benchmark.txt", sample=SAMPLES)
-REMOVE_done = expand("log/benchmark/STAR_remove.{sample}.benchmark.txt", sample=SAMPLES)
-
 rule all:
     input:
         TRIM1 + TRIM2 + QC_trim_html + QC_trim_zip + BAM + BAM2 + FLAGSTAT + PICARD + COUNT + ALIGN_done + REMOVE_done,
@@ -25,7 +21,9 @@ rule all:
         'result/5_combined/combined_flagstat.tsv',
         'result/5_combined/combined_picard.tsv',
         'log/benchmark/STAR_index.benchmark.txt',
-        'log/benchmark/STAR_load.benchmark.txt'
+        'log/benchmark/STAR_load.benchmark.txt',
+        'log/benchmark/STAR_align.benchmark.txt',
+        
         
 ##----------------------------------------##
 ## 1. Adapter removal & quality filtering ##
@@ -113,10 +111,10 @@ rule STAR_align:
     input:
         R1 = "result/1_trim/{sample}_R1_trim.fastq.gz",
         R2 = "result/1_trim/{sample}_R2_trim.fastq.gz",
-        LOAD_done = 'log/benchmark/STAR_index.benchmark.txt'
+        LOAD_done = 'log/benchmark/STAR_load.benchmark.txt'
     output: 
         BAM = 'result/2_bam/{sample}_Aligned.sortedByCoord.out.bam',
-        ALIGN_done = touch('log/benchmark/STAR_align.{sample}.benchmark.txt')
+        ALIGN_done = touch('log/benchmark/STAR_align.benchmark.txt')
     params:
         OUT = 'result/2_bam/{sample}_',
         release = config["release"]
@@ -127,9 +125,10 @@ rule STAR_align:
   
 rule STAR_remove:
     input:
-        LOAD_done = 'log/benchmark/STAR_align.{sample}.benchmark.txt'
+        LOAD_done = 'log/benchmark/STAR_load.benchmark.txt',
+        ALIGN_done = 'log/benchmark/STAR_align.benchmark.txt'
     output: 
-        REMOVE_done = touch('log/benchmark/STAR_remove.{sample}.benchmark.txt')
+        REMOVE_done = touch('log/benchmark/STAR_remove.benchmark.txt')
     params:
         release = config["release"]
     message: 'Removing genome from RAM'
@@ -146,7 +145,7 @@ rule STAR_remove:
 rule align_filter:
     input: 
         BAM = 'result/2_bam/{sample}_Aligned.sortedByCoord.out.bam',
-        REMOVE_done = 'log/benchmark/STAR_remove.{sample}.benchmark.txt'
+        REMOVE_done = 'log/benchmark/STAR_remove.benchmark.txt'
     output: 'result/3_bam_filter/{sample}_Aligned.sortedByCoord.filter.bam'
     threads: config["threads"] * 0.1
     message: "Filtering alignments"
