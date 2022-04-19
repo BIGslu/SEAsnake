@@ -21,8 +21,7 @@ rule all:
         'result/5_combined/combined_flagstat.tsv',
         'result/5_combined/combined_picard.tsv',
         'log/benchmark/STAR_index.benchmark.txt',
-        'log/benchmark/STAR_load.benchmark.txt',
-        'log/benchmark/STAR_align.benchmark.txt',
+        'log/benchmark/STAR_load.benchmark.txt'
         
         
 ##----------------------------------------##
