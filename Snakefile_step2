@@ -181,7 +181,8 @@ rule picard:
 rule fcount:
     input:
         bam = 'result/3_bam_filter/{sample}_Aligned.sortedByCoord.filter.bam',
-        gtf = 'ref/release' + config["release"] + '/STARref/' + config["genome"] + '.' + config["release"] + '.gtf'
+        gtf = 'ref/release' + config["release"] + '/STARref/' + config["genome"] + '.' + config["release"] + '.gtf',
+        IDX_done = 'log/benchmark/STAR_index.benchmark.txt'
     output: 'result/4_count/{sample}_feature_counts.tsv'
     threads: config["threads"] * 0.1
     message: "Counting features"
