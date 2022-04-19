@@ -181,13 +181,15 @@ rule picard:
 rule fcount:
     input:
         bam = 'result/3_bam_filter/{sample}_Aligned.sortedByCoord.filter.bam',
-        gtf = 'ref/release' + config["release"] + '/STARref/' + config["genome"] + '.' + config["release"] + '.gtf',
         IDX_done = 'log/benchmark/STAR_index.benchmark.txt'
     output: 'result/4_count/{sample}_feature_counts.tsv'
+    params:
+        release = config["release"],
+        genome = config["genome"]
     threads: config["threads"] * 0.1
     message: "Counting features"
     run:
-        shell("featureCounts -T {threads} -g gene_id -t exon -p -a {input.gtf} -o {output} {input.bam}")
+        shell("featureCounts -T {threads} -g gene_id -t exon -p -a 'ref/release{params.release}/STARref/{params.genome}.{params.release}.gtf' -o {output} {input.bam}")
 
 ##----------------------------------------##
 ## 7. COMBINE SAMPLES
