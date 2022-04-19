@@ -104,7 +104,7 @@ rule STAR_load:
         LOAD_done = touch('log/benchmark/STAR_load.benchmark.txt')
     params:
         release = config["release"]
-    threads: config["threads"]
+    threads: config["threads"] * 0.25
     message: 'Loading genome index'
     run:
         shell("STAR --genomeDir 'ref/release{params.release}/STARindex' --runThreadN {threads} --runRNGseed 8756 --genomeLoad LoadAndExit")
