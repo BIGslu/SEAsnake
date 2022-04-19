@@ -125,7 +125,7 @@ rule STAR_align:
 rule STAR_remove:
     input:
         LOAD_done = 'log/benchmark/STAR_load.benchmark.txt',
-        BAM = 'result/2_bam/{sample}_Aligned.sortedByCoord.out.bam'
+        BAM = expand('result/2_bam/{sample}_Aligned.sortedByCoord.out.bam', sample=SAMPLES)
     output: 
         REMOVE_done = touch('log/benchmark/STAR_remove.benchmark.txt')
     params:
