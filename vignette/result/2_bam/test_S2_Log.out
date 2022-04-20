@@ -1,37 +1,41 @@
 STAR version=2.7.9a
 STAR compilation time,server,dir=2021-05-04T09:43:56-0400 vega:/home/dobin/data/STAR/STARcode/STAR.master/source
 ##### Command Line:
-STAR --genomeDir ref/release104/STARindex --readFilesIn result/1_trim/test_S2_R1_trim.fastq.gz result/1_trim/test_S2_R2_trim.fastq.gz --readFilesCommand zcat --outFileNamePrefix result/2_bam/test_S2_ --outSAMtype BAM SortedByCoordinate --runThreadN 15 --runRNGseed 8756
+STAR --genomeDir ref/release106/STARindex --readFilesIn result/1_trim/test_S2_R1_trim.fastq.gz result/1_trim/test_S2_R2_trim.fastq.gz --readFilesCommand zcat --outFileNamePrefix result/2_bam/test_S2_ --outSAMtype BAM SortedByCoordinate --runThreadN 3 --runRNGseed 8756 --genomeLoad LoadAndKeep --limitBAMsortRAM 20000000000
 ##### Initial USER parameters from Command Line:
 outFileNamePrefix                 result/2_bam/test_S2_
 ###### All USER parameters from Command Line:
-genomeDir                     ref/release104/STARindex     ~RE-DEFINED
+genomeDir                     ref/release106/STARindex     ~RE-DEFINED
 readFilesIn                   result/1_trim/test_S2_R1_trim.fastq.gz   result/1_trim/test_S2_R2_trim.fastq.gz        ~RE-DEFINED
 readFilesCommand              zcat        ~RE-DEFINED
 outFileNamePrefix             result/2_bam/test_S2_     ~RE-DEFINED
 outSAMtype                    BAM   SortedByCoordinate        ~RE-DEFINED
-runThreadN                    15     ~RE-DEFINED
+runThreadN                    3     ~RE-DEFINED
 runRNGseed                    8756     ~RE-DEFINED
+genomeLoad                    LoadAndKeep     ~RE-DEFINED
+limitBAMsortRAM               20000000000     ~RE-DEFINED
 ##### Finished reading parameters from all sources
 
 ##### Final user re-defined parameters-----------------:
-runThreadN                        15
+runThreadN                        3
 runRNGseed                        8756
-genomeDir                         ref/release104/STARindex
+genomeDir                         ref/release106/STARindex
+genomeLoad                        LoadAndKeep
 readFilesIn                       result/1_trim/test_S2_R1_trim.fastq.gz   result/1_trim/test_S2_R2_trim.fastq.gz   
 readFilesCommand                  zcat   
+limitBAMsortRAM                   20000000000
 outFileNamePrefix                 result/2_bam/test_S2_
 outSAMtype                        BAM   SortedByCoordinate   
 
 -------------------------------
 ##### Final effective command line:
-STAR   --runThreadN 15   --runRNGseed 8756   --genomeDir ref/release104/STARindex   --readFilesIn result/1_trim/test_S2_R1_trim.fastq.gz   result/1_trim/test_S2_R2_trim.fastq.gz      --readFilesCommand zcat      --outFileNamePrefix result/2_bam/test_S2_   --outSAMtype BAM   SortedByCoordinate   
+STAR   --runThreadN 3   --runRNGseed 8756   --genomeDir ref/release106/STARindex   --genomeLoad LoadAndKeep   --readFilesIn result/1_trim/test_S2_R1_trim.fastq.gz   result/1_trim/test_S2_R2_trim.fastq.gz      --readFilesCommand zcat      --limitBAMsortRAM 20000000000   --outFileNamePrefix result/2_bam/test_S2_   --outSAMtype BAM   SortedByCoordinate   
 ----------------------------------------
 
 Number of fastq files for each mate = 1
 
    Input read files for mate 1 :
--rw-rw-r-- 1 ec2-user ec2-user 337401 Dec 16 19:58 result/1_trim/test_S2_R1_trim.fastq.gz
+-rw-rw-r-- 1 ec2-user ec2-user 337401 Apr 19 19:07 result/1_trim/test_S2_R1_trim.fastq.gz
 
    readsCommandsFile:
 exec > "result/2_bam/test_S2__STARtmp/tmp.fifo.read1"
@@ -40,7 +44,7 @@ zcat      "result/1_trim/test_S2_R1_trim.fastq.gz"
 
 
    Input read files for mate 2 :
--rw-rw-r-- 1 ec2-user ec2-user 333215 Dec 16 19:58 result/1_trim/test_S2_R2_trim.fastq.gz
+-rw-rw-r-- 1 ec2-user ec2-user 333215 Apr 19 19:07 result/1_trim/test_S2_R2_trim.fastq.gz
 
    readsCommandsFile:
 exec > "result/2_bam/test_S2__STARtmp/tmp.fifo.read2"
@@ -48,14 +52,13 @@ echo FILE 0
 zcat      "result/1_trim/test_S2_R2_trim.fastq.gz"
 
 ParametersSolo: --soloCellFilterType CellRanger2.2 filtering parameters:  3000 0.99 10
-WARNING: --limitBAMsortRAM=0, will use genome size as RAM limit for BAM sorting
 Finished loading and checking parameters
 Reading genome generation parameters:
-### STAR   --runMode genomeGenerate      --runThreadN 15   --genomeDir ref/release104/STARindex   --genomeFastaFiles ref/release104/STARref/Homo_sapiens.GRCh38.dna.primary_assembly.fa      --sjdbGTFfile ref/release104/STARref/Homo_sapiens.GRCh38.104.gtf   --sjdbOverhang 99
+### STAR   --runMode genomeGenerate      --runThreadN 3   --genomeDir ref/release106/STARindex   --genomeFastaFiles ref/release106/STARref/Homo_sapiens.GRCh38.dna.primary_assembly.fa      --sjdbGTFfile ref/release106/STARref/Homo_sapiens.GRCh38.106.gtf   --sjdbOverhang 99
 ### GstrandBit=32
 versionGenome                 2.7.4a     ~RE-DEFINED
 genomeType                    Full     ~RE-DEFINED
-genomeFastaFiles              ref/release104/STARref/Homo_sapiens.GRCh38.dna.primary_assembly.fa        ~RE-DEFINED
+genomeFastaFiles              ref/release106/STARref/Homo_sapiens.GRCh38.dna.primary_assembly.fa        ~RE-DEFINED
 genomeSAindexNbases           14     ~RE-DEFINED
 genomeChrBinNbits             18     ~RE-DEFINED
 genomeSAsparseD               1     ~RE-DEFINED
@@ -63,13 +66,13 @@ genomeTransformType           None     ~RE-DEFINED
 genomeTransformVCF            -     ~RE-DEFINED
 sjdbOverhang                  99     ~RE-DEFINED
 sjdbFileChrStartEnd           -        ~RE-DEFINED
-sjdbGTFfile                   ref/release104/STARref/Homo_sapiens.GRCh38.104.gtf     ~RE-DEFINED
+sjdbGTFfile                   ref/release106/STARref/Homo_sapiens.GRCh38.106.gtf     ~RE-DEFINED
 sjdbGTFchrPrefix              -     ~RE-DEFINED
 sjdbGTFfeatureExon            exon     ~RE-DEFINED
 sjdbGTFtagExonParentTranscripttranscript_id     ~RE-DEFINED
 sjdbGTFtagExonParentGene      gene_id     ~RE-DEFINED
 sjdbInsertSave                Basic     ~RE-DEFINED
-genomeFileSizes               3216156969   24941617622        ~RE-DEFINED
+genomeFileSizes               3217277140   24950812593        ~RE-DEFINED
 Genome version is compatible with current STAR
 Number of real (reference) chromosomes= 194
 1	1	248956422	0
@@ -267,56 +270,28 @@ Number of real (reference) chromosomes= 194
 193	KI270392.1	971	3137863680
 194	KI270394.1	970	3138125824
 --sjdbOverhang = 99 taken from the generated genome
-Started loading the genome: Thu Dec 16 19:58:19 2021
+Started loading the genome: Tue Apr 19 20:32:07 2022
 
-Genome: size given as a parameter = 3216156969
-SA: size given as a parameter = 24941617622
+Genome: size given as a parameter = 3217277140
+SA: size given as a parameter = 24950812593
 SAindex: size given as a parameter = 1
 Read from SAindex: pGe.gSAindexNbases=14  nSAi=357913940
-nGenome=3216156969;  nSAbyte=24941617622
-GstrandBit=32   SA number of indices=6046452756
-Shared memory is not used for genomes. Allocated a private copy of the genome.
-Genome file size: 3216156969 bytes; state: good=1 eof=0 fail=0 bad=0
-Loading Genome ... done! state: good=1 eof=0 fail=0 bad=0; loaded 3216156969 bytes
-SA file size: 24941617622 bytes; state: good=1 eof=0 fail=0 bad=0
-Loading SA ... done! state: good=1 eof=0 fail=0 bad=0; loaded 24941617622 bytes
-Loading SAindex ... done: 1565873619 bytes
-Finished loading the genome: Thu Dec 16 19:58:52 2021
+nGenome=3217277140;  nSAbyte=24950812593
+GstrandBit=32   SA number of indices=6048681840
+Found genome in shared memory
+Using shared memory for genome. key=0x17014447;   shmid=5
+Finished loading the genome: Tue Apr 19 20:32:07 2022
 
-Processing splice junctions database sjdbN=390799,   pGe.sjdbOverhang=99 
+Processing splice junctions database sjdbN=396428,   pGe.sjdbOverhang=99 
 alignIntronMax=alignMatesGapMax=0, the max intron size will be approximately determined by (2^winBinNbits)*winAnchorDistNbins=589824
 Created thread # 1
 Created thread # 2
 Starting to map file # 0
 mate 1:   result/1_trim/test_S2_R1_trim.fastq.gz
 mate 2:   result/1_trim/test_S2_R2_trim.fastq.gz
-Created thread # 3
-Created thread # 4
-Created thread # 5
-Created thread # 6
-Created thread # 7
-Created thread # 8
-Created thread # 9
-Created thread # 10
-Created thread # 11
-Created thread # 12
-Created thread # 13
-Created thread # 14
 Thread #1 end of input stream, nextChar=-1
-Completed: thread #2
-Completed: thread #3
-Completed: thread #4
-Completed: thread #5
-Completed: thread #6
-Completed: thread #7
-Completed: thread #8
-Completed: thread #9
-Completed: thread #10
-Completed: thread #11
-Completed: thread #12
-Completed: thread #13
 Completed: thread #0
-Completed: thread #14
+Completed: thread #2
 BAM sorting: 6584 mapped reads
 BAM sorting bins genomic start loci:
 1	0	33011927
@@ -370,18 +345,6 @@ BAM sorting bins genomic start loci:
 Completed: thread #1
 Joined thread # 1
 Joined thread # 2
-Joined thread # 3
-Joined thread # 4
-Joined thread # 5
-Joined thread # 6
-Joined thread # 7
-Joined thread # 8
-Joined thread # 9
-Joined thread # 10
-Joined thread # 11
-Joined thread # 12
-Joined thread # 13
-Joined thread # 14
-Dec 16 19:58:56 ..... started sorting BAM
+Apr 19 20:32:09 ..... started sorting BAM
 Max memory needed for sorting = 51904
 ALL DONE!

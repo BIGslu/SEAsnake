@@ -1,5 +1,5 @@
 Status	result/3_bam_filter/test_S1_Aligned.sortedByCoord.filter.bam
-Assigned	4087
+Assigned	4086
 Unassigned_Unmapped	0
 Unassigned_Read_Type	0
 Unassigned_Singleton	0
@@ -10,6 +10,6 @@ Unassigned_Duplicate	0
 Unassigned_MultiMapping	0
 Unassigned_Secondary	0
 Unassigned_NonSplit	0
-Unassigned_NoFeatures	1008
+Unassigned_NoFeatures	1001
 Unassigned_Overlapping_Length	0
-Unassigned_Ambiguity	900
+Unassigned_Ambiguity	908
