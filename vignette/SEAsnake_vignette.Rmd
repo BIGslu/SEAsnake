@@ -19,7 +19,7 @@ urlcolor: blue
 
 # Introduction
 
-[SEAsnake](https://github.com/BIGslu/SEAsnake) is a [snakemake](https://snakemake.readthedocs.io/en/stable/) pipeline to process bulk RNA-seq data from fastq sequences to gene counts. It includes the following steps. You can seen an in-depth example of how to run these steps separately outside SEAsnake in our [first tutorial](https://github.com/BIGslu/tutorials/blob/main/RNAseq/1.Hawn_RNAseq_fastq.to.counts.pdf).
+[SEAsnake](https://github.com/BIGslu/SEAsnake) is a [snakemake](https://snakemake.readthedocs.io/en/stable/) pipeline to process bulk RNA-seq data from fastq sequences to gene counts. It includes the following steps. You can see an in-depth example of how to run these steps separately outside SEAsnake in our [first tutorial](https://github.com/BIGslu/tutorials/blob/main/RNAseq/1.Hawn_RNAseq_fastq.to.counts.pdf).
 
 1. Quality assess sequences with [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
 2. Remove adapters and filter low quality sequences with [AdapterRemoval](https://adapterremoval.readthedocs.io/en/latest/)
@@ -55,7 +55,7 @@ Here, we provide an example of how to install and run SEAsnake on human bulk RNA
 
 **Storage**: SEAsnake itself is a small program (< 150 MB). Thus, storage needs depend almost entirely on your sample size and sequencing depth of those samples. Larger raw fastq result in larger result files.
 
-**Our recommendation**: We recommend 25 GB per 1 fastq file. This comes to roughly 1 TB for 40 fastq or 20 paired-end samples. If you are using `aws sync` to load fastq and/or reference files, these do not contribute to the storage load and can be subtracted from your estimate. Again values may need to be scaled up if your original fastq tend to be larger than 5 GB.
+**Our recommendation**: We recommend 25 GB per 1 fastq file plus 100 GB for the genome. This comes to roughly 1 TB for 36 fastq or 18 paired-end samples. If you are using `aws sync` to load fastq and/or reference files, these do not contribute to the storage load and can be subtracted from your estimate. Again values may need to be scaled up if your original fastq tend to be larger than 5 GB.
 
 ### Time
 
@@ -71,7 +71,10 @@ We are working on improving speed so please check for updates periodically.
 
 SEAsnake can be pre-installed on any AWS EC2 instance.
 
-1. Launch a new instance from the AWS console. Search 'seasnake' and select the Community AMI SEAsnake.
+1. Launch a new instance from the AWS console. Search 'seasnake' and select the Community AMI SEAsnake. Make sure your in the us-west-2 (Oregon) region as noted in the upper right of the screen.
+
+![](figs/search.png){width=50%}
+
 2. Choose your instance type keeping your resource requirements in mind. `m5` types are our most used class. For this tutorial's data, use `r5a.2xlarge` (sample fastq are very small)
 3. Leave configuration as defaults.
 4. Add additional EBS storage to hold your data and results. Please leave the root storage as 16 GB; this holds the underlying software. 
@@ -87,7 +90,7 @@ AWS_SECRET_ACCESS_KEY="XXXX"
 AWS_REGION="xxxx"
 ```
 
-Then, run the following script.
+Then, run the following script which will configure AWS, format additional EBS volumes, and install SEAsnake.
 
 ```{bash eval=FALSE}
 #### Basic AWS update ####
@@ -191,7 +194,7 @@ s3fs $DATA_BUCKET ~/SEAsnake/data \
     -o default_acl=public-read -o uid=1000 -o gid=1000 -o umask=0007
 ```
 
-If you are transferring data by another method, create the `SEAsnake/data/` directory and copy your data there. For example, to run this vignette's data.
+If you are transferring data by another method, create the `SEAsnake/data/` directory and copy your data there. For example, to run this vignette's example data.
 
 ```{bash eval=FALSE}
 # Make directory for data
@@ -337,6 +340,7 @@ SampleList:
     R1: 'data/test_S2_L005_R1_001.fastq.gz'
     R2: 'data/test_S2_L005_R2_001.fastq.gz'
 
+
 # Adapter removal
 ## Base pairs to trim from 5' end
 trim5p: 10
@@ -346,16 +350,18 @@ adapter1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC
 adapter2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT
 
 # Genome alignment
-## Human genome release number
-release: '105'
+
+## Species the format 'Homo_sapiens.GRCh38' or 'Mus_musculus.GRCm39'
+genome: 'Homo_sapiens.GRCh38'
+## Genome release number. Current as of 2022.04.14
+release: '106'
 
 # Alignment metrics
 ## Run Picard?
 picard: True
 
 # Other
-threads: 1
-cores: 15
+threads: 15
 ```
 
 #### Customizaton options
@@ -365,19 +371,19 @@ You may wish to change some defaults.
 * SampleList
   - SEAsnake lists all `fastq.gz` from the `data/` directory and will run the pipeline for all of these samples. To remove a sample, simply remove the 4 lines relevant to that sample. To rename result files for a sample, change the "sample" field. 
 * Adapter removal
-  - `trim5p`: Number of base pairs to trim from the 5' end. You determine this from FastQC "Per base sequence content". For example, this sample appears to have disproportionately high calls up to 15 bp. This supports trimming the first 10 bp of these sequences (default).
+  - `trim5p`: Number of base pairs to trim from the 5' end. You determine this from FastQC "Per base sequence content". For example, this sample appears to have disproportionately high calls up to 10 bp. This supports trimming the first 10 bp of these sequences (default).
   - ![](figs/per_base_sequence_content_raw.png){width=50%}
-  - `trimAdapt`: Sequencing adapters may also exist in the data. These can be seen in FastQC "Adapter content". You remove these by aligning to adapter sequences provided in the config file. Default are Illumina Universal adapters but you can provide any adapter sequence.
+  - `trimAdapt`: Sequencing adapters may also exist in the data. These can be seen in FastQC "Adapter content" (below). You remove these by aligning to adapter sequences provided in the config file. Default are Illumina Universal adapters but you can provide any adapter sequence.
   - If you do not see adapter contamination, **set trimAdapt to False**! You can leave the adapter sequences as is as they will not be used with the False setting. This dramatically speeds up adapter trimming.
   - ![](figs/adapter_content_raw.png){width=50%}
 * Genome alignment
-  - Currently SEAsnake only supports human genome alignment. Specify the ENSEMBL release to use here. 
+  - Currently SEAsnake supports any ENSEMBL genome release. Tests have only been run for human and mouse, so please let us know how others work! 
 * Alignment metrics
   - `picard`: This program provides additional alignment quality metrics listed [here](http://broadinstitute.github.io/picard/picard-metric-definitions.html#RnaSeqMetrics). If you do not need these metrics, set to False.
 * `threads`
   - This sets the maximum number of threads **per job** as opposed to the SEAsnake `--cores` parameter which sets the maximum number of cores to run jobs in parallel. Thus, the total cores being used is threads * cores.
   - By default, threads is your total CPU minus 1 and is automatically scaled for each step in SEAsnake based on its individual requirements. You should not need to change this but can reduce it if you experience issues with running out of CPU or RAM space.
-  - *MAC and WINDOWS*: Auto core detection may not work. Please verify that the config file contains a usable numeric value.
+  - *MAC and WINDOWS*: Auto core detection does not work. Please verify that the config file contains a non-negative numeric value.
   
 You can also find a more thorough introduction to quality assessment in our [first tutorial](https://github.com/BIGslu/tutorials/blob/main/RNAseq/1.Hawn_RNAseq_fastq.to.counts.pdf).
 
@@ -408,8 +414,10 @@ snakemake --snakefile ~/SEAsnake/Snakefile_step2 -n --rerun-incomplete
 Job stats:
 job               count    min threads    max threads
 --------------  -------  -------------  -------------
-STAR_align            2              1              1
-STAR_index            1              1              1
+STAR_align            2              3              3
+STAR_index            1              3              3
+STAR_load             1              3              3
+STAR_remove           1              1              1
 adapterremoval        2              1              1
 align_filter          2              1              1
 all                   1              1              1
@@ -418,7 +426,7 @@ fastqc_trim           4              1              1
 fcount                2              1              1
 flagstat              2              1              1
 picard                2              1              1
-total                19              1              1
+total                21              1              3
 
 This was a dry-run (flag -n). The order of jobs does not reflect the order of execution.
 ```
@@ -460,7 +468,8 @@ Counts table.
 
 ```{r message=FALSE, echo=FALSE, warning=FALSE}
 library(tidyverse)
-read_tsv("result/5_combined/combined_feature_counts.tsv") %>% head()
+read_tsv("result/5_combined/combined_feature_counts.tsv") %>% 
+  filter(test_S2 > 0 | test_S1 > 0) %>% head()
 ```
 
 Flagstat alignment metrics.
@@ -476,14 +485,56 @@ read_tsv("result/5_combined/combined_picard.tsv") %>% head()
 ```
 
 # Troubleshooting
+#### Genome indexing fails
 
-#### Running out of RAM
+Genome indexing with STAR requires both a lot of RAM (40 GB) and storage (100 GB) for the human genome. If this step fails, check that you have enough storage with `df -h` and if not, follow the instructions below to add an EBS volume. If you do have enough storage, then it was likely a RAM issue. Decrease the RAM used for indexing by decreasing the `thread` option in the config file. Also, delete the log file from indexing (`log/benchmark/STAR_index.benchmark.txt`) or else SEAsnake won't know to rerun this step. Then, re-run the failed call with the addition of `--rerun-incomplete` to fix any files that were currently running when it crashed. For example,
 
-This is the most common error and results in error messages in the log like `Out of memory` or `std::bad_alloc`. You can use less RAM by reducing the number of `--cores` in the snakemake call and re-running the step that failed with the addition of `--rerun-incomplete` to fix any files that were currently running when RAM crashed.
+```{bash eval=FALSE}
+## Remove log
+rm log/benchmark/STAR_index.benchmark.txt
+
+## Rerun SEAsnake
+nohup snakemake --snakefile Snakefile_step2 --cores $cores --rerun-incomplete >> log/SEAsnake_step2.log 2>&1
+```
 
 #### Running out of storage
 
-You can see how much space is available on your instance with `df -h`. When there is no more writable space in the SEAsnake directory, you'll see errors in the log such as `No space left on device`. Since snakemake workflows decide on what to run based on the outputs already present, you need to add/create a larger volume, copy your ENTIRE SEAsnake directory to it, and re-run the failed call with the addition of `--rerun-incomplete`.
+You can see how much space is available on your instance with `df -h`. When there is no more writable space in the SEAsnake directory, you'll see errors in the log such as `No space left on device`. Since snakemake workflows decide on what to run based on the outputs already present, you need to add/create a larger volume, copy your ENTIRE SEAsnake directory to it, and re-run the failed call with the addition of `--rerun-incomplete` to fix any files that were currently running when it crashed. For example,
+
+```{bash eval=FALSE}
+## Input volume name. Can be found with lsblk
+ebs_name2="NEW_VOLUME_NAME"
+## Format volume
+sudo mkfs -t ext4 /dev/$ebs_name2
+## Attach SEAsnake directory to volume
+sudo mkdir -p ~/SEAsnake2
+sudo mount /dev/$ebs_name2 ~/SEAsnake2
+## Change permissions to read-write
+sudo chmod 777 -R ~/SEAsnake2/
+## Remove default subdir
+sudo rm -R ~/SEAsnake2/lost+found
+
+## Copy previous SEAsnake data and results
+## Note that if you used fuse for your data, you should unmount it, copy the SEAsnake directory, then re-establish fuse in the new SEAsnake2
+cp -r ~/SEAsnake/ ~/SEAsnake2/
+
+## Rerun SEAsnake
+cd ~/SEAsnake2
+
+nohup snakemake --snakefile Snakefile_step2 --cores $cores --rerun-incomplete >> log/SEAsnake_step2.log 2>&1
+```
+
+#### Running out of RAM 
+
+This is the most common error and results in error messages in the log like `Out of memory` or `std::bad_alloc`. You can use less RAM by reducing the number of `--cores` in the snakemake call and re-running the step that failed with the addition of `--rerun-incomplete` to fix any files that were currently running when it crashed. For example,
+
+```{bash eval=FALSE}
+## Decrease cores
+cores=10
+
+## Rerun SEAsnake
+nohup snakemake --snakefile Snakefile_step2 --cores $cores --rerun-incomplete >> log/SEAsnake_step2.log 2>&1
+```
 
 # Contribute to SEAsnake
 

@@ -6,235 +6,194 @@ Rules claiming more threads will be scaled down.
 Job stats:
 job               count    min threads    max threads
 --------------  -------  -------------  -------------
-STAR_align            2             15             15
-STAR_index            1             15             15
-adapterremoval        2             15             15
-align_filter          2             15             15
+STAR_align            2              3              3
+STAR_index            1              3              3
+STAR_load             1              3              3
+STAR_remove           1              1              1
+adapterremoval        2              1              1
+align_filter          2              1              1
 all                   1              1              1
-combine               1             15             15
-fastqc_trim           1             15             15
-fcount                2             15             15
-flagstat              2             15             15
-picard                2             15             15
-total                16              1             15
+combine               1              1              1
+fastqc_trim           4              1              1
+fcount                2              1              1
+flagstat              2              1              1
+picard                2              1              1
+total                21              1              3
 
 Select jobs to execute...
 
-[Thu Dec 16 19:13:47 2021]
-Job 5: Generating genome index
-
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:--  0:00:01 --:--:--     0  0     0    0     0    0     0      0      0 --:--:--  0:00:02 --:--:--     0  0 47.3M    0  212k    0     0  64740      0  0:12:47  0:00:03  0:12:44 64739 16 47.3M   16 7879k    0     0  1819k      0  0:00:26  0:00:04  0:00:22 1819k 35 47.3M   35 16.6M    0     0  3191k      0  0:00:15  0:00:05  0:00:10 3404k 57 47.3M   57 27.0M    0     0  4327k      0  0:00:11  0:00:06  0:00:05 5461k 76 47.3M   76 36.0M    0     0  5036k      0  0:00:09  0:00:07  0:00:02 7495k 98 47.3M   98 46.5M    0     0  5668k      0  0:00:08  0:00:08 --:--:-- 9394k100 47.3M  100 47.3M    0     0  5664k      0  0:00:08  0:00:08 --:--:-- 9591k
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:--  0:00:01 --:--:--     0  0  840M    0     0    0     0      0      0 --:--:--  0:00:02 --:--:--     0  0  840M    0  822k    0     0   271k      0  0:52:55  0:00:03  0:52:52  270k  1  840M    1  9.8M    0     0  2450k      0  0:05:51  0:00:04  0:05:47 2450k  2  840M    2 18.8M    0     0  3827k      0  0:03:44  0:00:05  0:03:39 3945k  3  840M    3 28.6M    0     0  4779k      0  0:03:00  0:00:06  0:02:54 5777k  4  840M    4 37.6M    0     0  5465k      0  0:02:37  0:00:07  0:02:30 7810k  5  840M    5 48.0M    0     0  6123k      0  0:02:20  0:00:08  0:02:12 9677k  6  840M    6 57.0M    0     0  6464k      0  0:02:13  0:00:09  0:02:04 9838k  7  840M    7 64.9M    0     0  6560k      0  0:02:11  0:00:10  0:02:01 9272k  8  840M    8 71.8M    0     0  6651k      0  0:02:09  0:00:11  0:01:58 8977k  9  840M    9 80.2M    0     0  6838k      0  0:02:05  0:00:12  0:01:53 8786k 10  840M   10 87.7M    0     0  6882k      0  0:02:05  0:00:13  0:01:52 8098k 11  840M   11 96.5M    0     0  7040k      0  0:02:02  0:00:14  0:01:48 8082k 12  840M   12  104M    0     0  7099k      0  0:02:01  0:00:15  0:01:46 8214k 13  840M   13  113M    0     0  7215k      0  0:01:59  0:00:16  0:01:43 8463k 14  840M   14  121M    0     0  7280k      0  0:01:58  0:00:17  0:01:41 8341k 15  840M   15  129M    0     0  7371k      0  0:01:56  0:00:18  0:01:38 8649k 16  840M   16  137M    0     0  7421k      0  0:01:55  0:00:19  0:01:36 8494k 17  840M   17  146M    0     0  7499k      0  0:01:54  0:00:20  0:01:34 8700k 18  840M   18  154M    0     0  7550k      0  0:01:53  0:00:21  0:01:32 8635k 19  840M   19  164M    0     0  7624k      0  0:01:52  0:00:22  0:01:30 8798k 20  840M   20  172M    0     0  7696k      0  0:01:51  0:00:23  0:01:28 8881k 21  840M   21  182M    0     0  7777k      0  0:01:50  0:00:24  0:01:26 9129k 22  840M   22  192M    0     0  7879k      0  0:01:49  0:00:25  0:01:24 9410k 23  840M   23  200M    0     0  7878k      0  0:01:49  0:00:26  0:01:23 9244k 24  840M   24  208M    0     0  7907k      0  0:01:48  0:00:27  0:01:21 9155k 25  840M   25  216M    0     0  7891k      0  0:01:49  0:00:28  0:01:21 8782k 26  840M   26  225M    0     0  7966k      0  0:01:48  0:00:29  0:01:19 8876k 27  840M   27  234M    0     0  7988k      0  0:01:47  0:00:30  0:01:17 8534k 29  840M   29  244M    0     0  8079k      0  0:01:46  0:00:31  0:01:15 9137k 30  840M   30  253M    0     0  8115k      0  0:01:46  0:00:32  0:01:14 9237k 31  840M   31  264M    0     0  8206k      0  0:01:44  0:00:33  0:01:11 9982k 32  840M   32  273M    0     0  8244k      0  0:01:44  0:00:34  0:01:10 9856k 33  840M   33  284M    0     0  8310k      0  0:01:43  0:00:35  0:01:08  9.9M 35  840M   35  294M    0     0  8363k      0  0:01:42  0:00:36  0:01:06  9.8M 36  840M   36  304M    0     0  8422k      0  0:01:42  0:00:37  0:01:05 10.1M 37  840M   37  314M    0     0  8473k      0  0:01:41  0:00:38  0:01:03  9.9M 38  840M   38  325M    0     0  8524k      0  0:01:40  0:00:39  0:01:01 10.1M 39  840M   39  335M    0     0  8581k      0  0:01:40  0:00:40  0:01:00 10.2M 41  840M   41  345M    0     0  8636k      0  0:01:39  0:00:41  0:00:58 10.3M 42  840M   42  356M    0     0  8684k      0  0:01:39  0:00:42  0:00:57 10.4M 43  840M   43  366M    0     0  8725k      0  0:01:38  0:00:43  0:00:55 10.3M 44  840M   44  377M    0     0  8785k      0  0:01:37  0:00:44  0:00:53 10.5M 46  840M   46  387M    0     0  8802k      0  0:01:37  0:00:45  0:00:52 10.2M 47  840M   47  395M    0     0  8795k      0  0:01:37  0:00:46  0:00:51  9.8M 48  840M   48  404M    0     0  8793k      0  0:01:37  0:00:47  0:00:50 9693k 49  840M   49  412M    0     0  8806k      0  0:01:37  0:00:48  0:00:49 9507k 50  840M   50  422M    0     0  8813k      0  0:01:37  0:00:49  0:00:48 9060k 51  840M   51  429M    0     0  8786k      0  0:01:37  0:00:50  0:00:47 8638k 52  840M   52  437M    0     0  8766k      0  0:01:38  0:00:51  0:00:47 8500k 52  840M   52  444M    0     0  8755k      0  0:01:38  0:00:52  0:00:46 8395k 53  840M   53  453M    0     0  8747k      0  0:01:38  0:00:53  0:00:45 8191k 54  840M   54  461M    0     0  8744k      0  0:01:38  0:00:54  0:00:44 8048k 55  840M   55  468M    0     0  8701k      0  0:01:38  0:00:55  0:00:43 7856k 56  840M   56  474M    0     0  8667k      0  0:01:39  0:00:56  0:00:43 7647k 57  840M   57  481M    0     0  8630k      0  0:01:39  0:00:57  0:00:42 7345k 58  840M   58  488M    0     0  8614k      0  0:01:39  0:00:58  0:00:41 7183k 58  840M   58  494M    0     0  8580k      0  0:01:40  0:00:59  0:00:41 6824k 59  840M   59  502M    0     0  8571k      0  0:01:40  0:01:00  0:00:40 7116k 60  840M   60  509M    0     0  8537k      0  0:01:40  0:01:01  0:00:39 7088k 61  840M   61  516M    0     0  8515k      0  0:01:41  0:01:02  0:00:39 7219k 61  840M   61  519M    0     0  8432k      0  0:01:42  0:01:03  0:00:39 6361k 62  840M   62  526M    0     0  8411k      0  0:01:42  0:01:04  0:00:38 6408k 63  840M   63  533M    0     0  8404k      0  0:01:42  0:01:05  0:00:37 6407k 64  840M   64  540M    0     0  8380k      0  0:01:42  0:01:06  0:00:36 6458k 65  840M   65  548M    0     0  8379k      0  0:01:42  0:01:07  0:00:35 6645k 66  840M   66  555M    0     0  8363k      0  0:01:42  0:01:08  0:00:34 7468k 67  840M   67  564M    0     0  8366k      0  0:01:42  0:01:09  0:00:33 7797k 68  840M   68  572M    0     0  8350k      0  0:01:43  0:01:10  0:00:33 7674k 68  840M   68  578M    0     0  8341k      0  0:01:43  0:01:11  0:00:32 7824k 69  840M   69  586M    0     0  8339k      0  0:01:43  0:01:12  0:00:31 7798k 70  840M   70  593M    0     0  8324k      0  0:01:43  0:01:13  0:00:30 7801k 71  840M   71  602M    0     0  8336k      0  0:01:43  0:01:14  0:00:29 7910k 72  840M   72  610M    0     0  8332k      0  0:01:43  0:01:15  0:00:28 8070k 73  840M   73  620M    0     0  8351k      0  0:01:43  0:01:16  0:00:27 8505k 74  840M   74  628M    0     0  8351k      0  0:01:43  0:01:17  0:00:26 8536k 75  840M   75  636M    0     0  8354k      0  0:01:43  0:01:18  0:00:25 8792k 76  840M   76  646M    0     0  8372k      0  0:01:42  0:01:19  0:00:23 8909k 77  840M   77  652M    0     0  8353k      0  0:01:43  0:01:20  0:00:23 8676k 78  840M   78  660M    0     0  8346k      0  0:01:43  0:01:21  0:00:22 8258k 79  840M   79  667M    0     0  8337k      0  0:01:43  0:01:22  0:00:21 8114k 80  840M   80  676M    0     0  8343k      0  0:01:43  0:01:23  0:00:20 8169k 81  840M   81  684M    0     0  8346k      0  0:01:43  0:01:24  0:00:19 7929k 82  840M   82  693M    0     0  8352k      0  0:01:43  0:01:25  0:00:18 8331k 83  840M   83  702M    0     0  8364k      0  0:01:42  0:01:26  0:00:16 8655k 84  840M   84  711M    0     0  8369k      0  0:01:42  0:01:27  0:00:15 8896k 85  840M   85  720M    0     0  8380k      0  0:01:42  0:01:28  0:00:14 9001k 86  840M   86  729M    0     0  8389k      0  0:01:42  0:01:29  0:00:13 9114k 87  840M   87  736M    0     0  8376k      0  0:01:42  0:01:30  0:00:12 8782k 88  840M   88  742M    0     0  8348k      0  0:01:43  0:01:31  0:00:12 8079k 88  840M   88  747M    0     0  8319k      0  0:01:43  0:01:32  0:00:11 7438k 89  840M   89  753M    0     0  8290k      0  0:01:43  0:01:33  0:00:10 6712k 90  840M   90  759M    0     0  8269k      0  0:01:44  0:01:34  0:00:10 6136k 91  840M   91  764M    0     0  8244k      0  0:01:44  0:01:35  0:00:09 5875k 91  840M   91  771M    0     0  8225k      0  0:01:44  0:01:36  0:00:08 5978k 92  840M   92  777M    0     0  8202k      0  0:01:44  0:01:37  0:00:07 6043k 93  840M   93  783M    0     0  8182k      0  0:01:45  0:01:38  0:00:07 6174k 93  840M   93  789M    0     0  8162k      0  0:01:45  0:01:39  0:00:06 6148k 94  840M   94  795M    0     0  8140k      0  0:01:45  0:01:40  0:00:05 6173k 95  840M   95  800M    0     0  8110k      0  0:01:46  0:01:41  0:00:05 5909k 95  840M   95  805M    0     0  8079k      0  0:01:46  0:01:42  0:00:04 5719k 96  840M   96  810M    0     0  8057k      0  0:01:46  0:01:43  0:00:03 5588k 97  840M   97  816M    0     0  8034k      0  0:01:47  0:01:44  0:00:03 5500k 97  840M   97  822M    0     0  8017k      0  0:01:47  0:01:45  0:00:02 5538k 98  840M   98  828M    0     0  7998k      0  0:01:47  0:01:46  0:00:01 5740k 99  840M   99  833M    0     0  7979k      0  0:01:47  0:01:47 --:--:-- 5929k 99  840M   99  838M    0     0  7947k      0  0:01:48  0:01:48 --:--:-- 5695k100  840M  100  840M    0     0  7926k      0  0:01:48  0:01:48 --:--:-- 5456k
-	STAR --runMode genomeGenerate --genomeDir ref/release104/STARindex --genomeFastaFiles ref/release104/STARref/Homo_sapiens.GRCh38.dna.primary_assembly.fa --sjdbGTFfile ref/release104/STARref/Homo_sapiens.GRCh38.104.gtf --sjdbOverhang 99 --runThreadN 15
-	STAR version: 2.7.9a   compiled: 2021-05-04T09:43:56-0400 vega:/home/dobin/data/STAR/STARcode/STAR.master/source
-Dec 16 19:16:15 ..... started STAR run
-Dec 16 19:16:15 ... starting to generate Genome files
-Dec 16 19:17:17 ..... processing annotations GTF
-Dec 16 19:17:53 ... starting to sort Suffix Array. This may take a long time...
-Dec 16 19:18:13 ... sorting Suffix Array chunks and saving them to disk...
-Dec 16 19:47:24 ... loading chunks from disk, packing SA...
-Dec 16 19:48:52 ... finished generating suffix array
-Dec 16 19:48:52 ... generating Suffix Array index
-Dec 16 19:53:04 ... completed Suffix Array index
-Dec 16 19:53:04 ..... inserting junctions into the genome indices
-Dec 16 19:56:38 ... writing Genome to disk ...
-Dec 16 19:56:40 ... writing Suffix Array to disk ...
-Dec 16 19:58:09 ... writing SAindex to disk
-Dec 16 19:58:17 ..... finished successfully
-[Thu Dec 16 19:58:17 2021]
-Finished job 5.
-1 of 16 steps (6%) done
-Select jobs to execute...
-
-[Thu Dec 16 19:58:17 2021]
+[Tue Apr 19 19:07:06 2022]
 Job 1: Adapter removal & quality filtering
 
-Trimming paired end reads ...
-Opening FASTQ file 'data/test_S1_L005_R1_001.fastq.gz', line numbers start at 1
-Opening FASTQ file 'data/test_S1_L005_R2_001.fastq.gz', line numbers start at 1
-Processed a total of 20,000 reads in 0.4s; 48,000 reads per second on average ...
-Config parameter trimAdapt must be set to True or False.
-[Thu Dec 16 19:58:18 2021]
-Finished job 1.
-2 of 16 steps (12%) done
-Select jobs to execute...
-
-[Thu Dec 16 19:58:18 2021]
+[Tue Apr 19 19:07:06 2022]
 Job 2: Adapter removal & quality filtering
 
-Trimming paired end reads ...
-Opening FASTQ file 'data/test_S2_L005_R1_001.fastq.gz', line numbers start at 1
+Trimming paired end reads ...Trimming paired end reads ...
+
+Opening FASTQ file 'data/test_S2_L005_R1_001.fastq.gz', line numbers start at Opening FASTQ file 'data/test_S1_L005_R1_001.fastq.gz1', line numbers start at 
+1
 Opening FASTQ file 'data/test_S2_L005_R2_001.fastq.gz', line numbers start at 1
-Processed a total of 10,000 reads in 0.2s; 45,000 reads per second on average ...
-Config parameter trimAdapt must be set to True or False.
-[Thu Dec 16 19:58:19 2021]
+Opening FASTQ file 'data/test_S1_L005_R2_001.fastq.gz', line numbers start at 1
+Processed a total of 10,000 reads in 0.4s; 23,000 reads per second on average ...
+[Tue Apr 19 19:07:07 2022]
 Finished job 2.
-3 of 16 steps (19%) done
+1 of 21 steps (5%) done
 Select jobs to execute...
 
-[Thu Dec 16 19:58:19 2021]
-Job 6: Aligning reads
+[Tue Apr 19 19:07:07 2022]
+Job 5: Quality assessment, FastQC
 
-	STAR --genomeDir ref/release104/STARindex --readFilesIn result/1_trim/test_S2_R1_trim.fastq.gz result/1_trim/test_S2_R2_trim.fastq.gz --readFilesCommand zcat --outFileNamePrefix result/2_bam/test_S2_ --outSAMtype BAM SortedByCoordinate --runThreadN 15 --runRNGseed 8756
-	STAR version: 2.7.9a   compiled: 2021-05-04T09:43:56-0400 vega:/home/dobin/data/STAR/STARcode/STAR.master/source
-Dec 16 19:58:19 ..... started STAR run
-Dec 16 19:58:19 ..... loading genome
-Dec 16 19:58:53 ..... started mapping
-Dec 16 19:58:54 ..... finished mapping
-Dec 16 19:58:56 ..... started sorting BAM
-Dec 16 19:58:56 ..... finished successfully
-[Thu Dec 16 19:58:56 2021]
-Finished job 6.
-4 of 16 steps (25%) done
+
+[Tue Apr 19 19:07:07 2022]
+Job 6: Quality assessment, FastQC
+
+Processed a total of 20,000 reads in 0.9s; 23,000 reads per second on average ...
+[Tue Apr 19 19:07:08 2022]
+Finished job 1.
+2 of 21 steps (10%) done
 Select jobs to execute...
 
-[Thu Dec 16 19:58:56 2021]
-Job 8: Filtering alignments
-
-[Thu Dec 16 19:58:57 2021]
-Finished job 8.
-5 of 16 steps (31%) done
-Select jobs to execute...
-
-[Thu Dec 16 19:58:57 2021]
-Job 4: Aligning reads
-
-	STAR --genomeDir ref/release104/STARindex --readFilesIn result/1_trim/test_S1_R1_trim.fastq.gz result/1_trim/test_S1_R2_trim.fastq.gz --readFilesCommand zcat --outFileNamePrefix result/2_bam/test_S1_ --outSAMtype BAM SortedByCoordinate --runThreadN 15 --runRNGseed 8756
-	STAR version: 2.7.9a   compiled: 2021-05-04T09:43:56-0400 vega:/home/dobin/data/STAR/STARcode/STAR.master/source
-Dec 16 19:58:57 ..... started STAR run
-Dec 16 19:58:57 ..... loading genome
-Dec 16 19:59:16 ..... started mapping
-Dec 16 19:59:18 ..... finished mapping
-Dec 16 19:59:20 ..... started sorting BAM
-Dec 16 19:59:20 ..... finished successfully
-[Thu Dec 16 19:59:21 2021]
-Finished job 4.
-6 of 16 steps (38%) done
-Select jobs to execute...
-
-[Thu Dec 16 19:59:21 2021]
-Job 7: Filtering alignments
-
-[Thu Dec 16 19:59:21 2021]
-Finished job 7.
-7 of 16 steps (44%) done
-Select jobs to execute...
-
-[Thu Dec 16 19:59:21 2021]
-Job 13: Counting features
-
-
-        ==========     _____ _    _ ____  _____  ______          _____  
-        =====         / ____| |  | |  _ \|  __ \|  ____|   /\   |  __ \ 
-          =====      | (___ | |  | | |_) | |__) | |__     /  \  | |  | |
-            ====      \___ \| |  | |  _ <|  _  /|  __|   / /\ \ | |  | |
-              ====    ____) | |__| | |_) | | \ \| |____ / ____ \| |__| |
-        ==========   |_____/ \____/|____/|_|  \_\______/_/    \_\_____/
-	  v2.0.1
-
-//========================== featureCounts setting ===========================\\
-||                                                                            ||
-||             Input files : 1 SAM file                                       ||
-||                           o test_S1_Aligned.sortedByCoord.filter.bam       ||
-||                                                                            ||
-||             Output file : test_S1_feature_counts.tsv                       ||
-||                 Summary : test_S1_feature_counts.tsv.summary               ||
-||              Annotation : Homo_sapiens.GRCh38.104.gtf (GTF)                ||
-||      Dir for temp files : result/4_count                                   ||
-||                                                                            ||
-||                 Threads : 15                                               ||
-||                   Level : meta-feature level                               ||
-||              Paired-end : yes                                              ||
-||      Multimapping reads : not counted                                      ||
-|| Multi-overlapping reads : not counted                                      ||
-||   Min overlapping bases : 1                                                ||
-||                                                                            ||
-||          Chimeric reads : counted                                          ||
-||        Both ends mapped : not required                                     ||
-||                                                                            ||
-\\============================================================================//
-
-//================================= Running ==================================\\
-||                                                                            ||
-|| Load annotation file Homo_sapiens.GRCh38.104.gtf ...                       ||
-||    Features : 1498409                                                      ||
-||    Meta-features : 60664                                                   ||
-||    Chromosomes/contigs : 47                                                ||
-||                                                                            ||
-|| Process SAM file test_S1_Aligned.sortedByCoord.filter.bam...               ||
-||    Paired-end reads are included.                                          ||
-||    Total alignments : 5995                                                 ||
-||    Successfully assigned alignments : 4087 (68.2%)                         ||
-||    Running time : 0.00 minutes                                             ||
-||                                                                            ||
-|| Write the final count table.                                               ||
-|| Write the read assignment summary.                                         ||
-||                                                                            ||
-|| Summary of counting results can be found in file "result/4_count/test_S1_  ||
-|| feature_counts.tsv.summary"                                                ||
-||                                                                            ||
-\\============================================================================//
-
-[Thu Dec 16 19:59:30 2021]
-Finished job 13.
-8 of 16 steps (50%) done
-Select jobs to execute...
-
-[Thu Dec 16 19:59:30 2021]
-Job 11: Quality control, Picard
-
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100 7854k  100 7854k    0     0  14.0M      0 --:--:-- --:--:-- --:--:-- 14.0M
-INFO	2021-12-16 19:59:32	CollectRnaSeqMetrics	
-
-********** NOTE: Picard's command line syntax is changing.
-**********
-********** For more information, please see:
-********** https://github.com/broadinstitute/picard/wiki/Command-Line-Syntax-Transition-For-Users-(Pre-Transition)
-**********
-********** The command line looks like this in the new syntax:
-**********
-**********    CollectRnaSeqMetrics -REF_FLAT ref/PICARDref/refFlat.ensembl.txt -INPUT result/3_bam_filter/test_S1_Aligned.sortedByCoord.filter.bam -OUTPUT result/qc/4_picard/test_S1_picard.tsv -ASSUME_SORTED true -STRAND_SPECIFICITY NONE -MINIMUM_LENGTH 500 -QUIET true -VERBOSITY ERROR
-**********
-
-
-19:59:34.454 INFO  NativeLibraryLoader - Loading libgkl_compression.so from jar:file:/home/ec2-user/apps/anaconda/envs/SEAsnake/share/picard-2.26.6-0/picard.jar!/com/intel/gkl/native/libgkl_compression.so
-[Thu Dec 16 19:59:36 2021]
-Finished job 11.
-9 of 16 steps (56%) done
-Select jobs to execute...
-
-[Thu Dec 16 19:59:36 2021]
-Job 9: Quality control, flagstat
-
-[Thu Dec 16 19:59:37 2021]
-Finished job 9.
-10 of 16 steps (62%) done
-Select jobs to execute...
-
-[Thu Dec 16 19:59:37 2021]
-Job 10: Quality control, flagstat
-
-[Thu Dec 16 19:59:37 2021]
-Finished job 10.
-11 of 16 steps (69%) done
-Select jobs to execute...
-
-[Thu Dec 16 19:59:37 2021]
+[Tue Apr 19 19:07:08 2022]
 Job 3: Quality assessment, FastQC
 
-[Thu Dec 16 19:59:41 2021]
+
+[Tue Apr 19 19:07:08 2022]
+Job 4: Quality assessment, FastQC
+
+[Tue Apr 19 19:07:10 2022]
+Finished job 6.
+3 of 21 steps (14%) done
+[Tue Apr 19 19:07:10 2022]
+Finished job 5.
+4 of 21 steps (19%) done
+[Tue Apr 19 19:07:11 2022]
 Finished job 3.
-12 of 16 steps (75%) done
+5 of 21 steps (24%) done
+[Tue Apr 19 19:07:11 2022]
+Finished job 4.
+6 of 21 steps (29%) done
 Select jobs to execute...
 
-[Thu Dec 16 19:59:41 2021]
-Job 14: Counting features
+[Tue Apr 19 19:07:11 2022]
+Job 9: Generating genome index
+
+	STAR --runMode genomeGenerate --genomeDir ref/release106/STARindex --genomeFastaFiles ref/release106/STARref/Homo_sapiens.GRCh38.dna.primary_assembly.fa --sjdbGTFfile ref/release106/STARref/Homo_sapiens.GRCh38.106.gtf --sjdbOverhang 99 --runThreadN 3
+	STAR version: 2.7.9a   compiled: 2021-05-04T09:43:56-0400 vega:/home/dobin/data/STAR/STARcode/STAR.master/source
+Apr 19 19:08:32 ..... started STAR run
+Apr 19 19:08:32 ... starting to generate Genome files
+Apr 19 19:09:25 ..... processing annotations GTF
+Apr 19 19:09:55 ... starting to sort Suffix Array. This may take a long time...
+Apr 19 19:10:12 ... sorting Suffix Array chunks and saving them to disk...
+Apr 19 20:19:36 ... loading chunks from disk, packing SA...
+Apr 19 20:20:55 ... finished generating suffix array
+Apr 19 20:20:55 ... generating Suffix Array index
+Apr 19 20:24:39 ... completed Suffix Array index
+Apr 19 20:24:40 ..... inserting junctions into the genome indices
+Apr 19 20:30:06 ... writing Genome to disk ...
+Apr 19 20:30:07 ... writing Suffix Array to disk ...
+Apr 19 20:31:31 ... writing SAindex to disk
+Apr 19 20:31:38 ..... finished successfully
+Touching output file log/benchmark/STAR_index.benchmark.txt.
+[Tue Apr 19 20:31:39 2022]
+Finished job 9.
+7 of 21 steps (33%) done
+Select jobs to execute...
+
+[Tue Apr 19 20:31:39 2022]
+Job 8: Loading genome index
+
+	STAR --genomeDir ref/release106/STARindex --runThreadN 3 --runRNGseed 8756 --genomeLoad LoadAndExit
+	STAR version: 2.7.9a   compiled: 2021-05-04T09:43:56-0400 vega:/home/dobin/data/STAR/STARcode/STAR.master/source
+Apr 19 20:31:39 ..... started STAR run
+Apr 19 20:31:39 ..... loading genome
+Apr 19 20:32:06 ..... started mapping
+Apr 19 20:32:06 ..... finished mapping
+Apr 19 20:32:06 ..... finished successfully
+Touching output file log/benchmark/STAR_load.benchmark.txt.
+[Tue Apr 19 20:32:07 2022]
+Finished job 8.
+8 of 21 steps (38%) done
+Select jobs to execute...
+
+[Tue Apr 19 20:32:07 2022]
+Job 7: Aligning reads
+
+[Tue Apr 19 20:32:07 2022]
+Job 10: Aligning reads
+
+	STAR --genomeDir ref/release106/STARindex --readFilesIn result/1_trim/test_S2_R1_trim.fastq.gz result/1_trim/test_S2_R2_trim.fastq.gz --readFilesCommand zcat --outFileNamePrefix result/2_bam/test_S2_ --outSAMtype BAM SortedByCoordinate --runThreadN 3 --runRNGseed 8756 --genomeLoad LoadAndKeep --limitBAMsortRAM 20000000000
+	STAR version: 2.7.9a   compiled: 2021-05-04T09:43:56-0400 vega:/home/dobin/data/STAR/STARcode/STAR.master/source
+Apr 19 20:32:07 ..... started STAR run
+Apr 19 20:32:07 ..... loading genome
+	STAR --genomeDir ref/release106/STARindex --readFilesIn result/1_trim/test_S1_R1_trim.fastq.gz result/1_trim/test_S1_R2_trim.fastq.gz --readFilesCommand zcat --outFileNamePrefix result/2_bam/test_S1_ --outSAMtype BAM SortedByCoordinate --runThreadN 3 --runRNGseed 8756 --genomeLoad LoadAndKeep --limitBAMsortRAM 20000000000
+	STAR version: 2.7.9a   compiled: 2021-05-04T09:43:56-0400 vega:/home/dobin/data/STAR/STARcode/STAR.master/source
+Apr 19 20:32:07 ..... started STAR run
+Apr 19 20:32:07 ..... loading genome
+Apr 19 20:32:07 ..... started mapping
+Apr 19 20:32:07 ..... started mapping
+Apr 19 20:32:08 ..... finished mapping
+Apr 19 20:32:09 ..... started sorting BAM
+Apr 19 20:32:09 ..... finished successfully
+[Tue Apr 19 20:32:09 2022]
+Finished job 10.
+9 of 21 steps (43%) done
+Apr 19 20:32:09 ..... finished mapping
+Apr 19 20:32:09 ..... started sorting BAM
+Apr 19 20:32:10 ..... finished successfully
+[Tue Apr 19 20:32:10 2022]
+Finished job 7.
+10 of 21 steps (48%) done
+Select jobs to execute...
+
+[Tue Apr 19 20:32:10 2022]
+Job 12: Removing genome from RAM
+
+	STAR --genomeDir ref/release106/STARindex --runRNGseed 8756 --genomeLoad Remove
+	STAR version: 2.7.9a   compiled: 2021-05-04T09:43:56-0400 vega:/home/dobin/data/STAR/STARcode/STAR.master/source
+Apr 19 20:32:10 ..... started STAR run
+Apr 19 20:32:10 ..... loading genome
+Apr 19 20:32:12 ..... started mapping
+Apr 19 20:32:12 ..... finished mapping
+Apr 19 20:32:12 ..... finished successfully
+Touching output file log/benchmark/STAR_remove.benchmark.txt.
+[Tue Apr 19 20:32:12 2022]
+Finished job 12.
+11 of 21 steps (52%) done
+Select jobs to execute...
+
+[Tue Apr 19 20:32:12 2022]
+Job 13: Filtering alignments
+
+[Tue Apr 19 20:32:12 2022]
+Job 11: Filtering alignments
+
+[Tue Apr 19 20:32:12 2022]
+Finished job 13.
+12 of 21 steps (57%) done
+Select jobs to execute...
+
+[Tue Apr 19 20:32:12 2022]
+Job 17: Quality control, Picard
+
+[Tue Apr 19 20:32:12 2022]
+Job 19: Counting features
+
+[Tue Apr 19 20:32:12 2022]
+Job 15: Quality control, flagstat
+
+[Tue Apr 19 20:32:12 2022]
+Finished job 11.
+13 of 21 steps (62%) done
+Select jobs to execute...
+
+[Tue Apr 19 20:32:12 2022]
+Job 16: Quality control, Picard
+
+[Tue Apr 19 20:32:12 2022]
+Job 18: Counting features
+
+[Tue Apr 19 20:32:12 2022]
+Job 14: Quality control, flagstat
 
 
         ==========     _____ _    _ ____  _____  ______          _____  
@@ -252,10 +211,10 @@ Job 14: Counting features
 ||                                                                            ||
 ||             Output file : test_S2_feature_counts.tsv                       ||
 ||                 Summary : test_S2_feature_counts.tsv.summary               ||
-||              Annotation : Homo_sapiens.GRCh38.104.gtf (GTF)                ||
+||              Annotation : Homo_sapiens.GRCh38.106.gtf (GTF)                ||
 ||      Dir for temp files : result/4_count                                   ||
 ||                                                                            ||
-||                 Threads : 15                                               ||
+||                 Threads : 1                                                ||
 ||                   Level : meta-feature level                               ||
 ||              Paired-end : yes                                              ||
 ||      Multimapping reads : not counted                                      ||
@@ -269,35 +228,55 @@ Job 14: Counting features
 
 //================================= Running ==================================\\
 ||                                                                            ||
-|| Load annotation file Homo_sapiens.GRCh38.104.gtf ...                       ||
-||    Features : 1498409                                                      ||
-||    Meta-features : 60664                                                   ||
-||    Chromosomes/contigs : 47                                                ||
+|| Load annotation file Homo_sapiens.GRCh38.106.gtf ...                       ||
+
+        ==========     _____ _    _ ____  _____  ______          _____  
+        =====         / ____| |  | |  _ \|  __ \|  ____|   /\   |  __ \ 
+          =====      | (___ | |  | | |_) | |__) | |__     /  \  | |  | |
+            ====      \___ \| |  | |  _ <|  _  /|  __|   / /\ \ | |  | |
+              ====    ____) | |__| | |_) | | \ \| |____ / ____ \| |__| |
+        ==========   |_____/ \____/|____/|_|  \_\______/_/    \_\_____/
+	  v2.0.1
+
+//========================== featureCounts setting ===========================\\
 ||                                                                            ||
-|| Process SAM file test_S2_Aligned.sortedByCoord.filter.bam...               ||
-||    Paired-end reads are included.                                          ||
-||    Total alignments : 2990                                                 ||
-||    Successfully assigned alignments : 2031 (67.9%)                         ||
-||    Running time : 0.00 minutes                                             ||
+||             Input files : 1 SAM file                                       ||
+||                           o test_S1_Aligned.sortedByCoord.filter.bam       ||
 ||                                                                            ||
-|| Write the final count table.                                               ||
-|| Write the read assignment summary.                                         ||
+||             Output file : test_S1_feature_counts.tsv                       ||
+||                 Summary : test_S1_feature_counts.tsv.summary               ||
+||              Annotation : Homo_sapiens.GRCh38.106.gtf (GTF)                ||
+||      Dir for temp files : result/4_count                                   ||
 ||                                                                            ||
-|| Summary of counting results can be found in file "result/4_count/test_S2_  ||
-|| feature_counts.tsv.summary"                                                ||
+||                 Threads : 1                                                ||
+||                   Level : meta-feature level                               ||
+||              Paired-end : yes                                              ||
+||      Multimapping reads : not counted                                      ||
+|| Multi-overlapping reads : not counted                                      ||
+||   Min overlapping bases : 1                                                ||
+||                                                                            ||
+||          Chimeric reads : counted                                          ||
+||        Both ends mapped : not required                                     ||
 ||                                                                            ||
 \\============================================================================//
 
-[Thu Dec 16 19:59:50 2021]
+//================================= Running ==================================\\
+||                                                                            ||
+|| Load annotation file Homo_sapiens.GRCh38.106.gtf ...                       ||
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0[Tue Apr 19 20:32:13 2022]
+Finished job 15.
+14 of 21 steps (67%) done
+[Tue Apr 19 20:32:13 2022]
 Finished job 14.
-13 of 16 steps (81%) done
-Select jobs to execute...
-
-[Thu Dec 16 19:59:50 2021]
-Job 12: Quality control, Picard
-
-Picard reference already present in ref/PICARDref.
-INFO	2021-12-16 19:59:50	CollectRnaSeqMetrics	
+15 of 21 steps (71%) done
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:--  0:00:01 --:--:--     0  0     0    0     0    0     0      0      0 --:--:--  0:00:01 --:--:--     0  0     0    0     0    0     0      0      0 --:--:--  0:00:02 --:--:--     0  0     0    0     0    0     0      0      0 --:--:--  0:00:02 --:--:--     0100 7854k  100 7854k    0     0  2595k      0  0:00:03  0:00:03 --:--:-- 2596k
+100 7854k  100 7854k    0     0  2593k      0  0:00:03  0:00:03 --:--:-- 2593k
+gzip: ref/PICARDref/refFlat.txt already exists;	not overwritten
+INFO	2022-04-19 20:32:16	CollectRnaSeqMetrics	
 
 ********** NOTE: Picard's command line syntax is changing.
 **********
@@ -310,33 +289,92 @@ INFO	2021-12-16 19:59:50	CollectRnaSeqMetrics
 **********
 
 
-19:59:51.319 INFO  NativeLibraryLoader - Loading libgkl_compression.so from jar:file:/home/ec2-user/apps/anaconda/envs/SEAsnake/share/picard-2.26.6-0/picard.jar!/com/intel/gkl/native/libgkl_compression.so
-[Thu Dec 16 19:59:52 2021]
-Finished job 12.
-14 of 16 steps (88%) done
+INFO	2022-04-19 20:32:16	CollectRnaSeqMetrics	
+
+********** NOTE: Picard's command line syntax is changing.
+**********
+********** For more information, please see:
+********** https://github.com/broadinstitute/picard/wiki/Command-Line-Syntax-Transition-For-Users-(Pre-Transition)
+**********
+********** The command line looks like this in the new syntax:
+**********
+**********    CollectRnaSeqMetrics -REF_FLAT ref/PICARDref/refFlat.ensembl.txt -INPUT result/3_bam_filter/test_S1_Aligned.sortedByCoord.filter.bam -OUTPUT result/qc/4_picard/test_S1_picard.tsv -ASSUME_SORTED true -STRAND_SPECIFICITY NONE -MINIMUM_LENGTH 500 -QUIET true -VERBOSITY ERROR
+**********
+
+
+20:32:17.110 INFO  NativeLibraryLoader - Loading libgkl_compression.so from jar:file:/home/ec2-user/apps/anaconda/envs/SEAsnake/share/picard-2.26.8-0/picard.jar!/com/intel/gkl/native/libgkl_compression.so
+20:32:17.339 INFO  NativeLibraryLoader - Loading libgkl_compression.so from jar:file:/home/ec2-user/apps/anaconda/envs/SEAsnake/share/picard-2.26.8-0/picard.jar!/com/intel/gkl/native/libgkl_compression.so
+[Tue Apr 19 20:32:18 2022]
+Finished job 17.
+16 of 21 steps (76%) done
+[Tue Apr 19 20:32:19 2022]
+Finished job 16.
+17 of 21 steps (81%) done
+||    Features : 1572538                                                      ||
+||    Features : 1572538                                                      ||
+||    Meta-features : 61552                                                   ||
+||    Chromosomes/contigs : 47                                                ||
+||                                                                            ||
+|| Process SAM file test_S2_Aligned.sortedByCoord.filter.bam...               ||
+||    Paired-end reads are included.                                          ||
+||    Total alignments : 2990                                                 ||
+||    Successfully assigned alignments : 2033 (68.0%)                         ||
+||    Running time : 0.00 minutes                                             ||
+||                                                                            ||
+|| Write the final count table.                                               ||
+||    Meta-features : 61552                                                   ||
+||    Chromosomes/contigs : 47                                                ||
+||                                                                            ||
+|| Process SAM file test_S1_Aligned.sortedByCoord.filter.bam...               ||
+||    Paired-end reads are included.                                          ||
+||    Total alignments : 5995                                                 ||
+||    Successfully assigned alignments : 4086 (68.2%)                         ||
+||    Running time : 0.00 minutes                                             ||
+||                                                                            ||
+|| Write the final count table.                                               ||
+|| Write the read assignment summary.                                         ||
+||                                                                            ||
+|| Summary of counting results can be found in file "result/4_count/test_S2_  ||
+|| feature_counts.tsv.summary"                                                ||
+||                                                                            ||
+\\============================================================================//
+
+[Tue Apr 19 20:32:21 2022]
+Finished job 19.
+18 of 21 steps (86%) done
+|| Write the read assignment summary.                                         ||
+||                                                                            ||
+|| Summary of counting results can be found in file "result/4_count/test_S1_  ||
+|| feature_counts.tsv.summary"                                                ||
+||                                                                            ||
+\\============================================================================//
+
+[Tue Apr 19 20:32:21 2022]
+Finished job 18.
+19 of 21 steps (90%) done
 Select jobs to execute...
 
-[Thu Dec 16 19:59:52 2021]
-Job 15: Combining samples
+[Tue Apr 19 20:32:21 2022]
+Job 20: Combining samples
 
-result/4_count/test_S1_feature_counts.tsv
 result/4_count/test_S2_feature_counts.tsv
-result/qc/3_flagstat/test_S1_flagstat.tsv
+result/4_count/test_S1_feature_counts.tsv
 result/qc/3_flagstat/test_S2_flagstat.tsv
-result/qc/4_picard/test_S1_picard.tsv
+result/qc/3_flagstat/test_S1_flagstat.tsv
 result/qc/4_picard/test_S2_picard.tsv
-[Thu Dec 16 20:00:04 2021]
-Finished job 15.
-15 of 16 steps (94%) done
+result/qc/4_picard/test_S1_picard.tsv
+[Tue Apr 19 20:32:23 2022]
+Finished job 20.
+20 of 21 steps (95%) done
 Select jobs to execute...
 
-[Thu Dec 16 20:00:04 2021]
+[Tue Apr 19 20:32:23 2022]
 localrule all:
-    input: result/1_trim/test_S1_R1_trim.fastq.gz, result/1_trim/test_S2_R1_trim.fastq.gz, result/1_trim/test_S1_R2_trim.fastq.gz, result/1_trim/test_S2_R2_trim.fastq.gz, result/qc/2_fastqc_trim/test_S1_R1_trim_fastqc.html, result/qc/2_fastqc_trim/test_S1_R2_trim_fastqc.html, result/qc/2_fastqc_trim/test_S2_R1_trim_fastqc.html, result/qc/2_fastqc_trim/test_S2_R2_trim_fastqc.html, result/qc/2_fastqc_trim/test_S1_R1_trim_fastqc.zip, result/qc/2_fastqc_trim/test_S1_R2_trim_fastqc.zip, result/qc/2_fastqc_trim/test_S2_R1_trim_fastqc.zip, result/qc/2_fastqc_trim/test_S2_R2_trim_fastqc.zip, result/2_bam/test_S1_Aligned.sortedByCoord.out.bam, result/2_bam/test_S2_Aligned.sortedByCoord.out.bam, result/3_bam_filter/test_S1_Aligned.sortedByCoord.filter.bam, result/3_bam_filter/test_S2_Aligned.sortedByCoord.filter.bam, result/qc/3_flagstat/test_S1_flagstat.tsv, result/qc/3_flagstat/test_S2_flagstat.tsv, result/qc/4_picard/test_S1_picard.tsv, result/qc/4_picard/test_S2_picard.tsv, result/4_count/test_S1_feature_counts.tsv, result/4_count/test_S2_feature_counts.tsv, result/5_combined/combined_feature_counts.tsv, result/5_combined/combined_flagstat.tsv, result/5_combined/combined_picard.tsv
+    input: result/1_trim/test_S1_R1_trim.fastq.gz, result/1_trim/test_S2_R1_trim.fastq.gz, result/1_trim/test_S1_R2_trim.fastq.gz, result/1_trim/test_S2_R2_trim.fastq.gz, result/qc/2_fastqc_trim/test_S1_R1_trim_fastqc.html, result/qc/2_fastqc_trim/test_S1_R2_trim_fastqc.html, result/qc/2_fastqc_trim/test_S2_R1_trim_fastqc.html, result/qc/2_fastqc_trim/test_S2_R2_trim_fastqc.html, result/qc/2_fastqc_trim/test_S1_R1_trim_fastqc.zip, result/qc/2_fastqc_trim/test_S1_R2_trim_fastqc.zip, result/qc/2_fastqc_trim/test_S2_R1_trim_fastqc.zip, result/qc/2_fastqc_trim/test_S2_R2_trim_fastqc.zip, result/2_bam/test_S1_Aligned.sortedByCoord.out.bam, result/2_bam/test_S2_Aligned.sortedByCoord.out.bam, result/3_bam_filter/test_S1_Aligned.sortedByCoord.filter.bam, result/3_bam_filter/test_S2_Aligned.sortedByCoord.filter.bam, result/qc/3_flagstat/test_S1_flagstat.tsv, result/qc/3_flagstat/test_S2_flagstat.tsv, result/qc/4_picard/test_S1_picard.tsv, result/qc/4_picard/test_S2_picard.tsv, result/4_count/test_S1_feature_counts.tsv, result/4_count/test_S2_feature_counts.tsv, result/5_combined/combined_feature_counts.tsv, result/5_combined/combined_flagstat.tsv, result/5_combined/combined_picard.tsv, log/benchmark/STAR_index.benchmark.txt, log/benchmark/STAR_load.benchmark.txt
     jobid: 0
     resources: tmpdir=/tmp
 
-[Thu Dec 16 20:00:04 2021]
+[Tue Apr 19 20:32:23 2022]
 Finished job 0.
-16 of 16 steps (100%) done
-Complete log: /home/ec2-user/project/SEAsnake/.snakemake/log/2021-12-16T191346.841111.snakemake.log
+21 of 21 steps (100%) done
+Complete log: /home/ec2-user/SEAsnake/.snakemake/log/2022-04-19T190706.812366.snakemake.log
