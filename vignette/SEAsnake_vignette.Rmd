@@ -308,6 +308,7 @@ tail ~/SEAsnake/log/SEAsnake_step1.log
 Or ask SEAsnake to summarize how many tasks need to still be completed. The `-n` flag is a "dry run" where SEAsnake does not actually run anything. In addition, `--rerun-incomplete` causes SEAsnake to count processes that are not yet complete.
 
 ```{bash eval=FALSE}
+cd ~/SEAsnake
 conda activate SEAsnake
 snakemake --snakefile ~/SEAsnake/Snakefile_step1 -n --rerun-incomplete
 ```
@@ -437,8 +438,8 @@ Once complete, save your `result/` and `log/` directories because these will be 
 
 ```{bash eval=FALSE}
 RESULT_BUCKET="MY_RESULT_BUCKET"
-aws s3 sync ~/SEAsnake/result/* s3://RESULT_BUCKET
-aws s3 sync ~/SEAsnake/log/* s3://RESULT_BUCKET
+aws s3 sync ~/SEAsnake/result/ s3://RESULT_BUCKET
+aws s3 sync ~/SEAsnake/log/ s3://RESULT_BUCKET
 ```
 
 You may also wish to save your genome index for use in future runs. This saves about an hour of run time for human samples! *Hawn/Altman labs: Save to the `human-ref` bucket.*
