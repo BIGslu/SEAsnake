@@ -13,4 +13,4 @@ This pipeline includes quality assessment and filtering, alignment, and count ta
 5. Quality assess alignments with [samtools](http://www.htslib.org/) `flagstat` and/or [Picard](https://broadinstitute.github.io/picard/) `CollectRnaSeqMetrics`
 6. Count reads in genes with [Subread](http://subread.sourceforge.net/) `featureCounts`
 
-See our [tutorial](https://github.com/BIGslu/tutorials/blob/main/RNAseq/1.Hawn_RNAseq_fastq.to.counts.pdf) for further details.
+See our [tutorial](https://bigslu.github.io/SEAsnake/vignette/SEAsnake_vignette.html) for further details.
