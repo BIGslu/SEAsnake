@@ -41,7 +41,7 @@ Here, we provide an example of how to install and run SEAsnake on human bulk RNA
 
 # Software
 ## Resource requirements
-### Compute
+### Compute {#compute}
 
 **CPU (aka cores)**: Many of the steps in SEAsnake run in parallel. Thus, the time to run the pipeline on 2 CPUs is roughly half of 1 CPU (not counting non-parallel processes like genome indexing). Thus, you could run as many CPUs as you have fastq files. However, this may not always be recommended as there is a trade-off with RAM usage.
 
@@ -51,7 +51,7 @@ Here, we provide an example of how to install and run SEAsnake on human bulk RNA
 
 *Note that indexing the human genome requires a minimum of 40 GB of RAM, so do not go below this if you need to complete that step.*
 
-### Storage
+### Storage {#storage}
 
 **Storage**: SEAsnake itself is a small program (< 150 MB). Thus, storage needs depend almost entirely on your sample size and sequencing depth of those samples. Larger raw fastq result in larger result files.
 
@@ -68,21 +68,45 @@ Step 2 will take less time if you do not have adapter contamination requiring al
 We are working on improving speed so please check for updates periodically.
 
 ## AWS installation
+### Create a SEAsnake EC2 instance
 
 SEAsnake can be pre-installed on any AWS EC2 instance.
 
-1. Launch a new instance from the AWS console. Search 'seasnake' and select the Community AMI SEAsnake. Make sure your in the us-west-2 (Oregon) region as noted in the upper right of the screen.
+1. Launch a new instance from the AWS console. Search 'seasnake' and select the Community AMI SEAsnake.
 
-![](figs/search.png){width=50%}
+![](figs/instance_setup1_search.png){width=49%}
+![](figs/instance_setup1_seasnake.png){width=49%}  
 
-2. Choose your instance type keeping your resource requirements in mind. `m5` types are our most used class. For this tutorial's data, use `r5a.2xlarge` (sample fastq are very small)
-3. Leave configuration as defaults.
-4. Add additional EBS storage to hold your data and results. Please leave the root storage as 16 GB; this holds the underlying software. 
-5. Tag your instance if desired.
-6. Configure security as you normally would. 
-7. Launch the instance. This will take a couple minutes to complete before you can log-in.
+Make sure your in the us-west-2 (Oregon) region as noted in the upper right of the screen. Otherwise, you will not see the SEAsnake AMI.
 
-Once the instance is running, log-in and complete setup as follows. First, define your AWS account information.
+![](figs/instance_setup1_region.png){width=50%}  
+
+2. Choose your instance type keeping your resource requirements in mind (see [Compute](#compute) for size recommendations). For this tutorial's data, use `r5a.2xlarge` because the sample fastq are very small. For full datasets, `m5` types is our most used instance class. 
+
+![](figs/instance_setup2_type.png){width=50%}  
+3. Create or find a key pair you can access.
+
+![](figs/instance_setup3_key.png){width=50%}  
+
+4. Allow both SSH and HTTPS access.
+
+![](figs/instance_setup4_network.png){width=50%}  
+
+5. Add additional storage (see [Storage](#storage) for size recommendations). Please leave the root storage at 16 GB; this holds the underlying software.
+
+![](figs/instance_setup5_storage.png){width=50%}  
+
+6. Launch the instance. This will take a couple minutes to complete before you can log-in.
+
+### Setup and install SEAsnake
+
+Once the instance is running, log-in. Please replace the key and IP address with data for your instance.
+
+```{bash eval=FALSE}
+ssh -i PATH_TO_KEY.pem ec2-user@Public_IPv4_DNS.com
+```
+
+Then, complete setup as follows. First, define your AWS account information. Note that your `AWS_REGION` should be just the base region like `us-west-2` without any sub-letters.
 
 ```{bash eval=FALSE}
 AWS_ACCESS_KEY="XXXX"
@@ -90,7 +114,7 @@ AWS_SECRET_ACCESS_KEY="XXXX"
 AWS_REGION="xxxx"
 ```
 
-Then, run the following script which will configure AWS, format additional EBS volumes, and install SEAsnake.
+Then, run the following script which will configure your AWS account.
 
 ```{bash eval=FALSE}
 #### Basic AWS update ####
@@ -106,12 +130,22 @@ export AWS_DEFAULT_REGION=$AWS_REGION
 ## Setup fuse keys
 echo $AWS_ACCESS_KEY:$AWS_SECRET_ACCESS_KEY > ~/.passwd-s3fs
 chmod 600 ~/.passwd-s3fs
+```
 
+Next, get your EBS volume name. On most setups, this next code chunk will automatically result in the correct `ebs_name`. However, double-check the output to make sure the `echo` command results in the volume you want from the `lsblk` list. The correct one is the large one you intend to store all results on.
+
+```{bash eval=FALSE}
 #### Setup EBS volume ####
 ## Get addtl volume name
 ## If this does not give the correct volume name, find it with lsblk
-ebs_name=$(lsblk -o NAME -n -i -r | tail -n 1)
+ebs_name=$(lsblk -o NAME -n -i | tail -n 1)
 echo $ebs_name
+lsblk
+```
+
+Finally, format the additional EBS volume and install SEAsnake.
+
+```{bash eval=FALSE}
 ## Format volume
 sudo mkfs -t ext4 /dev/$ebs_name
 ## Attach SEAsnake directory to volume
@@ -181,7 +215,7 @@ git pull
 
 *Note: SEAsnake is only setup to run paired-end `fastq.qz` files in its `data/` directory.*
 
-If you are using fuse to access your fastq data on S3, link your bucket to the SEAsnake `data/` directory.
+If you are using fuse to access your fastq data on S3, link your bucket to the SEAsnake `data/` directory. Note that your DATA_BUCKET names **must not** contain `.` or else fuse will not work.
 
 ```{bash eval=FALSE}
 # Define the name of your data bucket
