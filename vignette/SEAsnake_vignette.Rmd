@@ -269,7 +269,7 @@ cd ~/SEAsnake
 Next, run SEAsnake step 1. This completes initial sequence quality assessment, directory structure setup, and config file creation. *Note that `nohup` and piping into a log file means nothing will appear in your terminal window. This prevents timeout and retains all messages and errors in the log file.*
 
 ```{bash eval=FALSE}
-nohup snakemake --snakefile Snakefile_step1 --cores $cores >> log/SEAsnake_step1.log 2>&1
+nohup snakemake --snakefile Snakefile_step1 --cores $cores >> log/SEAsnake_step1.log 2>&1 &
 ```
 
 Your directory structure will look like
@@ -333,7 +333,7 @@ Once step 1 is complete, you will see the command prompt `$` re-appear in your c
 
 ### Checking progress
 
-If you want to check progress, open a new window, log in to the instance running SEAsnake, and check progress in the log.
+If you want to check progress, you can see what is currently running in the log.
 
 ```{bash eval=FALSE}
 tail ~/SEAsnake/log/SEAsnake_step1.log
@@ -427,7 +427,7 @@ You can also find a more thorough introduction to quality assessment in our [fir
 Run SEAsnake step 2. This completes adapter trimming, alignment, filtering, quality assessment, and exon counting.
 
 ```{bash eval=FALSE}
-nohup snakemake --snakefile Snakefile_step2 --cores $cores >> log/SEAsnake_step2.log 2>&1
+nohup snakemake --snakefile Snakefile_step2 --cores $cores >> log/SEAsnake_step2.log 2>&1 &
 ```
 
 This step can take quite some time to run. Because of `nohup`, you can close the terminal at any time and SEAsnake will continue to run. Check in on progress in a new terminal window using the log or `-n --rerun-incomplete` flags as you did for step 1.
