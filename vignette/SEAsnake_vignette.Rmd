@@ -215,7 +215,7 @@ git pull
 
 *Note: SEAsnake is only setup to run paired-end `fastq.qz` files in its `data/` directory.*
 
-If you are using fuse to access your fastq data on S3, link your bucket to the SEAsnake `data/` directory. Note that your DATA_BUCKET names **must not** contain `.` or else fuse will not work.
+If you are using fuse to access your fastq data on S3, link your bucket to the SEAsnake `data/` directory. Note that your DATA_BUCKET name **must not** contain `.` or else fuse will not work.
 
 ```{bash eval=FALSE}
 # Define the name of your data bucket
@@ -472,8 +472,8 @@ Once complete, save your `result/` and `log/` directories because these will be 
 
 ```{bash eval=FALSE}
 RESULT_BUCKET="MY_RESULT_BUCKET"
-aws s3 sync ~/SEAsnake/result/ s3://RESULT_BUCKET
-aws s3 sync ~/SEAsnake/log/ s3://RESULT_BUCKET
+aws s3 sync ~/SEAsnake/result/ s3://$RESULT_BUCKET
+aws s3 sync ~/SEAsnake/log/ s3://$RESULT_BUCKET
 ```
 
 You may also wish to save your genome index for use in future runs. This saves about an hour of run time for human samples! *Hawn/Altman labs: Save to the `human-ref` bucket.*
