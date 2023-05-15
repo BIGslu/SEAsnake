@@ -379,6 +379,8 @@ total             3              1              1
 This was a dry-run (flag -n). The order of jobs does not reflect the order of execution.
 ```
 
+Note that if your terminal times out, your job is still running! This is why we use `nohup`. To check on the progress, simply log back into the instance with `ssh`, `cd` into the SEAsnake directory, and activate the conda environment again. Then run one of the following options described above.
+
 ### Customize config
 
 Step 1 creates `result/config.yaml` which allows some customization of the workflow. Below is an example from the vignette data with all defaults. 
