@@ -237,6 +237,17 @@ sudo mkdir -m 777 ~/SEAsnake/data
 cp ~/SEAsnake/vignette/data/*fastq.gz ~/SEAsnake/data
 ```
 
+#### Filename requirements
+
+SEAsnake looks for specific filenames in the `data/` directory based on default Illumina outputs. Your files must follow these rules for SEAsnake to run correctly.
+
+* Files must be `fastq.gz` format
+* Read 1 and 2 must be specified by `_R1` and `_R2` in the filename
+* No other part of the filename can contain `_R1` or `_R2` including sample names
+* Filenames must contain the original lane notation as `_L`. Everything before this lane number is treated as the sample name
+
+For example, `test_S1_L005_R1_001.fastq.gz`
+
 ## Reference genome
 
 If you are using fuse to access your STAR-formatted genome index on S3, link your bucket to the SEAsnake `ref/` directory. *Hawn/Altman labs: These are in the bucket `human-ref`.*
