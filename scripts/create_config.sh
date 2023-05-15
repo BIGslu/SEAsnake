@@ -4,7 +4,7 @@
 # Capture Samples to Config File
 #################################
 
-SampleList="data/*R1*"
+SampleList="data/*_R1*"
 
 sudo echo "SampleList:" > result/config.yaml
 
