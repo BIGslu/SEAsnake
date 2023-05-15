@@ -340,7 +340,15 @@ grViz(diagram = "digraph flowchart {
   ")
 ```
 
-Once step 1 is complete, you will see the command prompt `$` re-appear in your console.
+#### Breaking down the `snakemake` command
+
+For those less familiar with bash scripting, here is a detailed break down of the command used to run SEAsnake in `snakemake`
+
+* `nohup` tells the program to continue running even if you log out or close your terminal window
+* `snakemake --snakefile Snakefile_step1` runs the step1 SEAsnake commands in the `snakemake` program
+* `--cores $cores` distributes the process across the number of cores you specify
+* `>> log/SEAsnake_step1.log 2>&1` saves all standard output and errors (what's normally printed in the terminal window as something runs) to the log file instead
+* `&` pushed to process to the background so you can immediately start using other commands (like checking progress below) in the same terminal window
 
 ### Checking progress
 
