@@ -10,13 +10,14 @@ QC_trim_html = expand("result/qc/2_fastqc_trim/{sample}_{suf}_fastqc.html", samp
 QC_trim_zip = expand("result/qc/2_fastqc_trim/{sample}_{suf}_fastqc.zip", sample=SAMPLES, suf=SUFFIX)
 BAM = expand("result/2_bam/{sample}_Aligned.sortedByCoord.out.bam", sample=SAMPLES)
 BAM2 = expand("result/3_bam_filter/{sample}_Aligned.sortedByCoord.filter.bam", sample=SAMPLES)
+BAI = expand("result/3_bam_filter/{sample}_Aligned.sortedByCoord.filter.bam.bai", sample=SAMPLES)
 FLAGSTAT = expand("result/qc/3_flagstat/{sample}_flagstat.tsv", sample=SAMPLES)
 PICARD = expand("result/qc/4_picard/{sample}_picard.tsv", sample=SAMPLES)
 COUNT = expand("result/4_count/{sample}_feature_counts.tsv", sample=SAMPLES)
 
 rule all:
     input:
-        TRIM1 + TRIM2 + QC_trim_html + QC_trim_zip + BAM + BAM2 + FLAGSTAT + PICARD + COUNT,
+        TRIM1 + TRIM2 + QC_trim_html + QC_trim_zip + BAM + BAM2 + BAI + FLAGSTAT + PICARD + COUNT,
         'result/5_combined/combined_feature_counts.tsv',
         'result/5_combined/combined_flagstat.tsv',
         'result/5_combined/combined_picard.tsv',
@@ -144,11 +145,16 @@ rule align_filter:
     input: 
         BAM = 'result/2_bam/{sample}_Aligned.sortedByCoord.out.bam',
         REMOVE_done = 'log/benchmark/STAR_remove.benchmark.txt'
-    output: 'result/3_bam_filter/{sample}_Aligned.sortedByCoord.filter.bam'
+    output: 
+        BAM2 = 'result/3_bam_filter/{sample}_Aligned.sortedByCoord.filter.bam',
+        BAI = 'result/3_bam_filter/{sample}_Aligned.sortedByCoord.filter.bam.bai'
     threads: config["threads"] * 0.1
     message: "Filtering alignments"
-    run:
-        shell("samtools view {input.BAM} -h -f 3 -F 1284 -q 30 -@ {threads} > {output}")
+    shell:
+        """
+        samtools view {input.BAM} -h -b -f 3 -F 1284 -q 30 -@ {threads} > {output.BAM2}
+        samtools index -@ {threads} {output.BAM2} > {output.BAI} 
+        """
 
 ##----------------------------------------##
 ## 5. ALIGNMENT QC                        ##
