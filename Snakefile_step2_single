@@ -1,0 +1,212 @@
+configfile: 'result/config.yaml'
+
+## INPUTS / OUTPUTS
+SUFFIX = ["R1_trim"]
+SAMPLES = config["SampleList"]
+    
+TRIM1 = expand('result/1_trim/{sample}_R1_trim.fastq.gz', sample=SAMPLES)
+QC_trim_html = expand("result/qc/2_fastqc_trim/{sample}_{suf}_fastqc.html", sample=SAMPLES, suf=SUFFIX)
+QC_trim_zip = expand("result/qc/2_fastqc_trim/{sample}_{suf}_fastqc.zip", sample=SAMPLES, suf=SUFFIX)
+BAM = expand("result/2_bam/{sample}_Aligned.sortedByCoord.out.bam", sample=SAMPLES)
+BAM2 = expand("result/3_bam_filter/{sample}_Aligned.sortedByCoord.filter.bam", sample=SAMPLES)
+FLAGSTAT = expand("result/qc/3_flagstat/{sample}_flagstat.tsv", sample=SAMPLES)
+PICARD = expand("result/qc/4_picard/{sample}_picard.tsv", sample=SAMPLES)
+COUNT = expand("result/4_count/{sample}_feature_counts.tsv", sample=SAMPLES)
+
+rule all:
+    input:
+        TRIM1 + QC_trim_html + QC_trim_zip + BAM + BAM2 + FLAGSTAT + PICARD + COUNT,
+        'result/5_combined/combined_feature_counts.tsv',
+        'result/5_combined/combined_flagstat.tsv',
+        'result/5_combined/combined_picard.tsv',
+        'log/benchmark/STAR_index.benchmark.txt',
+        'log/benchmark/STAR_load.benchmark.txt'
+        
+        
+##----------------------------------------##
+## 1. Adapter removal & quality filtering ##
+##----------------------------------------##
+
+rule adapterremoval:
+    input:
+        R1 = lambda wildcards: config["SampleList"][wildcards.sample]["R1"]
+    output:
+        R1 = "result/1_trim/{sample}_R1_trim.fastq.gz",
+        single = "result/1_trim/{sample}_singleton.truncated.gz",
+        discard = "result/1_trim/{sample}.settings",
+        set = "result/1_trim/{sample}_discarded.gz"
+    params:
+        trim5p = config["trim5p"],
+        trimAdapt = config["trimAdapt"],
+        adapter1 = config["adapter1"],
+        adapter2 = config["adapter2"]
+    threads: config["threads"] * 0.1
+    message: "Adapter removal & quality filtering"
+
+    run: 
+        if params.trimAdapt == True:
+            shell("AdapterRemoval --file1 {input.R1} --output1 {output.R1} --singleton {output.single} --discarded {output.discard} --settings {output.set} --threads {threads} --gzip --maxns 1 --minlength 15 --trimqualities --minquality 30 --trim5p {params.trim5p} --adapter1 {params.adapter1} --adapter2 {params.adapter2}")
+        if params.trimAdapt == False:
+            shell("AdapterRemoval --file1 {input.R1} --output1 {output.R1} --singleton {output.single} --discarded {output.discard} --settings {output.set} --threads {threads} --gzip --maxns 1 --minlength 15 --trimqualities --minquality 30 --trim5p {params.trim5p}")
+        if params.trimAdapt != True and params.trimAdapt != False:
+            print("Error: Config trimAdapt parameter must be set to True or False.")
+
+##----------------------------------------##
+## 2. Quality Control - trimmed           ##
+##----------------------------------------##
+
+rule fastqc_trim:
+    input: 'result/1_trim/{sample}_{suf}.fastq.gz'
+    output:
+        HTML = 'result/qc/2_fastqc_trim/{sample}_{suf}_fastqc.html',
+        ZIP = 'result/qc/2_fastqc_trim/{sample}_{suf}_fastqc.zip'
+    threads: config["threads"] * 0.1
+    message: "Quality assessment, FastQC"
+    shell:
+        """
+        fastqc -t {threads} --outdir 'result/qc/2_fastqc_trim' {input} --quiet
+        """
+
+##----------------------------------------##
+## 3. STAR ALIGNMENT                      ##
+##----------------------------------------##
+STAR_index_SA = 'ref/release' + config["release"] + '/STARindex/SA'
+
+if (not os.path.exists(STAR_index_SA)):
+    rule STAR_index:
+        input: expand('result/qc/2_fastqc_trim/{sample}_{suf}_fastqc.html', sample=SAMPLES, suf=SUFFIX)
+        output: 
+            IDX_done = touch('log/benchmark/STAR_index.benchmark.txt')
+        params:
+            release = config["release"],
+            genome = config["genome"]
+        threads: config["threads"] * 0.5
+        message: "Generating genome index"
+        run:
+            shell("scripts/STAR_index.sh {params.release} {params.genome} {threads}")
+else:
+    rule skip_index:
+        input: expand('result/qc/2_fastqc_trim/{sample}_{suf}_fastqc.html', sample=SAMPLES, suf=SUFFIX)
+        output: 
+            IDX_done = touch('log/benchmark/STAR_index.benchmark.txt')
+        message: "Genome index already present. Skipping indexing rule."
+
+rule STAR_load:
+    input:
+        IDX_done = 'log/benchmark/STAR_index.benchmark.txt'
+    output: 
+        LOAD_done = touch('log/benchmark/STAR_load.benchmark.txt')
+    params:
+        release = config["release"]
+    threads: config["threads"] * 0.5
+    message: 'Loading genome index'
+    run:
+        shell("STAR --genomeDir 'ref/release{params.release}/STARindex' --runThreadN {threads} --runRNGseed 8756 --genomeLoad LoadAndExit")
+        
+rule STAR_align:
+    input:
+        R1 = "result/1_trim/{sample}_R1_trim.fastq.gz",
+        LOAD_done = 'log/benchmark/STAR_load.benchmark.txt'
+    output: 
+        BAM = 'result/2_bam/{sample}_Aligned.sortedByCoord.out.bam'
+    params:
+        OUT = 'result/2_bam/{sample}_',
+        release = config["release"]
+    threads: config["threads"] * 0.25
+    message: 'Aligning reads'
+    run:
+        shell("STAR --genomeDir 'ref/release{params.release}/STARindex' --readFilesIn {input.R1} --readFilesCommand zcat --outFileNamePrefix {params.OUT} --outSAMtype BAM SortedByCoordinate --runThreadN {threads} --runRNGseed 8756 --genomeLoad LoadAndKeep --limitBAMsortRAM 20000000000")
+  
+rule STAR_remove:
+    input:
+        LOAD_done = 'log/benchmark/STAR_load.benchmark.txt',
+        BAM = expand('result/2_bam/{sample}_Aligned.sortedByCoord.out.bam', sample=SAMPLES)
+    output: 
+        REMOVE_done = touch('log/benchmark/STAR_remove.benchmark.txt')
+    params:
+        release = config["release"]
+    message: 'Removing genome from RAM'
+    shell:
+        """
+        STAR --genomeDir 'ref/release{params.release}/STARindex' --runRNGseed 8756 --genomeLoad Remove
+        rm {input.LOAD_done}
+        """
+
+##----------------------------------------##
+## 4. ALIGNMENT FILTERING                 ##
+##----------------------------------------##
+
+rule align_filter:
+    input: 
+        BAM = 'result/2_bam/{sample}_Aligned.sortedByCoord.out.bam',
+        REMOVE_done = 'log/benchmark/STAR_remove.benchmark.txt'
+    output: 'result/3_bam_filter/{sample}_Aligned.sortedByCoord.filter.bam'
+    threads: config["threads"] * 0.1
+    message: "Filtering alignments"
+    run:
+        shell("samtools view {input.BAM} -b -h -F 1284 -q 30 -@ {threads} > {output}")
+
+
+##----------------------------------------##
+## 5. ALIGNMENT QC                        ##
+##----------------------------------------##
+
+rule flagstat:
+    input: 'result/3_bam_filter/{sample}_Aligned.sortedByCoord.filter.bam'
+    output: 'result/qc/3_flagstat/{sample}_flagstat.tsv'
+    threads: config["threads"] * 0.1
+    message: "Quality control, flagstat"
+    run:
+        shell("samtools flagstat -@ {threads} {input} > {output}")
+
+rule picard:
+    input: 'result/3_bam_filter/{sample}_Aligned.sortedByCoord.filter.bam'
+    output: 'result/qc/4_picard/{sample}_picard.tsv'
+    threads: 1
+    params:
+        picard = config["picard"],
+        genome = config["genome"]
+    message: "Quality control, Picard"
+    run:
+        if params.picard == True:
+            shell("scripts/picard.sh {input} {output} {params.genome}")
+        if params.picard == False:
+            print("Message: Picard not run. Change config picard parameter to True if you would like this output.")
+        if params.picard != True and params.picard != False:
+            print("Error: Config picard parameter must be True or False.")
+
+##----------------------------------------##
+## 6. FEATURE COUNTS                      ##
+##----------------------------------------##
+
+rule fcount:
+    input:
+        bam = 'result/3_bam_filter/{sample}_Aligned.sortedByCoord.filter.bam',
+        IDX_done = 'log/benchmark/STAR_index.benchmark.txt'
+    output: 'result/4_count/{sample}_feature_counts.tsv'
+    params:
+        release = config["release"],
+        genome = config["genome"]
+    threads: config["threads"] * 0.1
+    message: "Counting features"
+    run:
+        shell("featureCounts -T {threads} -g gene_id -t exon -p -a 'ref/release{params.release}/STARref/{params.genome}.{params.release}.gtf' -o {output} {input.bam}")
+
+##----------------------------------------##
+## 7. COMBINE SAMPLES
+##----------------------------------------##
+
+rule combine:
+    input:
+        counts = expand('result/4_count/{sample}_feature_counts.tsv', sample=SAMPLES),
+        flag = expand('result/qc/3_flagstat/{sample}_flagstat.tsv', sample=SAMPLES),
+        pic = expand('result/qc/4_picard/{sample}_picard.tsv', sample=SAMPLES)
+    output:
+        counts_all = 'result/5_combined/combined_feature_counts.tsv',
+        flag_all = 'result/5_combined/combined_flagstat.tsv',
+        pic_all = 'result/5_combined/combined_picard.tsv'
+    threads: 1
+    message: "Combining samples"
+    benchmark: 'log/benchmark/combine.benchmark.txt'
+    run:
+        shell("python scripts/combine_samples.py")

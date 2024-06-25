@@ -1,0 +1,46 @@
+SAMPLES = []
+import glob
+for filename in glob.glob("data/*.*") :
+    f= filename.split(".")
+    f1= f[0].split("/")
+    SAMPLES.append(f1[-1])
+
+rule all:
+    input:
+        "result/config.yaml",
+        'result/qc/2_fastqc_trim/',
+        'result/qc/3_flagstat/',
+        'result/qc/4_picard/',
+        'result/1_trim/',
+        'result/2_bam/',
+        'result/3_bam_filter/',
+        'result/4_count/',
+        'result/5_combined/',
+        expand("result/qc/1_fastqc_raw/{sample}_fastqc.html",sample= SAMPLES),
+        expand("result/qc/1_fastqc_raw/{sample}_fastqc.zip",sample= SAMPLES)
+
+rule configscript:
+    input: "scripts/create_config_single.sh"
+    output:
+        "result/config.yaml",
+        directory('result/qc/2_fastqc_trim'),
+        directory('result/qc/3_flagstat'),
+        directory('result/qc/4_picard'),
+        directory('result/1_trim'),
+        directory('result/2_bam'),
+        directory('result/3_bam_filter'),
+        directory('result/4_count'),
+        directory('result/5_combined')
+    shell:'''
+    bash scripts/create_config_single.sh
+    '''
+
+rule fastqc_raw:
+    input: "data/{sample}.fastq.gz"
+    output:
+        "result/qc/1_fastqc_raw/{sample}_fastqc.html",
+        "result/qc/1_fastqc_raw/{sample}_fastqc.zip"
+    threads: 1
+    shell:'''
+    fastqc -t {threads} -o result/qc/1_fastqc_raw {input} --quiet
+    '''
