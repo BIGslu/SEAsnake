@@ -155,7 +155,7 @@ rule align_filter:
         samtools view {input.BAM} -h -b -f 3 -F 1284 -q 30 -@ {threads} > {output.BAM2}
         samtools index -@ {threads} {output.BAM2} > {output.BAI} 
         """
-
+ 
 ##----------------------------------------##
 ## 5. ALIGNMENT QC                        ##
 ##----------------------------------------##
