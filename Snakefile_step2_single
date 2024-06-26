@@ -32,7 +32,6 @@ rule adapterremoval:
         R1 = lambda wildcards: config["SampleList"][wildcards.sample]["R1"]
     output:
         R1 = "result/1_trim/{sample}_R1_trim.fastq.gz",
-        single = "result/1_trim/{sample}_singleton.truncated.gz",
         discard = "result/1_trim/{sample}.settings",
         set = "result/1_trim/{sample}_discarded.gz"
     params:
@@ -44,9 +43,9 @@ rule adapterremoval:
 
     run: 
         if params.trimAdapt == True:
-            shell("AdapterRemoval --file1 {input.R1} --output1 {output.R1} --singleton {output.single} --discarded {output.discard} --settings {output.set} --threads {threads} --gzip --maxns 1 --minlength 15 --trimqualities --minquality 30 --trim5p {params.trim5p} --adapter1 {params.adapter1}")
+            shell("AdapterRemoval --file1 {input.R1} --output1 {output.R1} --discarded {output.discard} --settings {output.set} --threads {threads} --gzip --maxns 1 --minlength 15 --trimqualities --minquality 30 --trim5p {params.trim5p} --adapter1 {params.adapter1}")
         if params.trimAdapt == False:
-            shell("AdapterRemoval --file1 {input.R1} --output1 {output.R1} --singleton {output.single} --discarded {output.discard} --settings {output.set} --threads {threads} --gzip --maxns 1 --minlength 15 --trimqualities --minquality 30 --trim5p {params.trim5p}")
+            shell("AdapterRemoval --file1 {input.R1} --output1 {output.R1} --discarded {output.discard} --settings {output.set} --threads {threads} --gzip --maxns 1 --minlength 15 --trimqualities --minquality 30 --trim5p {params.trim5p}")
         if params.trimAdapt != True and params.trimAdapt != False:
             print("Error: Config trimAdapt parameter must be set to True or False.")
 
