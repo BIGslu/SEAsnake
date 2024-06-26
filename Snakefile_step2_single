@@ -1,12 +1,11 @@
 configfile: 'result/config.yaml'
 
 ## INPUTS / OUTPUTS
-SUFFIX = ["R1_trim"]
 SAMPLES = config["SampleList"]
     
 TRIM1 = expand('result/1_trim/{sample}_R1_trim.fastq.gz', sample=SAMPLES)
-QC_trim_html = expand("result/qc/2_fastqc_trim/{sample}_{suf}_fastqc.html", sample=SAMPLES, suf=SUFFIX)
-QC_trim_zip = expand("result/qc/2_fastqc_trim/{sample}_{suf}_fastqc.zip", sample=SAMPLES, suf=SUFFIX)
+QC_trim_html = expand("result/qc/2_fastqc_trim/{sample}_R1_trim_fastqc.html", sample=SAMPLES)
+QC_trim_zip = expand("result/qc/2_fastqc_trim/{sample}_R1_trim_fastqc.zip", sample=SAMPLES)
 BAM = expand("result/2_bam/{sample}_Aligned.sortedByCoord.out.bam", sample=SAMPLES)
 BAM2 = expand("result/3_bam_filter/{sample}_Aligned.sortedByCoord.filter.bam", sample=SAMPLES)
 FLAGSTAT = expand("result/qc/3_flagstat/{sample}_flagstat.tsv", sample=SAMPLES)
@@ -54,10 +53,10 @@ rule adapterremoval:
 ##----------------------------------------##
 
 rule fastqc_trim:
-    input: 'result/1_trim/{sample}_{suf}.fastq.gz'
+    input: 'result/1_trim/{sample}_R1_trim.fastq.gz'
     output:
-        HTML = 'result/qc/2_fastqc_trim/{sample}_{suf}_fastqc.html',
-        ZIP = 'result/qc/2_fastqc_trim/{sample}_{suf}_fastqc.zip'
+        HTML = 'result/qc/2_fastqc_trim/{sample}_R1_trim_fastqc.html',
+        ZIP = 'result/qc/2_fastqc_trim/{sample}_R1_trim_fastqc.zip'
     threads: config["threads"] * 0.1
     message: "Quality assessment, FastQC"
     shell:
@@ -72,7 +71,7 @@ STAR_index_SA = 'ref/release' + config["release"] + '/STARindex/SA'
 
 if (not os.path.exists(STAR_index_SA)):
     rule STAR_index:
-        input: expand('result/qc/2_fastqc_trim/{sample}_{suf}_fastqc.html', sample=SAMPLES, suf=SUFFIX)
+        input: expand('result/qc/2_fastqc_trim/{sample}_R1_trim_fastqc.html', sample=SAMPLES)
         output: 
             IDX_done = touch('log/benchmark/STAR_index.benchmark.txt')
         params:
@@ -84,7 +83,7 @@ if (not os.path.exists(STAR_index_SA)):
             shell("scripts/STAR_index.sh {params.release} {params.genome} {threads}")
 else:
     rule skip_index:
-        input: expand('result/qc/2_fastqc_trim/{sample}_{suf}_fastqc.html', sample=SAMPLES, suf=SUFFIX)
+        input: expand('result/qc/2_fastqc_trim/{sample}_R1_trim_fastqc.html', sample=SAMPLES)
         output: 
             IDX_done = touch('log/benchmark/STAR_index.benchmark.txt')
         message: "Genome index already present. Skipping indexing rule."
