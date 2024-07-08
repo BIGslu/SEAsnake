@@ -2,7 +2,9 @@
 
 [![DOI](https://zenodo.org/badge/411778345.svg)](https://zenodo.org/badge/latestdoi/411778345)
 
-RNA-seq pipeline
+Citation: Dill-McFarland KA, Benson B, Segnitx RM. 2024. SEAsnake: a snakemake pipeline for processing RNA-seq fastq to counts. v1.1. Zenodo. doi: 10.5281/zenodo.11646755
+
+## RNA-seq pipeline
 
 This pipeline includes quality assessment and filtering, alignment, and count table generation. Specifically,
 
