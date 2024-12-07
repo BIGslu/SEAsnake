@@ -46,10 +46,14 @@ adapter2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT
 
 # Genome alignment
 
-## Species the format 'Homo_sapiens.GRCh38' or 'Mus_musculus.GRCm39'
+## Species in one of the following formats:
+### 'Homo_sapiens.GRCh38' for humn
+### 'Mus_musculus.GRCm39' for mouae
+### an NCBI genome assembly like 'GCF_000195955.2_ASM19595v2' (Mtb)
 genome: 'Homo_sapiens.GRCh38'
-## Genome release number. Current as of 2022.04.14
-release: '106'
+## Genome release number. Current as of 2024.12.06
+## Ignored if using an GCF number
+release: '113'
 
 # Alignment metrics
 ## Run Picard?
