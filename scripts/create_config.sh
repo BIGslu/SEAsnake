@@ -16,7 +16,11 @@ do
 # Create R2 name
 sample2=`echo "${sample/R1/R2}"`
 # Create sample name
-sample_name=`echo "$(basename $sample)" | grep -o '^.*_L' | sed 's/_L$//'`
+if [[ "$sample" == *"L[0-9]{3}_R1"* ]]; then
+  sample_name=`echo "$(basename $sample)" | grep -o '^.*_L' | sed 's/_L$//'`
+else
+  sample_name=`echo "$(basename $sample)" | grep -o '^.*_R1' | sed 's/_R1$//'`
+fi
 
 # Add sample name to config
 sudo echo "  " "$sample_name$spacer1" >> result/config.yaml
