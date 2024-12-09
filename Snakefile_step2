@@ -117,7 +117,8 @@ rule STAR_align:
         BAM = 'result/2_bam/{sample}_Aligned.sortedByCoord.out.bam'
     params:
         OUT = 'result/2_bam/{sample}_',
-        release = config["release"]
+        release = config["release"],
+        genome = config["genome"]
     threads: config["threads"] * 0.25
     message: 'Aligning reads'
     run:
@@ -130,7 +131,8 @@ rule STAR_remove:
     output: 
         REMOVE_done = touch('log/benchmark/STAR_remove.benchmark.txt')
     params:
-        release = config["release"]
+        release = config["release"],
+        genome = config["genome"]
     message: 'Removing genome from RAM'
     shell:
         """
