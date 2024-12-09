@@ -101,11 +101,12 @@ rule STAR_load:
     output: 
         LOAD_done = touch('log/benchmark/STAR_load.benchmark.txt')
     params:
-        release = config["release"]
+        release = config["release"],
+        genome = config["genome"]
     threads: config["threads"] * 0.5
     message: 'Loading genome index'
     run:
-        shell("STAR --genomeDir 'ref/release{params.release}/STARindex' --runThreadN {threads} --runRNGseed 8756 --genomeLoad LoadAndExit")
+        shell("STAR --genomeDir 'ref/{params.genome}/release{params.release}/STARindex' --runThreadN {threads} --runRNGseed 8756 --genomeLoad LoadAndExit")
         
 rule STAR_align:
     input:
@@ -120,7 +121,7 @@ rule STAR_align:
     threads: config["threads"] * 0.25
     message: 'Aligning reads'
     run:
-        shell("STAR --genomeDir 'ref/release{params.release}/STARindex' --readFilesIn {input.R1} {input.R2} --readFilesCommand zcat --outFileNamePrefix {params.OUT} --outSAMtype BAM SortedByCoordinate --runThreadN {threads} --runRNGseed 8756 --genomeLoad LoadAndKeep --limitBAMsortRAM 20000000000")
+        shell("STAR --genomeDir 'ref/{params.genome}/release{params.release}/STARindex' --readFilesIn {input.R1} {input.R2} --readFilesCommand zcat --outFileNamePrefix {params.OUT} --outSAMtype BAM SortedByCoordinate --runThreadN {threads} --runRNGseed 8756 --genomeLoad LoadAndKeep --limitBAMsortRAM 20000000000")
   
 rule STAR_remove:
     input:
@@ -133,7 +134,7 @@ rule STAR_remove:
     message: 'Removing genome from RAM'
     shell:
         """
-        STAR --genomeDir 'ref/release{params.release}/STARindex' --runRNGseed 8756 --genomeLoad Remove
+        STAR --genomeDir 'ref/{params.genome}/release{params.release}/STARindex' --runRNGseed 8756 --genomeLoad Remove
         rm {input.LOAD_done}
         """
 

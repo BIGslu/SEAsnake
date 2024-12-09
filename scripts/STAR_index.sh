@@ -15,7 +15,7 @@ if [[ "$genome" == *"Homo_sapiens"* || "$genome" == *"Mus_musculus"* ]]; then
   species="${species%% *}"
   species=`echo "$species" | awk '{print tolower($0)}'`
   #dir
-  out=ref/release${release}
+  out=ref/${genome}/release${release}
   ref=${out}/STARref
   index=${out}/STARindex
   SA=${out}/STARindex/SA
@@ -29,9 +29,8 @@ if [[ "$genome" == *"Homo_sapiens"* || "$genome" == *"Mus_musculus"* ]]; then
   indexN=14
 #Setup for GCF genomes
 elif [[ "$genome" == "GCF_"* ]]; then
-  species=$genome
   #dir
-  out=ref/${genome}
+  out=ref/${genome}/release${release}
   ref=${out}/STARref
   index=${out}/STARindex
   SA=${out}/STARindex/SA

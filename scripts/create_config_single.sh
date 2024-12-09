@@ -49,8 +49,9 @@ adapter2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT
 ### an NCBI genome assembly like 'GCF_000195955.2_ASM19595v2' (Mtb)
 genome: 'Homo_sapiens.GRCh38'
 
-## Genome release number. Current as of 2024.12.06
-## Ignored if using GCF genome
+## Genome release number
+## Current for human/mouse as of 2024.12.06
+## Set to version number if using NCBI genome (GCF) but also keep v# in your genome name
 release: '113'
 
 # Alignment metrics
