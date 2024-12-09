@@ -240,10 +240,13 @@ SEAsnake looks for specific filenames in the `data/` directory based on default 
 
 * Files must be `fastq.gz` format
 * Read 1 and 2 must be specified by `_R1` and `_R2` in the filename
-* No other part of the filename can contain `_R1` or `_R2` including sample names
-* Filenames must contain the original lane notation as `_L`. Everything before this lane number is treated as the sample name
+    * No other part of the filename can contain `_R1` or `_R2` including sample names
+    * SEAsnake defines sample names as everything before _R unless there is a lane number (see below)
+* Lane numbers are allowed and identified as `_L`
+    * No other part of the filename can contain `_L` including sample names
+    * When a lane number is found, SEAsnake defines sample names as everything before _L
 
-For example, `test_S1_L005_R1_001.fastq.gz`
+For example, `test_S1_L005_R1_001.fastq.gz`, `test_S1_R1_001.fastq.gz`, and `test_S1_R1.fastq.gz` are all identified as sample `test_S1`.
 
 ## Reference genome
 
@@ -271,6 +274,16 @@ cores=15
 conda activate SEAsnake
 cd ~/SEAsnake
 ```
+
+### Breaking down the `snakemake` command
+
+For those less familiar with bash scripting, here is a detailed break down of the command used to run SEAsnake in `snakemake`
+
+* `nohup` tells the program to continue running even if you log out or close your terminal window
+* `snakemake --snakefile Snakefile_step1` runs the step1 SEAsnake commands in the `snakemake` program
+* `--cores $cores` distributes the process across the number of cores you specify
+* `>> log/SEAsnake_step1.log 2>&1` saves all standard output and errors (what's normally printed in the terminal window as something runs) to the log file instead
+* `&` pushed to process to the background so you can immediately start using other commands (like checking progress below) in the same terminal window
 
 ### Step 1
 
@@ -328,24 +341,14 @@ grViz(diagram = "digraph flowchart {
   [11]: '3_flagstat/'
   [12]: '4_picard/'
   [13]: 'log/'
-  [14]: 'ref/'
+  [14]: 'ref/genome/'
   [15]: 'result/'
   [16]: 'PICARDref/'
-  [17]: 'release###/'
+  [17]: 'release##/'
   [18]: 'STARindex/'
   [19]: 'STARref/'
   ")
 ```
-
-#### Breaking down the `snakemake` command
-
-For those less familiar with bash scripting, here is a detailed break down of the command used to run SEAsnake in `snakemake`
-
-* `nohup` tells the program to continue running even if you log out or close your terminal window
-* `snakemake --snakefile Snakefile_step1` runs the step1 SEAsnake commands in the `snakemake` program
-* `--cores $cores` distributes the process across the number of cores you specify
-* `>> log/SEAsnake_step1.log 2>&1` saves all standard output and errors (what's normally printed in the terminal window as something runs) to the log file instead
-* `&` pushed to process to the background so you can immediately start using other commands (like checking progress below) in the same terminal window
 
 ### Checking progress
 
@@ -383,17 +386,6 @@ Note that if your terminal times out, your job is still running! This is why we 
 Step 1 creates `result/config.yaml` which allows some customization of the workflow. Below is an example from the vignette data with all defaults. 
 
 ```
-SampleList:
-   test_S1: 
-    sample: 'test_S1'
-    R1: 'data/test_S1_L005_R1_001.fastq.gz'
-    R2: 'data/test_S1_L005_R2_001.fastq.gz'
-   test_S2: 
-    sample: 'test_S2'
-    R1: 'data/test_S2_L005_R1_001.fastq.gz'
-    R2: 'data/test_S2_L005_R2_001.fastq.gz'
-
-
 # Adapter removal
 ## Base pairs to trim from 5' end
 trim5p: 10
@@ -403,14 +395,34 @@ adapter1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC
 adapter2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT
 
 # Genome alignment
-
-## Species the format 'Homo_sapiens.GRCh38' or 'Mus_musculus.GRCm39'
+## Genome
+### In one of the following formats:
+### 'Homo_sapiens.GRCh38' for human
+### 'Mus_musculus.GRCm39' for mouse
+### an NCBI genome assembly like 'GCF_000195955.2_ASM19595v2' (Mtb)
 genome: 'Homo_sapiens.GRCh38'
-## Genome release number. Current as of 2022.04.14
-release: '106'
+
+## Genome release number
+### Default is current for human/mouse as of 2024.12
+### Set to version number if using NCBI genome (GCF) but also keep v# in your genome name
+release: '113'
+
+## GTF parameters for quantifying reads in genes
+### Gene name
+### GTF attribute to define genes. Usually 'gene_id' but you may choose 
+### 'exon_number' or 'transcript_id' if you want finer mapping
+gene: 'gene_id'
+
+### Gene feature
+### GTF feature to be included in per gene counts
+### Recommend 'exon' for mouse and human; 'CDS' for bacteria
+### Note that 'gene' and 'transcript' are not recommended as these include UTR 
+### and other regulatory regions
+feature: 'exon'
 
 # Alignment metrics
 ## Run Picard?
+## ONLY available for human and mouse. Set to False for all others
 picard: True
 
 # Other
@@ -430,13 +442,16 @@ You may wish to change some defaults.
   - If you do not see adapter contamination, **set trimAdapt to False**! You can leave the adapter sequences as is as they will not be used with the False setting. This dramatically speeds up adapter trimming.
   - ![](figs/adapter_content_raw.png){width=50%}
 * Genome alignment
-  - Currently SEAsnake supports any ENSEMBL genome release. Tests have only been run for human and mouse, so please let us know how others work! 
+  - `genome` and `release`: Currently SEAsnake supports ENSEMBL genomes for human and mouse as well as NCBI genome assemblies (GCF names). Other species available in ENSEMBL may work but have not been tested. 
+    - Please be careful to give genome and release names with the required formatting. Note underscores, periods, etc.
+  - `gene` and `feature`: Any GTF attributes and features, respectively, can be utilized. Recommendations are provided in the default config file.
 * Alignment metrics
   - `picard`: This program provides additional alignment quality metrics listed [here](http://broadinstitute.github.io/picard/picard-metric-definitions.html#RnaSeqMetrics). If you do not need these metrics, set to False.
+      - Currently, `picard` only works for human and mouse genomes. **Set to False** for all other species.
 * `threads`
   - This sets the maximum number of threads **per job** as opposed to the SEAsnake `--cores` parameter which sets the maximum number of cores to run jobs in parallel. Thus, the total cores being used is threads * cores.
   - By default, threads is your total CPU minus 1 and is automatically scaled for each step in SEAsnake based on its individual requirements. You should not need to change this but can reduce it if you experience issues with running out of CPU or RAM space.
-  - *MAC and WINDOWS*: Auto core detection does not work. Please verify that the config file contains a non-negative numeric value.
+  - *MAC and WINDOWS*: Auto core detection does not work. Please verify that the config file contains a non-negative numeric value here.
   
 You can also find a more thorough introduction to quality assessment in our [first tutorial](https://github.com/BIGslu/tutorials/blob/main/RNAseq/1.Hawn_RNAseq_fastq.to.counts.pdf).
 
