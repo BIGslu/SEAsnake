@@ -52,15 +52,17 @@ adapter2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT
 
 ## Species in one of the following formats:
 ### 'Homo_sapiens.GRCh38' for humn
-### 'Mus_musculus.GRCm39' for mouae
+### 'Mus_musculus.GRCm39' for mouse
 ### an NCBI genome assembly like 'GCF_000195955.2_ASM19595v2' (Mtb)
 genome: 'Homo_sapiens.GRCh38'
+
 ## Genome release number. Current as of 2024.12.06
-## Ignored if using an GCF number
+## Ignored if using GCF genome
 release: '113'
 
 # Alignment metrics
 ## Run Picard?
+## ONLY available for human and mouse. Set to False for all others
 picard: True
 
 # Other
