@@ -64,15 +64,15 @@ if [ ! -e "$gtf" ]; then
     sudo curl -s -O --output-dir ${out}/STARref ${gtf_url}
     yes y | gunzip ${out}/STARref/*gtf.gz
 else
-    echo "Genome GTF already exists. No new file downloaded."
+  echo "Genome GTF already exists. No new file downloaded."
 fi
 
 # Download fasta if not present
 if [ ! -e "$fasta" ]; then
     sudo curl -s -O --output-dir ${out}/STARref ${fasta_url}
-   yes y | gunzip ${out}/STARref/*.gz
+    yes y | gunzip ${out}/STARref/*.gz
 else
-    echo "Genome fasta already exists. No new file downloaded."
+  echo "Genome fasta already exists. No new file downloaded."
 fi
 
 # Make index if not present
