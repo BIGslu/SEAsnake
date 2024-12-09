@@ -68,6 +68,13 @@ else
   echo "Genome GTF already exists. No new file downloaded."
 fi
 
+# Rename GTF for GCF genomes
+if [[ "$genome" == "GCF_"* ]]; then
+    gtf_orig="$gtf"
+    gtf=$(echo $gtf_orig | sed "s/_genomic/.$release/")
+    cp $gtf_orig $gtf
+fi
+
 # Download fasta if not present
 if [ ! -e "$fasta" ]; then
     sudo curl -s -O --output-dir ${out}/STARref ${fasta_url}

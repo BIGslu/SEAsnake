@@ -190,7 +190,7 @@ rule fcount:
     threads: config["threads"] * 0.1
     message: "Counting features"
     run:
-        shell("featureCounts -T {threads} -g gene_id -t exon -p -a 'ref/release{params.release}/STARref/{params.genome}.{params.release}.gtf' -o {output} {input.bam}")
+        shell("featureCounts -T {threads} -g gene_id -t exon -p -a 'ref/{params.genome}/release{params.release}/STARref/{params.genome}.{params.release}.gtf' -o {output} {input.bam}")
 
 ##----------------------------------------##
 ## 7. COMBINE SAMPLES
