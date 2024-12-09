@@ -198,11 +198,13 @@ rule fcount:
     output: 'result/4_count/{sample}_feature_counts.tsv'
     params:
         release = config["release"],
-        genome = config["genome"]
+        genome = config["genome"],
+        gene = config["gene"],
+        feature = config["feature"]
     threads: config["threads"] * 0.1
     message: "Counting features"
     run:
-        shell("featureCounts -T {threads} -g gene_id -t exon -p -a 'ref/{params.genome}/release{params.release}/STARref/{params.genome}.{params.release}.gtf' -o {output} {input.bam}")
+        shell("featureCounts -T {threads} -g {params.gene} -t {params.feature} -p -a 'ref/{params.genome}/release{params.release}/STARref/{params.genome}.{params.release}.gtf' -o {output} {input.bam}")
 
 ##----------------------------------------##
 ## 7. COMBINE SAMPLES

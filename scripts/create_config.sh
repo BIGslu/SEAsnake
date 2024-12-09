@@ -49,17 +49,30 @@ adapter1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC
 adapter2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT
 
 # Genome alignment
-
-## Species in one of the following formats:
+## Genome
+### In one of the following formats:
 ### 'Homo_sapiens.GRCh38' for human
 ### 'Mus_musculus.GRCm39' for mouse
 ### an NCBI genome assembly like 'GCF_000195955.2_ASM19595v2' (Mtb)
 genome: 'Homo_sapiens.GRCh38'
 
 ## Genome release number
-## Current for human/mouse as of 2024.12.06
-## Set to version number if using NCBI genome (GCF) but also keep v# in your genome name
+### Default is current for human/mouse as of 2024.12
+### Set to version number if using NCBI genome (GCF) but also keep v# in your genome name
 release: '113'
+
+## GTF parameters for quantifying reads in genes
+### Gene name
+### GTF attribute to define genes. Usually 'gene_id' but you may choose 
+### 'exon_number' or 'transcript_id' if you want finer mapping
+gene: 'gene_id'
+
+### Gene feature
+### GTF feature to be included in per gene counts
+### Recommend 'exon' for mouse and human; 'CDS' for bacteria
+### Note that 'gene' and 'transcript' are not recommended as these include UTR 
+### and other regulatory regions
+feature: 'exon'
 
 # Alignment metrics
 ## Run Picard?
