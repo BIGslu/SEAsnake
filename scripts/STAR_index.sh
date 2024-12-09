@@ -24,7 +24,7 @@ if [[ "$genome" == *"Homo_sapiens"* || "$genome" == *"Mus_musculus"* ]]; then
   gtf_url=ftp://ftp.ensembl.org/pub/release-${release}/gtf/${species}/${genome}.${release}.gtf.gz
   #files
   gtf=${out}/STARref/${genome}.${release}.gtf
-  c=${out}/STARref/${genome}.dna.primary_assembly.fa
+  fasta=${out}/STARref/${genome}.dna.primary_assembly.fa
 #Setup for GCF genomes
 elif [[ "$genome" == "GCF_"* ]]; then
   species=$genome
