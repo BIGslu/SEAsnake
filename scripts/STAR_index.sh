@@ -25,6 +25,8 @@ if [[ "$genome" == *"Homo_sapiens"* || "$genome" == *"Mus_musculus"* ]]; then
   #files
   gtf=${out}/STARref/${genome}.${release}.gtf
   fasta=${out}/STARref/${genome}.dna.primary_assembly.fa
+  #Set genomeSAindexNbases
+  indexN=14
 #Setup for GCF genomes
 elif [[ "$genome" == "GCF_"* ]]; then
   species=$genome
@@ -75,9 +77,19 @@ else
   echo "Genome fasta already exists. No new file downloaded."
 fi
 
+#Scale genomeSAindexNbases for small genomes
+if [[ "$genome" == "GCF_"* ]]; then
+    #genome size
+    length=$(tail -n +2 "${fasta}" | tr -d '\n' | wc -m)
+    #Scaled Nbases
+    length=$(echo "l($length)/l(2)/2 - 1" | bc -l)
+    #integer
+    indexN=$(echo "scale=0; $length / 1" | bc)
+fi
+    
 # Make index if not present
 if [ ! -e "$SA" ]; then
-    STAR --runMode genomeGenerate --genomeDir ${index} --genomeFastaFiles {$fasta} --sjdbGTFfile {$gtf} --sjdbOverhang 99 --runThreadN ${threads}
+    STAR --runMode genomeGenerate --genomeDir ${index} --genomeFastaFiles ${fasta} --sjdbGTFfile ${gtf} --sjdbOverhang 99 --runThreadN ${threads} --genomeSAindexNbases ${indexN}
 else
     echo "Genome index already exists. No new index created."
 fi
