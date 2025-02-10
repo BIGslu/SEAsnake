@@ -13,6 +13,12 @@ spacer1=": "
 # List samples & paired reads
 for sample in $SampleList;
 do
+#Error is no files found
+if [[ "$sample" == "data/*fastq.gz" || "$sample" == "data/*_R1*" ]]; then
+echo "Error: No files found. Please check fastq naming requirements in the SEAsnake vignette."
+break
+fi
+
 # Create R2 name
 sample2=`echo "${sample/R1/R2}"`
 # Create sample name

@@ -10,9 +10,15 @@ sudo echo "SampleList:" > result/config.yaml
 
 spacer1=": "
 
-# List samples & paired reads
+# List samples
 for sample in $SampleList;
 do
+#Error is no files found
+if [[ "$sample" == "data/*fastq.gz" || "$sample" == "data/*_R1*" ]]; then
+echo "Error: No files found. Please check fastq naming requirements in the SEAsnake vignette."
+break
+fi
+
 # Create sample name
 sample_name=`echo "$(basename $sample)" | sed 's/.fastq.gz$//'`
 
