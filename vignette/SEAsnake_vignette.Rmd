@@ -432,6 +432,26 @@ This was a dry-run (flag -n). The order of jobs does not reflect the order of ex
 
 Note that if your terminal times out, your job is still running! This is why we use `nohup`. To check on the progress, simply log back into the instance with `ssh`, `cd` into the SEAsnake directory, and activate the conda environment again. Then run one of the following options described above.
 
+### Save results
+
+Save the results to an AWS bucket. We recommend using a different bucket than your DATA_BUCKET to retain the integrity of the raw data.
+
+```{bash eval=FALSE}
+RESULT_BUCKET="MY_RESULT_BUCKET"
+cd ~/SEAsnake
+aws s3 sync result s3://$RESULT_BUCKET
+```
+
+Then download results from AWS to your local computer for review. This examples saves to your desktop
+
+```{bash eval=FALSE}
+RESULT_BUCKET="MY_BUCKET_NAME2"
+mkdir -p ~/Desktop/SEAsnake_result
+cd ~/Desktop/SEAsnake_result
+
+aws s3 sync s3://$RESULT_BUCKET/qc/ .
+```
+
 ### Customize config
 
 Step 1 creates `result/config.yaml` which allows some customization of the workflow. Below is an example from the vignette data with all defaults. 
@@ -546,6 +566,13 @@ Once complete, save your `result/` and `log/` directories because these will be 
 RESULT_BUCKET="MY_RESULT_BUCKET"
 aws s3 sync ~/SEAsnake/result/ s3://$RESULT_BUCKET
 aws s3 sync ~/SEAsnake/log/ s3://$RESULT_BUCKET
+```
+
+If you want your raw counts first, use the following before copying everything else with the previous code.
+
+```{bash eval=FALSE}
+RESULT_BUCKET="MY_RESULT_BUCKET"
+aws s3 sync ~/SEAsnake/result/5_combined/ s3://$RESULT_BUCKET/5_combined/
 ```
 
 You may also wish to save your genome index for use in future runs. This saves about an hour of run time for human samples! *Hawn/Altman labs: Save to the `human-ref` bucket.*
