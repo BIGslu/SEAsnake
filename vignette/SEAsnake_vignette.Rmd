@@ -134,10 +134,13 @@ Next, get your EBS volume name. On most setups, this next code chunk will automa
 ```{bash eval=FALSE}
 #### Setup EBS volume ####
 ## Get addtl volume name
-## If this does not give the correct volume name, find it with lsblk
+lsblk
 ebs_name=$(lsblk -o NAME -n -i | tail -n 1)
 echo $ebs_name
+
+## If this does not give the correct volume name, find it with lsblk
 lsblk
+ebs_name="XXXX"
 ```
 
 Finally, format the additional EBS volume and install SEAsnake.
