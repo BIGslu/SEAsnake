@@ -256,8 +256,48 @@ Paired-end files:
 
 For example, `test_S1_L005_R1_001.fastq.gz` is sample `test_S1`
 
+#### Multiple files per sample
 
-For example, `test_S1_L005_R1_001.fastq.gz`
+If you have multiple files per sample, use the following code to concatenate to 1 file per read per sample. This assumes 1) all files for a single sample are in a single subdirectory named by sample name, and 2) you fused a bucket with your data; thus, you need to initially save the concatenated data to a new directory `data2/` since `data/` is read-only.
+
+Paired-end data
+
+```{bash eval=FALSE}
+cd ~/SEAsnake
+mkdir -p data2
+
+for d in ./data/* ; do
+  cd "$d"
+  echo "$d"
+    cat *_R1*.fastq.gz > ../../data2/"$d"_L000_R1_concat.fastq.gz
+    cat *_R2*.fastq.gz > ../../data2/"$d"_L000_R2_concat.fastq.gz
+  cd ..
+done
+
+#Unmount original data and move concatenated files to data/
+cd ~/SEAsnake
+fusermount -u data
+mv data2/* data/
+```
+
+Single read data
+
+```{bash eval=FALSE}
+cd ~/SEAsnake
+mkdir -p data2
+
+for d in ./data/* ; do
+  cd "$d"
+  echo "$d"
+    cat *.fastq.gz > ../../data2/"$d".fastq.gz
+  cd ..
+done
+
+#Unmount original data and move concatenated files to data/
+cd ~/SEAsnake
+fusermount -u data
+mv data2/* data/
+```
 
 ## Reference genome
 
