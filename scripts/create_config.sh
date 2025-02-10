@@ -13,10 +13,16 @@ spacer1=": "
 # List samples & paired reads
 for sample in $SampleList;
 do
+#Error is no files found
+if [[ "$sample" == "data/*fastq.gz" || "$sample" == "data/*_R1*" ]]; then
+echo "Error: No files found. Please check fastq naming requirements in the SEAsnake vignette."
+break
+fi
+
 # Create R2 name
 sample2=`echo "${sample/R1/R2}"`
 # Create sample name
-sample_name=`echo "$(basename $sample)" | grep -o '^.*_L' | sed 's/_L$//'`
+sample_name=`echo "$(basename $sample)" | grep -o '^.*_L[0-9][0-9][0-9]' | sed 's/_L[0-9][0-9][0-9]$//'`
 
 # Add sample name to config
 sudo echo "  " "$sample_name$spacer1" >> result/config.yaml
@@ -32,6 +38,10 @@ done
 # Auto detect cores
 cores=$(eval nproc --all)
 cores2=$(($cores-1))
+#Fix is cores < 1
+if [[ "$cores2" -lt 1 ]]; then
+cores2=1
+fi
 
 # Add default param to config
 sudo echo "

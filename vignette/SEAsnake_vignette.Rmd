@@ -69,7 +69,7 @@ We are working on improving speed so please check for updates periodically.
 
 SEAsnake can be pre-installed on any AWS EC2 instance.
 
-1. Launch a new instance from the AWS console. Search 'seasnake' and select the Community AMI SEAsnake.
+1. Launch a new instance from the AWS console. Search 'seasnake' and select the Community AMI SEAsnake_2024.
 
 ![](figs/instance_setup1_search.png){width=49%}
 ![](figs/instance_setup1_seasnake.png){width=49%}  
@@ -85,7 +85,7 @@ Make sure your in the us-west-2 (Oregon) region as noted in the upper right of t
 
 ![](figs/instance_setup3_key.png){width=50%}  
 
-4. Allow both SSH and HTTPS access.
+4. Allow both SSH and HTTPS access. These are defaults is you are in our AWS org and select a "basic" security group under existing security groups.
 
 ![](figs/instance_setup4_network.png){width=50%}  
 
@@ -108,7 +108,7 @@ Then, complete setup as follows. First, define your AWS account information. Not
 ```{bash eval=FALSE}
 AWS_ACCESS_KEY="XXXX"
 AWS_SECRET_ACCESS_KEY="XXXX"
-AWS_REGION="xxxx"
+AWS_REGION="us-west-2"
 ```
 
 Then, run the following script which will configure your AWS account.
@@ -134,10 +134,16 @@ Next, get your EBS volume name. On most setups, this next code chunk will automa
 ```{bash eval=FALSE}
 #### Setup EBS volume ####
 ## Get addtl volume name
-## If this does not give the correct volume name, find it with lsblk
+lsblk
 ebs_name=$(lsblk -o NAME -n -i | tail -n 1)
 echo $ebs_name
+```
+
+If this does not give the correct volume name, find it with `lsblk` and input the name by-hand.
+
+```{bash eval=FALSE}
 lsblk
+ebs_name="XXXX"
 ```
 
 Finally, format the additional EBS volume and install SEAsnake.
@@ -238,12 +244,60 @@ cp ~/SEAsnake/vignette/data/*fastq.gz ~/SEAsnake/data
 
 SEAsnake looks for specific filenames in the `data/` directory based on default Illumina outputs. Your files must follow these rules for SEAsnake to run correctly.
 
-* Files must be `fastq.gz` format
-* Read 1 and 2 must be specified by `_R1` and `_R2` in the filename
-* No other part of the filename can contain `_R1` or `_R2` including sample names
-* Filenames must contain the original lane notation as `_L`. Everything before this lane number is treated as the sample name
+All files:
 
-For example, `test_S1_L005_R1_001.fastq.gz`
+* Files must be `fastq.gz` format
+
+Paired-end files:
+
+* Read 1 and 2 must be specified by `_R1` and `_R2` in the filename
+    * No other part of the filename can contain `_R1` or `_R2` including sample names
+* Filenames must contain the original lane notation as `_L###`. Everything before this lane number is treated as the sample name
+
+For example, `test_S1_L005_R1_001.fastq.gz` is sample `test_S1`
+
+#### Multiple files per sample
+
+If you have multiple files per sample, use the following code to concatenate to 1 file per read per sample. This assumes 1) all files for a single sample are in a single subdirectory named by sample name, and 2) you fused a bucket with your data; thus, you need to initially save the concatenated data to a new directory `data2/` since `data/` is read-only.
+
+Paired-end data
+
+```{bash eval=FALSE}
+cd ~/SEAsnake
+mkdir -p data2
+
+for d in ./data/* ; do
+  cd "$d"
+  echo "$d"
+    cat *_R1*.fastq.gz > ../../data2/"$d"_L000_R1_concat.fastq.gz
+    cat *_R2*.fastq.gz > ../../data2/"$d"_L000_R2_concat.fastq.gz
+  cd ..
+done
+
+#Unmount original data and move concatenated files to data/
+cd ~/SEAsnake
+fusermount -u data
+mv data2/* data/
+```
+
+Single read data
+
+```{bash eval=FALSE}
+cd ~/SEAsnake
+mkdir -p data2
+
+for d in ./data/* ; do
+  cd "$d"
+  echo "$d"
+    cat *.fastq.gz > ../../data2/"$d".fastq.gz
+  cd ..
+done
+
+#Unmount original data and move concatenated files to data/
+cd ~/SEAsnake
+fusermount -u data
+mv data2/* data/
+```
 
 ## Reference genome
 
@@ -378,6 +432,26 @@ This was a dry-run (flag -n). The order of jobs does not reflect the order of ex
 
 Note that if your terminal times out, your job is still running! This is why we use `nohup`. To check on the progress, simply log back into the instance with `ssh`, `cd` into the SEAsnake directory, and activate the conda environment again. Then run one of the following options described above.
 
+### Save results
+
+Save the results to an AWS bucket. We recommend using a different bucket than your DATA_BUCKET to retain the integrity of the raw data.
+
+```{bash eval=FALSE}
+RESULT_BUCKET="MY_RESULT_BUCKET"
+cd ~/SEAsnake
+aws s3 sync result s3://$RESULT_BUCKET
+```
+
+Then download results from AWS to your local computer for review. This examples saves to your desktop
+
+```{bash eval=FALSE}
+RESULT_BUCKET="MY_BUCKET_NAME2"
+mkdir -p ~/Desktop/SEAsnake_result
+cd ~/Desktop/SEAsnake_result
+
+aws s3 sync s3://$RESULT_BUCKET/qc/ .
+```
+
 ### Customize config
 
 Step 1 creates `result/config.yaml` which allows some customization of the workflow. Below is an example from the vignette data with all defaults. 
@@ -492,6 +566,13 @@ Once complete, save your `result/` and `log/` directories because these will be 
 RESULT_BUCKET="MY_RESULT_BUCKET"
 aws s3 sync ~/SEAsnake/result/ s3://$RESULT_BUCKET
 aws s3 sync ~/SEAsnake/log/ s3://$RESULT_BUCKET
+```
+
+If you want your raw counts first, use the following before copying everything else with the previous code.
+
+```{bash eval=FALSE}
+RESULT_BUCKET="MY_RESULT_BUCKET"
+aws s3 sync ~/SEAsnake/result/5_combined/ s3://$RESULT_BUCKET/5_combined/
 ```
 
 You may also wish to save your genome index for use in future runs. This saves about an hour of run time for human samples! *Hawn/Altman labs: Save to the `human-ref` bucket.*
