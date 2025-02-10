@@ -22,7 +22,7 @@ fi
 # Create R2 name
 sample2=`echo "${sample/R1/R2}"`
 # Create sample name
-sample_name=`echo "$(basename $sample)" | grep -o '^.*_L' | sed 's/_L$//'`
+sample_name=`echo "$(basename $sample)" | grep -o '^.*_L[0-9][0-9][0-9]' | sed 's/_L[0-9][0-9][0-9]$//'`
 
 # Add sample name to config
 sudo echo "  " "$sample_name$spacer1" >> result/config.yaml
