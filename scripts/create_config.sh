@@ -38,6 +38,10 @@ done
 # Auto detect cores
 cores=$(eval nproc --all)
 cores2=$(($cores-1))
+#Fix is cores < 1
+if [[ "$cores2" -lt 1 ]]; then
+cores2=1
+fi
 
 # Add default param to config
 sudo echo "
