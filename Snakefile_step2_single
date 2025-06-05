@@ -2,7 +2,7 @@ configfile: 'result/config.yaml'
 
 ## INPUTS / OUTPUTS
 SAMPLES = config["SampleList"]
-    
+
 TRIM1 = expand('result/1_trim/{sample}_R1_trim.fastq.gz', sample=SAMPLES)
 QC_trim_html = expand("result/qc/2_fastqc_trim/{sample}_R1_trim_fastqc.html", sample=SAMPLES)
 QC_trim_zip = expand("result/qc/2_fastqc_trim/{sample}_R1_trim_fastqc.zip", sample=SAMPLES)
@@ -21,7 +21,7 @@ rule all:
         *( ['result/5_combined/combined_picard.tsv'] if config["picard"] else [] ),
         'log/benchmark/STAR_index.benchmark.txt',
         'log/benchmark/STAR_load.benchmark.txt'
-        
+
 ##----------------------------------------##
 ## 1. Adapter removal & quality filtering ##
 ##----------------------------------------##
@@ -38,11 +38,11 @@ rule adapterremoval:
     threads: config["threads"] * 0.1
     message: "Adapter removal & quality filtering"
 
-    run: 
+    run:
         if params.trimAdapt == True:
-            shell("cutadapt -g {params.adapter1} --cut {params.trim5p} --quality-cutoff 30 --max-n 1 --minimum-length 15 -o {output.R1} --cores={threads} {input.R1}")
+            shell("cutadapt -g {params.adapter1} --cut {params.trim5p} --quality-cutoff 30 --max-n 1 --minimum-length 15 -o {output.R1} --cores {threads} {input.R1}")
         if params.trimAdapt == False:
-            shell("cutadapt --quality-cutoff 30 --max-n 1 --minimum-length 15 -o {output.R1} --cores={threads} {input.R1}")
+            shell("cutadapt --quality-cutoff 30 --max-n 1 --minimum-length 15 -o {output.R1} --cores {threads} {input.R1}")
         if params.trimAdapt != True and params.trimAdapt != False:
             print("Error: Config trimAdapt parameter must be set to True or False.")
 
@@ -70,7 +70,7 @@ STAR_index_SA = 'ref/release' + config["release"] + '/STARindex/SA'
 if (not os.path.exists(STAR_index_SA)):
     rule STAR_index:
         input: expand('result/qc/2_fastqc_trim/{sample}_R1_trim_fastqc.html', sample=SAMPLES)
-        output: 
+        output:
             IDX_done = touch('log/benchmark/STAR_index.benchmark.txt')
         params:
             release = config["release"],
@@ -82,14 +82,14 @@ if (not os.path.exists(STAR_index_SA)):
 else:
     rule skip_index:
         input: expand('result/qc/2_fastqc_trim/{sample}_R1_trim_fastqc.html', sample=SAMPLES)
-        output: 
+        output:
             IDX_done = touch('log/benchmark/STAR_index.benchmark.txt')
         message: "Genome index already present. Skipping indexing rule."
 
 rule STAR_load:
     input:
         IDX_done = 'log/benchmark/STAR_index.benchmark.txt'
-    output: 
+    output:
         LOAD_done = touch('log/benchmark/STAR_load.benchmark.txt')
     params:
         release = config["release"]
@@ -97,12 +97,12 @@ rule STAR_load:
     message: 'Loading genome index'
     run:
         shell("STAR --genomeDir 'ref/release{params.release}/STARindex' --runThreadN {threads} --runRNGseed 8756 --genomeLoad LoadAndExit")
-        
+
 rule STAR_align:
     input:
         R1 = "result/1_trim/{sample}_R1_trim.fastq.gz",
         LOAD_done = 'log/benchmark/STAR_load.benchmark.txt'
-    output: 
+    output:
         BAM = 'result/2_bam/{sample}_Aligned.sortedByCoord.out.bam'
     params:
         OUT = 'result/2_bam/{sample}_',
@@ -111,12 +111,12 @@ rule STAR_align:
     message: 'Aligning reads'
     run:
         shell("STAR --genomeDir 'ref/release{params.release}/STARindex' --readFilesIn {input.R1} --readFilesCommand zcat --outFileNamePrefix {params.OUT} --outSAMtype BAM SortedByCoordinate --runThreadN {threads} --runRNGseed 8756 --genomeLoad LoadAndKeep --limitBAMsortRAM 20000000000")
-  
+
 rule STAR_remove:
     input:
         LOAD_done = 'log/benchmark/STAR_load.benchmark.txt',
         BAM = expand('result/2_bam/{sample}_Aligned.sortedByCoord.out.bam', sample=SAMPLES)
-    output: 
+    output:
         REMOVE_done = touch('log/benchmark/STAR_remove.benchmark.txt')
     params:
         release = config["release"]
@@ -132,7 +132,7 @@ rule STAR_remove:
 ##----------------------------------------##
 
 rule align_filter:
-    input: 
+    input:
         BAM = 'result/2_bam/{sample}_Aligned.sortedByCoord.out.bam',
         REMOVE_done = 'log/benchmark/STAR_remove.benchmark.txt'
     output: 'result/3_bam_filter/{sample}_Aligned.sortedByCoord.filter.bam'
