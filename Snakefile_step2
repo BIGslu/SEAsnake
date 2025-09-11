@@ -42,7 +42,7 @@ rule adapterremoval:
         trimAdapt = config["trimAdapt"],
         adapter1 = config["adapter1"],
         adapter2 = config["adapter2"]
-    threads: config["threads"] * 0.1
+    threads: max(1, int(config["threads"]*0.1))
     message: "Adapter removal & quality filtering"
 
     run:
@@ -62,7 +62,7 @@ rule fastqc_trim:
     output:
         HTML = 'result/qc/2_fastqc_trim/{sample}_{suf}_fastqc.html',
         ZIP = 'result/qc/2_fastqc_trim/{sample}_{suf}_fastqc.zip'
-    threads: config["threads"] * 0.1
+    threads: max(1, int(config["threads"]*0.1))
     message: "Quality assessment, FastQC"
     shell:
         """
@@ -82,7 +82,7 @@ if (not os.path.exists(STAR_index_SA)):
         params:
             release = config["release"],
             genome = config["genome"]
-        threads: config["threads"] * 0.5
+        threads: max(1, int(config["threads"]*0.5))
         message: "Generating genome index"
         run:
             shell("scripts/STAR_index.sh {params.release} {params.genome} {threads}")
@@ -100,7 +100,7 @@ rule STAR_load:
         LOAD_done = touch('log/benchmark/STAR_load.benchmark.txt')
     params:
         release = config["release"]
-    threads: config["threads"] * 0.5
+    threads: max(1, int(config["threads"]*0.5))
     message: 'Loading genome index'
     run:
         shell("STAR --genomeDir 'ref/release{params.release}/STARindex' --runThreadN {threads} --runRNGseed 8756 --genomeLoad LoadAndExit")
@@ -115,7 +115,7 @@ rule STAR_align:
     params:
         OUT = 'result/2_bam/{sample}_',
         release = config["release"]
-    threads: config["threads"] * 0.25
+    threads: max(1, int(config["threads"]*0.25))
     message: 'Aligning reads'
     run:
         shell("STAR --genomeDir 'ref/release{params.release}/STARindex' --readFilesIn {input.R1} {input.R2} --readFilesCommand zcat --outFileNamePrefix {params.OUT} --outSAMtype BAM SortedByCoordinate --runThreadN {threads} --runRNGseed 8756 --genomeLoad LoadAndKeep --limitBAMsortRAM 20000000000")
@@ -146,7 +146,7 @@ rule align_filter:
     output:
         BAM2 = 'result/3_bam_filter/{sample}_Aligned.sortedByCoord.filter.bam',
         BAI = 'result/3_bam_filter/{sample}_Aligned.sortedByCoord.filter.bam.bai'
-    threads: config["threads"] * 0.1
+    threads: max(1, int(config["threads"]*0.1))
     message: "Filtering alignments"
     shell:
         """
@@ -161,7 +161,7 @@ rule align_filter:
 rule flagstat:
     input: 'result/3_bam_filter/{sample}_Aligned.sortedByCoord.filter.bam'
     output: 'result/qc/3_flagstat/{sample}_flagstat.tsv'
-    threads: config["threads"] * 0.1
+    threads: max(1, int(config["threads"]*0.1))
     message: "Quality control, flagstat"
     run:
         shell("samtools flagstat -@ {threads} {input} > {output}")
@@ -194,7 +194,7 @@ rule fcount:
     params:
         release = config["release"],
         genome = config["genome"]
-    threads: config["threads"] * 0.1
+    threads: max(1, int(config["threads"]*0.1))
     message: "Counting features"
     run:
         shell("featureCounts -T {threads} -g gene_id -t exon -p -a 'ref/release{params.release}/STARref/{params.genome}.{params.release}.gtf' -o {output} {input.bam}")
