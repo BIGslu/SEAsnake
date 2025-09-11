@@ -109,8 +109,19 @@ rule STAR_align:
         release = config["release"]
     threads: max(1, int(config["threads"]*0.25))
     message: 'Aligning reads'
-    run:
-        shell("STAR --genomeDir 'ref/release{params.release}/STARindex' --readFilesIn {input.R1} --readFilesCommand zcat --outFileNamePrefix {params.OUT} --outSAMtype BAM SortedByCoordinate --runThreadN {threads} --runRNGseed 8756 --genomeLoad LoadAndKeep --limitBAMsortRAM 20000000000")
+    shell:
+        """
+        STAR \
+        --genomeDir ref/release{params.release}/STARindex \
+        --readFilesCommand zcat \
+        --readFilesIn {input.R1} \
+        --outFileNamePrefix {params.OUT} \
+        --outSAMtype BAM SortedByCoordinate \
+        --runThreadN {threads} \
+        --runRNGseed 8756 \
+        --genomeLoad LoadAndKeep \
+        --limitBAMsortRAM 20000000000
+        """
 
 rule STAR_remove:
     input:
