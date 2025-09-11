@@ -17,3 +17,5 @@ dependencies:
   - picard >=2.27.1
   - star >=2.7.9a
   - subread >=2.0.1
+  - python >=3.11
+  - pandas >=1.6
