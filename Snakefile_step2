@@ -44,7 +44,6 @@ rule adapterremoval:
         adapter2 = config["adapter2"]
     threads: max(1, int(config["threads"]*0.1))
     message: "Adapter removal & quality filtering"
-
     run:
         if params.trimAdapt == True:
             shell("cutadapt -g {params.adapter1} -a {params.adapter2} --cut {params.trim5p} --quality-cutoff 30 --max-n 1 --minimum-length 15 -o {output.R1} -p {output.R2} --cores {threads} {input.R1} {input.R2}")
