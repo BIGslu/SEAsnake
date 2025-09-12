@@ -6,7 +6,7 @@
 
 SampleList="data/*_R1*"
 
-sudo echo "SampleList:" > result/config.yaml
+echo "SampleList:" > result/config.yaml
 
 spacer1=": "
 
@@ -25,11 +25,11 @@ sample2=`echo "${sample/R1/R2}"`
 sample_name=`echo "$(basename $sample)" | grep -o '^.*_L[0-9][0-9][0-9]' | sed 's/_L[0-9][0-9][0-9]$//'`
 
 # Add sample name to config
-sudo echo "  " "$sample_name$spacer1" >> result/config.yaml
-sudo echo "    sample: '"$sample_name"'" >> result/config.yaml
+echo "  " "$sample_name$spacer1" >> result/config.yaml
+echo "    sample: '"$sample_name"'" >> result/config.yaml
 # Add fastq files to config
-sudo echo "    R1: '"$sample"'" >> result/config.yaml
-sudo echo "    R2: '"$sample2"'" >> result/config.yaml
+echo "    R1: '"$sample"'" >> result/config.yaml
+echo "    R2: '"$sample2"'" >> result/config.yaml
 done
 
 #################################
@@ -44,7 +44,7 @@ cores2=1
 fi
 
 # Add default param to config
-sudo echo "
+echo "
 
 # Adapter removal
 ## Base pairs to trim from 5' end
@@ -58,8 +58,8 @@ adapter2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT
 
 ## Species the format 'Homo_sapiens.GRCh38' or 'Mus_musculus.GRCm39'
 genome: 'Homo_sapiens.GRCh38'
-## Genome release number. Current as of 2022.04.14
-release: '106'
+## Genome release number. Current as of 2025.06.05
+release: '114'
 
 # Alignment metrics
 ## Run Picard?
@@ -71,17 +71,17 @@ threads: $cores2
 
 # Setup directory structure
 
-sudo mkdir -p -m 777 'result/qc/1_fastqc_raw'
-sudo mkdir -p -m 777 'result/qc/2_fastqc_trim'
-sudo mkdir -p -m 777 'result/qc/3_flagstat'
-sudo mkdir -p -m 777 'result/qc/4_picard'
+mkdir -p -m 777 'result/qc/1_fastqc_raw'
+mkdir -p -m 777 'result/qc/2_fastqc_trim'
+mkdir -p -m 777 'result/qc/3_flagstat'
+mkdir -p -m 777 'result/qc/4_picard'
 
-sudo mkdir -p -m 777 'result/1_trim'
-sudo mkdir -p -m 777 'result/2_bam'
-sudo mkdir -p -m 777 'result/3_bam_filter'
-sudo mkdir -p -m 777 'result/4_count'
-sudo mkdir -p -m 777 'result/5_combined'
+mkdir -p -m 777 'result/1_trim'
+mkdir -p -m 777 'result/2_bam'
+mkdir -p -m 777 'result/3_bam_filter'
+mkdir -p -m 777 'result/4_count'
+mkdir -p -m 777 'result/5_combined'
 
-sudo mkdir -p -m 777 'ref'
-sudo mkdir -p -m 777 'log'
+mkdir -p -m 777 'ref'
+mkdir -p -m 777 'log'
 
